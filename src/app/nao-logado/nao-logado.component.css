@@ -1,0 +1,30 @@
+.basic-container {
+  height: 100vh;
+  width: 100vw;
+  padding-top: 5%;
+}
+
+.login-card {
+  max-width: 400px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.mat-card-actions,
+.mat-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-card-title {
+  text-align: center;
+  font-size: x-large;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+  

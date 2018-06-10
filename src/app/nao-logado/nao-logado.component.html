@@ -1,0 +1,28 @@
+<div class="mat-app-background basic-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Seja bem vindo!</mat-card-title>
+    </mat-card-header>
+    
+    <form>
+      <mat-card-content>
+        <p>Entre com suas credenciais ou faça login através da sua Conta Google</p>
+        <mat-form-field appearance="outline">
+          <mat-label>Endereço de e-mail</mat-label>
+          <input matInput placeholder="endereco@email.com" name="email">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Senha</mat-label>
+          <input matInput placeholder="Senha" type="password" name="password">
+        </mat-form-field>
+        <mat-checkbox name="lembrar" [checked]=true color="primary">Lembrar de mim</mat-checkbox>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit" id="btLogin" (click)="autentica()">Login</button>
+        <button mat-raised-button color="warn" id="btForgot">Esqueci minha senha</button>
+        <br /><br /><br />
+        {{mensagem}}
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>
