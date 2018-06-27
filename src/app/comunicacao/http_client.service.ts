@@ -37,7 +37,7 @@ export class HttpClientService {
 				'Content-Type':  'application/json; charset=UTF-8'
 			})
 		};
-
+		
 		return this.http.post<in_oauth_auth>(this.apiUrl+'/auth', json, httpOptions);
 	}
 	

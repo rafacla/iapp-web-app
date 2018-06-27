@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-//import { HttpClientService } from '../comunicacao/http_client.service'
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { in_oauth_auth } from '../comunicacao/data-model/in_oauth_auth';
 import { Oauth2Data } from './oauth2-data'
 import * as Rx from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,17 +20,22 @@ export class Oauth2Service {
 
   private _loggedIn: Rx.BehaviorSubject<boolean> = new Rx.BehaviorSubject(false);
   public readonly loggedIn: Rx.Observable<boolean> = this._loggedIn.asObservable();
-  private _accessToken: Rx.BehaviorSubject<string>;
+  private _accessToken: Rx.BehaviorSubject<string> = new Rx.BehaviorSubject(null);
   public readonly accessToken$: Rx.Observable<string> = this._accessToken.asObservable();
-  //private _signin: Rx.BehaviorSubject<Oauth2Data> = new Rx.BehaviorSubject(this.resposta);
-  //private readonly signin$: Rx.Observable<Oauth2Data> = this._signin.asObservable();
-  //constructor(private httpClient: HttpClientService) { }
-  constructor() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.accessToken = this.currentUser.accessToken;
-    this.refreshToken = this.currentUser.refreshToken;
-    this.rememberUser = this.currentUser.rememberUser;
-    this._accessToken = new Rx.BehaviorSubject(this.accessToken);
+  
+  
+
+  
+  constructor(private http: HttpClient) {
+    try {
+      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.accessToken = this.currentUser.accessToken;
+      this.refreshToken = this.currentUser.refreshToken;
+      this.rememberUser = this.currentUser.rememberUser;
+      this._accessToken.next(this.accessToken);
+    } catch (e) {
+      
+    }    
   }
   
   
@@ -67,12 +72,35 @@ export class Oauth2Service {
       return null;
   }
 
-  /** Retorna um AccessToken observável (se existente) */
+  /** Retorna um AccessToken observável (se existente) 
+   * se não existe um AccessToken, mas existe um refresh token
+   * então solicita um novo accesstoken */
   getOAccessToken(): Observable<string> {
     if (this.accessToken != null) {
       this._accessToken.next(this.accessToken);
-    } else
-      return null;
+      return this.accessToken$;
+    } else if (this.refreshToken != null && this.rememberUser) {
+      var apiUrl = "https://api.rafacla.com/auth";
+      var json = JSON.stringify({refresh_token: this.refreshToken, grant_type: 'refresh_token', client_id: 'web'});
+
+      var httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json; charset=UTF-8'
+        })
+      };
+
+      return this.http.post<in_oauth_auth>(apiUrl, json, httpOptions).pipe(
+        tap(resposta => {
+          
+          this.setAccessToken(resposta.access_token,resposta.refresh_token);
+          this._accessToken.next(resposta.access_token);
+        }),
+        map(resposta => resposta.access_token)        
+      );
+    } else {
+      this._accessToken.next(null);
+      return this.accessToken$;
+    }
   }
 
   getRefreshToken(): string {
@@ -93,12 +121,17 @@ export class Oauth2Service {
   }
 
   /** Grava uma nova Access_Token */
-  setAccessToken(accessToken: string) {
+  setAccessToken(accessToken: string, refreshToken?: string) {
     var currentUser: Oauth2Data;
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
     currentUser.accessToken = accessToken;
-    localStorage.setItem('currentUser',JSON.stringify(this.resposta))
+    if (refreshToken != null) {
+      currentUser.refreshToken = refreshToken;
+      this.refreshToken = refreshToken;
+    }
     this.accessToken = accessToken;
+    localStorage.setItem('currentUser',JSON.stringify(currentUser))
+    
   }
 
   /** Recupera um novo AccessToken se o usuário marcou a opção de "Lembrar", caso contrário faz log-out */

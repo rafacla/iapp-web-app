@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { retry, tap, finalize, switchMap, catchError } from 'rxjs/operators';
 
 import {
-  HttpClient, HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse
+  HttpEvent, HttpInterceptor, HttpHandler, HttpRequest
 } from '@angular/common/http';
+
+import { Observable, throwError } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
+
 import { HttpClientService } from './http_client.service'
 import { Oauth2Service } from '../oauth2/oauth2.service';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -25,18 +26,22 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.error.error_description == 'The access token provided is invalid') {
           //chave inválida
           this.oauth2.signout();
-          return Observable.throw(error);
+          return throwError(error);
         } else if (error.error.error_description == 'The access token provided has expired') {
           let refreshToken = this.oauth2.getRefreshToken();
           if (refreshToken == null) {
             //não ha um refresh token ou a opção lembrar nao foi marcada, faça log out:
             this.oauth2.signout();
-            return Observable.throw(error);
+            return throwError(error);
           } else {
-            return this.RetryWithRefreshToken(req,next,error,refreshToken);
+            this.oauth2.setAccessToken(null);
+            return this.oauth2.getOAccessToken().pipe(
+              switchMap(resposta => this.RetryRequest(req,next,resposta))
+              );
           }
         }
-        return Observable.throw(error);
+        this.oauth2.signout();
+        return throwError(error);
       })
       
     );
