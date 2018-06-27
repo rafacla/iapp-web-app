@@ -2,7 +2,8 @@
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-    <span>{{title}}</span>
+    {{userFirstName}}
+    <button mat-raised-button (click)="logout()">Logout</button>
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="side" opened="false" class="sidenav" position="start">

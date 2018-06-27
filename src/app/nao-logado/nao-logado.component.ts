@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientService } from '../comunicacao/http_client.service'
-import { in_oauth_auth } from '../comunicacao/data-model/in_oauth_auth';
+import { Oauth2Service } from '../oauth2/oauth2.service'
+import { HttpClientService } from './../comunicacao/http_client.service'
+import {FormControl, FormControlName, Validators, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-nao-logado',
@@ -9,20 +10,33 @@ import { in_oauth_auth } from '../comunicacao/data-model/in_oauth_auth';
 })
 export class NaoLogadoComponent implements OnInit {
   lembrar = true;
-  mensagem = '';
-  resposta: in_oauth_auth;
+  txtUsername = '';
+  txtPassword = '';
+  btLoginDisabled = false;
+  wrongPassword = false;
+  loading = false;
 
-  constructor(private httpClient: HttpClientService) { }
+  constructor(private oauth2: Oauth2Service, private httpClient: HttpClientService) { }
 
   ngOnInit() {
+       
   }
 
   autentica() {
-    this.httpClient.Autentica('rafacla@live.com','9228726')
-    .subscribe(
-      resposta => this.mensagem = resposta.access_token,
-      resposta_erro => this.mensagem = resposta_erro.error.error      
-    );
+    this.btLoginDisabled=true;
+    this.loading = true;
+    this.httpClient.Autentica(this.txtUsername,this.txtPassword).subscribe(
+      resposta => {
+        this.oauth2.signin(this.txtUsername,this.txtPassword,this.lembrar,resposta.access_token,resposta.refresh_token);
+        this.loading = false;
+      },
+      resposta_erro => { 
+        this.btLoginDisabled = false; 
+        this.wrongPassword = true; 
+        this.loading = false;
+        localStorage.removeItem('currentUser');
+      }
+    )
   }
 
 }
