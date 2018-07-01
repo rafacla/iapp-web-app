@@ -1,0 +1,30 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    Minhas Finanças
+    <span class="toolbar-spacer"></span>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <span class="button-username">
+        <fa-icon icon="user-circle" size="lg"></fa-icon>
+        {{userFirstName}}
+      </span>
+    </button>
+    <mat-menu #menu="matMenu" yPosition="below" [overlapTrigger]="false">
+      <button mat-menu-item (click)="logout()"><fa-icon icon="user-edit"></fa-icon> Editar usuário</button>
+      <button mat-menu-item (click)="logout()"><fa-icon icon="sign-out-alt"></fa-icon> Sair</button>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="over" opened="false" class="sidenav-menu" position="start">
+    <span>Diário selecionado:</span>  
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>  
+  <mat-sidenav-content class="sidenav-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

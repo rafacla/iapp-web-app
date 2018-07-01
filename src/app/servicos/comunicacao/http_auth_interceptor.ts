@@ -40,7 +40,6 @@ export class AuthInterceptor implements HttpInterceptor {
               );
           }
         }
-        this.oauth2.signout();
         return throwError(error);
       })
       

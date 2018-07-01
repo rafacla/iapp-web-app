@@ -1,0 +1,24 @@
+.sidenav-container {
+    height: 100vh;
+}
+
+.sidenav-content {
+    padding-top: 20px;
+    padding-left: 10vw;
+    padding-right: 10vw;
+    width: 80vw;
+}
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.sidenav-menu {
+    padding: 10px;
+    width: 250px;
+}
+
+.button-username {
+    font-size: 1.3em;
+    padding-left: 5px;
+    align-content: center
+}

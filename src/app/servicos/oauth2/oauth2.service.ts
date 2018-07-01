@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { in_oauth_auth } from '../comunicacao/data-model/in_oauth_auth';
+import { in_oauth_auth } from '../../data-model/in_oauth_auth';
 import { Oauth2Data } from './oauth2-data'
 import * as Rx from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class Oauth2Service {
   
   constructor(private http: HttpClient) {
     try {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.currentUser = JSON.parse(localStorage.getItem('currentToken'));
       this.accessToken = this.currentUser.accessToken;
       this.refreshToken = this.currentUser.refreshToken;
       this.rememberUser = this.currentUser.rememberUser;
@@ -50,7 +50,7 @@ export class Oauth2Service {
       rememberUser: this.rememberUser
     };
     this.resposta = resposta;
-    localStorage.setItem('currentUser',JSON.stringify(this.resposta))
+    localStorage.setItem('currentToken',JSON.stringify(this.resposta))
 
     this._loggedIn.next(true);
   }
@@ -61,7 +61,7 @@ export class Oauth2Service {
       this.refreshToken = null;
       this.rememberUser = false;
       this._loggedIn.next(false);
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem('currentToken');
   }
 
   /** Retorna um acessToken (se existente) */
@@ -116,21 +116,21 @@ export class Oauth2Service {
 
   getLoggedUser(): Oauth2Data {
     var currentUser: Oauth2Data;
-    currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser = JSON.parse(localStorage.getItem('currentToken'));
     return currentUser;
   }
 
   /** Grava uma nova Access_Token */
   setAccessToken(accessToken: string, refreshToken?: string) {
     var currentUser: Oauth2Data;
-    currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser = JSON.parse(localStorage.getItem('currentToken'));
     currentUser.accessToken = accessToken;
     if (refreshToken != null) {
       currentUser.refreshToken = refreshToken;
       this.refreshToken = refreshToken;
     }
     this.accessToken = accessToken;
-    localStorage.setItem('currentUser',JSON.stringify(currentUser))
+    localStorage.setItem('currentToken',JSON.stringify(currentUser))
     
   }
 

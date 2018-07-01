@@ -6,4 +6,5 @@ export class UserDetail {
     userPhoneNumber: string;
     userActive: boolean;
     userNotActiveReason: string;
+    userLastDiarioUID: string;
 }

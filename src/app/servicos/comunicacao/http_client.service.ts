@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpEvent } from '@angular/common/http';
 
 import { catchError, map, tap } from 'rxjs/operators';
 import { Oauth2Service } from './../oauth2/oauth2.service'
-import { in_oauth_auth } from './data-model/in_oauth_auth';
-import { UserDetail } from './data-model/user-detail';
+import { in_oauth_auth } from '../../data-model/in_oauth_auth';
+import { UserDetail } from '../../data-model/user-detail';
+import { DiarioList } from '../../data-model/diario-list';
+import { DiarioPost } from '../../data-model/diario-post';
 
 @Injectable({ providedIn: 'root' })
 
@@ -13,7 +15,7 @@ export class HttpClientService {
 	private apiUrl = 'https://api.rafacla.com';
 	
 
-  constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
+  	constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
 	/** POST autentica um usuário e retorna um token */
 	Autentica(username: string, password: string): Observable<in_oauth_auth> {
@@ -45,6 +47,34 @@ export class HttpClientService {
 	getUser(): Observable<UserDetail> {
 		return this.http.get<UserDetail>(this.apiUrl+'/users/logged');
 	}
+
+	/** GET Lista de Diários dado o ID do Usuário */
+	getDiarios(userID: number): Observable<DiarioList[]> {
+		var httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8',
+				'userid': userID.toString()
+			})
+		};
+		return this.http.get<DiarioList[]>(this.apiUrl+'/diario',httpOptions);
+	}
+
+	/** POST Cria um Novo diário */
+	criaDiario(diarioNome: string, diarioDescription: string, userID: number): Observable<object> {
+		let json = new DiarioPost();
+		json.userid = userID;
+		json.nome = diarioNome;
+		json.description = diarioDescription;
+		
+		//var json = JSON.stringify({nome: diarioNome, diarioDescription: diarioDescription, userid: userID});
+		var httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+
+		return this.http.post<object>(this.apiUrl+'/diario', json, httpOptions);
+	}
 	
 	/**
 	 * Handle Http operation that failed.
@@ -56,7 +86,7 @@ export class HttpClientService {
 	  return (error: any): Observable<T> => {
 	 
 		// TODO: send the error to remote logging infrastructure
-		console.error(error); // log to console instead
+		console.log(error); // log to console instead
 	 
 		if (error.error_description == 'The access token provided is invalid') {
 			//chave inválida

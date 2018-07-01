@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Oauth2Service } from '../oauth2/oauth2.service'
-import { HttpClientService } from './../comunicacao/http_client.service'
+import { Oauth2Service } from '../../servicos/oauth2/oauth2.service'
+import { HttpClientService } from '../../servicos/comunicacao/http_client.service'
 import {FormControl, FormControlName, Validators, FormGroup} from '@angular/forms';
 
 @Component({
-  selector: 'app-nao-logado',
-  templateUrl: './nao-logado.component.html',
-  styleUrls: ['./nao-logado.component.css']
+  selector: 'app-login-form',
+  templateUrl: './login-form.component.html',
+  styleUrls: ['./login-form.component.css']
 })
-export class NaoLogadoComponent implements OnInit {
+export class LoginFormComponent implements OnInit {
   lembrar = true;
   txtUsername = '';
   txtPassword = '';
@@ -34,7 +34,7 @@ export class NaoLogadoComponent implements OnInit {
         this.btLoginDisabled = false; 
         this.wrongPassword = true; 
         this.loading = false;
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentToken');
       }
     )
   }

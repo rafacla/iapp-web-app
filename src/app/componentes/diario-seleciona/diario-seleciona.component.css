@@ -1,0 +1,55 @@
+.card-carregando {
+    width: 300px;
+    height: 150px;
+    margin: 10px;
+    display: inline-block;
+    vertical-align: top;
+    color: #ccc;
+}
+.card-diario {
+    width: 300px;
+    height: 200px;
+    margin: 10px;
+    display: inline-block;
+    vertical-align: top;
+}
+.card-novo-diario {
+    width: 295px;
+    height: 200px;
+    margin: 10px;
+    display: inline-block;
+    vertical-align: top;
+    border-style: dotted;
+    border-color: #ccc;
+    background: transparent;
+    text-align: center;
+}
+.card-novo-diario > span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 200px;
+    color: #aaa;
+}
+.mat-card-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card-icon {
+    display: inline-block;
+    font-size: 0.8em;
+    padding-right: 10px;
+    width: 70px;
+    vertical-align: top;
+}
+
+.card-content {
+    display: inline-block;
+    width: 220px;
+    vertical-align: top;
+}
+
+.card-actions {
+    position: absolute;
+    bottom: 30px;
+}
