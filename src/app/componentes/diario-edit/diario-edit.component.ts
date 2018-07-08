@@ -12,10 +12,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class DiarioEditComponent implements OnInit {
   formDiario: FormGroup;
-
+  btSalvarEnabled = true;
   loading = false;
-  txtDiarioNome = '';
-  txtDiarioDescription = '';
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
@@ -25,37 +23,57 @@ export class DiarioEditComponent implements OnInit {
       this.createForm();
     }
 
-    private createForm() {
-      this.formDiario = this.formBuilder.group({
-        diarioNome: ['', Validators.required ],
-        diarioDescription: ['', Validators.required]
-      });
-    }
+  private createForm() {
+    this.formDiario = this.formBuilder.group({
+      diarioNome: ['', [Validators.required,Validators.minLength(2)] ],
+      diarioDescription: ['', Validators.required]
+    });
+    this.formDiario.enable();
+  }
 
   salvaDiario() {
-    let mythis = this;
     let diarioUID = this.route.snapshot.paramMap.get('id');
-    let diarioNome = this.txtDiarioNome;
-    let diarioDescription = this.txtDiarioDescription;
+    let diarioNome = this.formDiario.get('diarioNome').value;
+    let diarioDescription = this.formDiario.get('diarioDescription').value;
     
-    if (diarioUID == 'new') {
-      //estamos criando um novo diario
-      this.user.getUserDetail().subscribe(userDetail => {
-        this.http.criaDiario(diarioNome, diarioDescription, userDetail.userID).subscribe(
+    
+    if (this.formDiario.valid) {
+      this.formDiario.disable();
+      if (diarioUID == 'new') {
+        //estamos criando um novo diario
+        this.user.getUserDetail().subscribe(userDetail => {
+          this.http.diarioPost(diarioNome, diarioDescription, userDetail.userID).subscribe(
+            sucesso => { this.router.navigate(['/diario/seleciona']) },
+            erro => { 
+              console.log (erro);
+              this.formDiario.enable();
+              this.formDiario.setErrors(Validators.requiredTrue);
+            }
+          )
+        });
+      } else {
+        this.http.diarioPut(diarioUID,diarioNome,diarioDescription).subscribe(
           sucesso => { this.router.navigate(['/diario/seleciona']) },
           erro => { 
             console.log (erro);
-          },
+            this.formDiario.enable();
+            this.formDiario.setErrors(Validators.requiredTrue);
+          }
         )
-      });
-    } else {
-
+      }
     }
   }
 
   ngOnInit() {
-    
-    
+    let diarioUID = this.route.snapshot.paramMap.get('id');
+    if (diarioUID != 'new') {
+      this.formDiario.disable();
+      this.http.diarioGetByUID(diarioUID).subscribe(diario => {
+        this.formDiario.enable();
+        this.formDiario.get('diarioNome').setValue(diario.diarioNome);
+        this.formDiario.get('diarioDescription').setValue(diario.diarioDescription);
+      });
+    }
   }
 
 }

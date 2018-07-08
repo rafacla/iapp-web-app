@@ -47,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private RetryWithRefreshToken(req: HttpRequest<any>, next: HttpHandler, error: HttpEvent<any>, refreshToken: string): Observable<HttpEvent<any>> {
-    return this.http.RefreshToken(refreshToken).pipe(
+    return this.http.authRefreshTokenPost(refreshToken).pipe(
         switchMap(resposta => this.RetryRequest(req,next,resposta.access_token))
       );
   }

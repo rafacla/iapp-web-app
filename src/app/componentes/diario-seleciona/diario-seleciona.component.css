@@ -1,3 +1,23 @@
+.mat-card-header {
+    width: 100%;
+    text-align: center;
+    display: block;
+}
+
+.card-title {
+    width: 300px;
+    font-weight: bold;
+}
+
+.card-subtitle {
+    width: 300px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+    padding-top: 3px;
+    padding-bottom: 5px;
+    font-size: 0.8em;
+    color: #999;
+}
+
 .card-carregando {
     width: 300px;
     height: 150px;
@@ -8,14 +28,14 @@
 }
 .card-diario {
     width: 300px;
-    height: 200px;
+    height: 150px;
     margin: 10px;
     display: inline-block;
     vertical-align: top;
 }
 .card-novo-diario {
     width: 295px;
-    height: 200px;
+    height: 150px;
     margin: 10px;
     display: inline-block;
     vertical-align: top;

@@ -5,6 +5,12 @@ body {
   font-family: Lato, Helvetica, sans-serif;
 }
 
+.page-header {
+  font-weight: bold;
+  width: 100%;
+  text-align: left;
+}
+
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;

@@ -8,6 +8,7 @@ import { in_oauth_auth } from '../../data-model/in_oauth_auth';
 import { UserDetail } from '../../data-model/user-detail';
 import { DiarioList } from '../../data-model/diario-list';
 import { DiarioPost } from '../../data-model/diario-post';
+import { DiarioPut } from '../../data-model/diario-put';
 
 @Injectable({ providedIn: 'root' })
 
@@ -18,7 +19,7 @@ export class HttpClientService {
   	constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
 	/** POST autentica um usuário e retorna um token */
-	Autentica(username: string, password: string): Observable<in_oauth_auth> {
+	authPost(username: string, password: string): Observable<in_oauth_auth> {
 		var json = JSON.stringify({username: username, password: password, client_id: 'web', grant_type: 'password'});
 	
 		var httpOptions = {
@@ -31,7 +32,7 @@ export class HttpClientService {
 	}
 
 	/** POST recupera um novo token usando um refreshtoken */
-	RefreshToken(refreshToken: string): Observable<in_oauth_auth> {
+	authRefreshTokenPost(refreshToken: string): Observable<in_oauth_auth> {
 		var json = JSON.stringify({refresh_token: refreshToken, grant_type: 'refresh_token', client_id: 'web'});
 
 		var httpOptions = {
@@ -44,12 +45,12 @@ export class HttpClientService {
 	}
 	
 	/** GET User details by id. Will 500 if id not found */
-	getUser(): Observable<UserDetail> {
+	userGet(): Observable<UserDetail> {
 		return this.http.get<UserDetail>(this.apiUrl+'/users/logged');
 	}
 
 	/** GET Lista de Diários dado o ID do Usuário */
-	getDiarios(userID: number): Observable<DiarioList[]> {
+	diarioGet(userID: number): Observable<DiarioList[]> {
 		var httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type':  'application/json; charset=UTF-8',
@@ -59,8 +60,18 @@ export class HttpClientService {
 		return this.http.get<DiarioList[]>(this.apiUrl+'/diario',httpOptions);
 	}
 
+	/** GET Informações de um diário específico */
+	diarioGetByUID(diarioUID: string): Observable<DiarioList> {
+		var httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.get<DiarioList>(this.apiUrl+'/diario/'+diarioUID,httpOptions);
+	}
+
 	/** POST Cria um Novo diário */
-	criaDiario(diarioNome: string, diarioDescription: string, userID: number): Observable<object> {
+	diarioPost(diarioNome: string, diarioDescription: string, userID: number): Observable<object> {
 		let json = new DiarioPost();
 		json.userid = userID;
 		json.nome = diarioNome;
@@ -75,7 +86,25 @@ export class HttpClientService {
 
 		return this.http.post<object>(this.apiUrl+'/diario', json, httpOptions);
 	}
-	
+
+	/** PUT Altera um Diário existente */
+	diarioPut(diarioUID: string, diarioNome: string, diarioDescription: string): Observable<object> {
+		let json = new DiarioPut();
+		json.uniqueid = diarioUID;
+		json.nome = diarioNome;
+		json.description = diarioDescription;
+
+		return this.http.post<object>(this.apiUrl+'/diario/put', json);
+	}
+
+	/** DELETE Deleta um diároi existente */
+	diarioDelete(diarioUID: string): Observable<object> {
+		let json = new DiarioPut()
+		json.uniqueid = diarioUID;
+
+		return this.http.post<object>(this.apiUrl+'/diario/delete', json);
+	}
+
 	/**
 	 * Handle Http operation that failed.
 	 * Let the app continue.

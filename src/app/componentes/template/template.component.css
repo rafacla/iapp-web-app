@@ -1,12 +1,17 @@
-.sidenav-container {
+
+
+.sidenav-content {
     height: 100vh;
 }
 
 .sidenav-content {
     padding-top: 20px;
-    padding-left: 10vw;
-    padding-right: 10vw;
-    width: 80vw;
+    padding-left: 20vw;
+    padding-right: 20vw;
+    width: 60vw;
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
 }
 .toolbar-spacer {
     flex: 1 1 auto;

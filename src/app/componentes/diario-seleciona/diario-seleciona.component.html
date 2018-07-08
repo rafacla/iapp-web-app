@@ -1,5 +1,6 @@
+<div class="page-header">Meus diários</div>
 <div class="alert alert-warning" *ngIf="diariosList == false">Nenhum diário encontrado!</div>
-<div>
+<div class="card-list">
   <mat-card class="card-carregando" *ngIf="diariosList === undefined">
     <mat-card-header>
         <mat-card-title>Carregando...</mat-card-title>
@@ -15,14 +16,11 @@
   </mat-card>
   <mat-card class="card-diario" *ngFor="let diario of diariosList">
     <mat-card-header>
-        <mat-card-title>
-          {{diario.diarioNome}}
-        </mat-card-title>
+        <div class="card-title">{{diario.diarioNome}}</div>
+        <div class="card-subtitle">(Última atualização: dd/mm/aaaa)</div>
     </mat-card-header>
     <mat-card-content>
-      <div class="card-icon">
-        <fa-icon [icon]="['far', 'list-alt']" size="6x"></fa-icon>
-      </div>
+
       <div class="card-content">
         {{diario.diarioDescription}}
       </div>
@@ -30,7 +28,7 @@
     <mat-card-actions class="card-actions">
       <button mat-button>ABRIR</button>
       <a routerLink="/diario/edit/{{diario.diarioUID}}" mat-button>EDITAR</a>
-      <button mat-button>APAGAR</button>
+      <button mat-button (click)="deletaDiario(diario)" [disabled]="diariosDeletados[diario.diarioUID]">APAGAR</button>
     </mat-card-actions>
   </mat-card>
   <a routerLink="/diario/edit/new">

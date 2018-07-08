@@ -40,7 +40,7 @@ export class UserService {
         return this.userDetail$;
       } else {
         //não há detalhes do usuário no cache, vamos precisar recuperar do servidor:
-        return this.httpClient.getUser().pipe(
+        return this.httpClient.userGet().pipe(
           tap(resposta=>{
             var userDetail: UserDetail;
             userDetail = resposta;
@@ -55,7 +55,7 @@ export class UserService {
   
   /** Atualiza as informações do usuário no cache do servidor */
   refreshUserDetail() {
-    this.httpClient.getUser().pipe(
+    this.httpClient.userGet().pipe(
       tap(resposta=>{
         var currentDiarioUID: string;
         try {

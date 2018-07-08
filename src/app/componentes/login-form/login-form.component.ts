@@ -25,7 +25,7 @@ export class LoginFormComponent implements OnInit {
   autentica() {
     this.btLoginDisabled=true;
     this.loading = true;
-    this.httpClient.Autentica(this.txtUsername,this.txtPassword).subscribe(
+    this.httpClient.authPost(this.txtUsername,this.txtPassword).subscribe(
       resposta => {
         this.oauth2.signin(this.txtUsername,this.txtPassword,this.lembrar,resposta.access_token,resposta.refresh_token);
         this.loading = false;
