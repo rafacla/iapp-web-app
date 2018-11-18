@@ -16,15 +16,8 @@ import { MatToolbarModule, MatCard, MatCardActions,MatCardAvatar,MatCardContent,
   MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule, 
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance, 
   MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions,MatProgressSpinnerModule, matFormFieldAnimations, 
-  MatInputModule, MatMenu, MatMenuModule } from '@angular/material';
+  MatInputModule, MatMenu, MatMenuModule, MatTreeModule } from '@angular/material';
   
-//FontAwersomeModule
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUserCircle, faSignOutAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { faListAlt, faClock } from '@fortawesome/free-regular-svg-icons';
-library.add(faUserCircle, faSignOutAlt, faUserEdit, faListAlt, faClock);
-
 //Serviços:
 import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor'
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -35,6 +28,19 @@ import { LoginFormComponent } from './componentes/login-form/login-form.componen
 import { DiarioSelecionaComponent } from './componentes/diario-seleciona/diario-seleciona.component';
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
 import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.component';
+import { ContasListComponent } from './componentes/contas-list/contas-list.component';
+
+// Import angular-fusioncharts
+import { FusionChartsModule } from 'angular-fusioncharts';
+
+// Import FusionCharts library and chart modules
+import * as FusionCharts from 'fusioncharts';
+import * as Charts from 'fusioncharts/fusioncharts.charts';
+
+import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
+
+// Pass the fusioncharts library and chart modules
+FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
 @NgModule({
   imports: [
@@ -55,8 +61,9 @@ import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.compo
     MatInputModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    FontAwesomeModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTreeModule,
+    FusionChartsModule
   ],
   declarations: [
     AppComponent,
@@ -64,7 +71,8 @@ import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.compo
     LoginFormComponent,
     DashboardComponent,
     DiarioSelecionaComponent,
-    DiarioEditComponent
+    DiarioEditComponent,
+    ContasListComponent
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

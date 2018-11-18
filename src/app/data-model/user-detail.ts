@@ -7,4 +7,5 @@ export class UserDetail {
     userActive: boolean;
     userNotActiveReason: string;
     userLastDiarioUID: string;
+    userLastDiarioName: string;
 }

@@ -1,0 +1,77 @@
+<div class="mat-toolbar-second-row">
+  <span>Contas e Cartões</span>
+</div>
+<div class="mat-toolbar-third-row">
+  <button mat-button><mat-icon>add</mat-icon> Adicionar conta</button>
+</div>
+<div class="alert alert-warning" *ngIf="contasList == false">Nenhuma conta encontrada!</div>
+<div class="contas-content">
+  <div class="contas-summary">
+      <mat-card class="contas-summary-card">
+          <mat-card-content>
+              <mat-tree [dataSource]="data" [treeControl]="tc">
+                  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle class="mat-tree-line">
+                      <div class="contas-summary-card-tree {{node.level == 1 ? 'bold' : ''}}">
+                        <button mat-icon-button disabled>
+                          <mat-icon *ngIf="node.level == 1">
+                              expand_more
+                          </mat-icon>
+                        </button>
+                        <span class="name">{{node.name}}</span>
+                        <span class="saldo">{{node.saldo}}</span>
+                      </div>
+                  </mat-tree-node>
+                  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" class="mat-tree-line">
+                      <div class="contas-summary-card-tree {{node.level == 1 ? 'bold' : ''}}">
+                        <button mat-icon-button matTreeNodeToggle>
+                          <mat-icon>
+                            {{tc.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                          </mat-icon>
+                        </button>
+                        <span class="name">{{node.name}}</span>
+                        <span class="saldo">{{node.saldo}}</span>
+                      </div>
+                      <ul [hidden]="!tc.isExpanded(node)">
+                        <ng-container matTreeNodeOutlet></ng-container>
+                      </ul>
+                  </mat-nested-tree-node>
+                </mat-tree>
+          </mat-card-content>
+      </mat-card>
+  </div>
+  <div class="card-list">
+    <mat-card class="card-carregando" *ngIf="contasList === undefined">
+      <mat-card-header>
+          <mat-card-title>Carregando...</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+          <div class="card-icon">
+            <mat-icon>clock-outline</mat-icon>
+          </div>
+          <div class="card-content">
+            Por favor aguarde.
+          </div>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="card-diario" *ngFor="let conta of contasList">
+      <mat-card-header>
+          <div class="card-title">{{conta.conta_nome}}</div>
+          <div class="card-subtitle">(Última conciliação: {{conta.conta_reconciliado_data}})</div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="card-content">
+          <fusioncharts
+            width="800"
+            height="200" 
+            type="area2d"
+            [dataSource]="dataSource">
+          </fusioncharts>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="card-actions">
+        <a routerLink="/diario/edit/{{conta.conta_id}}" mat-button [disabled]="contasDeletadas[conta.conta_id]">EDITAR CONTA</a>
+        <button mat-button (click)="deletaConta(conta)" [disabled]="contasDeletadas[conta.conta_id]">APAGAR CONTA</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

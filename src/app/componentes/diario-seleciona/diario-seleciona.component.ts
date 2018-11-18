@@ -13,7 +13,10 @@ export class DiarioSelecionaComponent implements OnInit {
   diariosList: DiarioList[];
   diariosDeletados: boolean[] = [];
 
-  constructor(private router: Router, private http: HttpClientService, private userService: UserService) { }
+  constructor(
+    private router: Router, 
+    private http: HttpClientService, 
+    private userService: UserService) { }
 
   ngOnInit() {
     this.userService.getUserDetail().subscribe(userDetail => {
@@ -37,6 +40,13 @@ export class DiarioSelecionaComponent implements OnInit {
         console.log (erro);
       }
     );
+  }
+
+  private selecionaDiario(diario: DiarioList) {
+    let diarioUID = diario.diarioUID;
+    this.diariosDeletados[diarioUID] = true;
+    this.userService.setUserDetailLastDiarioUID(diarioUID, diario.diarioNome);
+    this.router.navigate(['/']);
   }
 
 }

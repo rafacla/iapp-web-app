@@ -7,6 +7,7 @@ import { Oauth2Service } from './../oauth2/oauth2.service'
 import { in_oauth_auth } from '../../data-model/in_oauth_auth';
 import { UserDetail } from '../../data-model/user-detail';
 import { DiarioList } from '../../data-model/diario-list';
+import { ContaList } from '../../data-model/conta-list';
 import { DiarioPost } from '../../data-model/diario-post';
 import { DiarioPut } from '../../data-model/diario-put';
 
@@ -47,6 +48,16 @@ export class HttpClientService {
 	/** GET User details by id. Will 500 if id not found */
 	userGet(): Observable<UserDetail> {
 		return this.http.get<UserDetail>(this.apiUrl+'/users/logged');
+	}
+
+	/** GET Lista de Contas dado um DiarioUID */
+	contasGet(diarioUID: string): Observable<ContaList[]> {
+		var httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.get<ContaList[]>(this.apiUrl+'/contas/'+diarioUID,httpOptions);
 	}
 
 	/** GET Lista de Diários dado o ID do Usuário */
@@ -105,28 +116,5 @@ export class HttpClientService {
 		return this.http.post<object>(this.apiUrl+'/diario/delete', json);
 	}
 
-	/**
-	 * Handle Http operation that failed.
-	 * Let the app continue.
-	 * @param operation - name of the operation that failed
-	 * @param result - optional value to return as the observable result
-	 */
-	private handleError<T> (operation = 'operation', result?: T) {
-	  return (error: any): Observable<T> => {
-	 
-		// TODO: send the error to remote logging infrastructure
-		console.log(error); // log to console instead
-	 
-		if (error.error_description == 'The access token provided is invalid') {
-			//chave inválida
-			this.oauth2.signout();
-		} else if (error.error_description == 'The access token provided has expired') {
-			//chave expirada
-			this.oauth2.refreshAccessToken();
-		}
 
-		// Let the app keep running by returning an empty result.
-		return of (result);
-	  };
-	}
 }

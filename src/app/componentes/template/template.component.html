@@ -1,30 +1,53 @@
-<mat-toolbar color="primary">
-    <button mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    Minhas Finanças
-    <span class="toolbar-spacer"></span>
-    <button mat-button [matMenuTriggerFor]="menu">
-      <span class="button-username">
-        <fa-icon icon="user-circle" size="lg"></fa-icon>
-        {{userFirstName}}
-      </span>
-    </button>
-    <mat-menu #menu="matMenu" yPosition="below" [overlapTrigger]="false">
-      <button mat-menu-item (click)="logout()"><fa-icon icon="user-edit"></fa-icon> Editar usuário</button>
-      <button mat-menu-item (click)="logout()"><fa-icon icon="sign-out-alt"></fa-icon> Sair</button>
-    </mat-menu>
-</mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="over" opened="false" class="sidenav-menu" position="start">
-    <span>Diário selecionado:</span>  
+    <div class="sidenav-menu-profile">
+      <div class="sidenav-menu-profile-content" [matMenuTriggerFor]="menuDiario">
+        <div class="userdetails">
+          <span>{{userDiario}}</span>
+          <span>{{userFirstName}} <{{userEmail}}></span>
+        </div>
+        <div class="userdetails-arrow">
+          <mat-icon>chevron-down</mat-icon>
+        </div>
+      </div>
+      <mat-menu #menuDiario="matMenu" xPosition="after">
+        <a mat-menu-item routerLink="/diario/seleciona" (click)="sidenav.close()"><mat-icon>edit</mat-icon> Trocar diário</a>
+      </mat-menu>
+    </div>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <a mat-list-item href="#"><mat-icon>dashboard</mat-icon>Dashboard</a>
+      <a mat-list-item routerLink="/contas" (click)="sidenav.close()"><mat-icon>credit_card</mat-icon>Contas e Cartões</a>
+      <a mat-list-item href="#"><mat-icon>list</mat-icon>Transações</a>
+      <a mat-list-item href="#"><mat-icon>assessment</mat-icon>Orçamentos</a>
+      <a mat-list-item href="#"><mat-icon>category</mat-icon>Categorias</a>
+      <a mat-list-item href="#"><mat-icon>person</mat-icon>Recebedores</a>
     </mat-nav-list>
-  </mat-sidenav>  
+  </mat-sidenav>
   <mat-sidenav-content class="sidenav-content">
-    <router-outlet></router-outlet>
+      <mat-toolbar color="primary" style="min-height: 40px;">
+        <mat-toolbar-row>
+          <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <span>Minhas Finanças</span>
+          <button mat-button routerLink="/dashboard" routerLinkActive="ativo">Dashboard</button>
+          <button mat-button routerLink="/contas" routerLinkActive="ativo">Contas e Cartões</button>
+          <button mat-button routerLink="/transacoes" routerLinkActive="ativo">Transações</button>
+          <button mat-button routerLink="/orcamentos" routerLinkActive="ativo">Orçamentos</button>
+          <span class="toolbar-spacer"></span>
+          <button mat-button [matMenuTriggerFor]="menu">
+            <span class="button-username">
+              {{userFirstName}}
+            </span>
+          </button>
+          <mat-menu #menu="matMenu" yPosition="below" [overlapTrigger]="false">
+            <button mat-menu-item (click)="logout()"><mat-icon>edit</mat-icon> Editar usuário</button>
+            <button mat-menu-item (click)="logout()"><mat-icon>edit</mat-icon> Sair</button>
+          </mat-menu>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    <div class="content-div">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

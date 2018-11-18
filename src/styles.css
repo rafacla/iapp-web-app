@@ -1,15 +1,63 @@
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import url(https://fonts.googleapis.com/css?family=Lato);
 
 body {
   margin: 0 0 0 0;
-  font-family: Lato, Helvetica, sans-serif;
+  font-family: 'Lato', Helvetica, sans-serif;
 }
 
 .page-header {
-  font-weight: bold;
+  font-weight: 600;
   width: 100%;
+  color: #777;
   text-align: left;
+  padding-left: 15px;
 }
+
+.sidenav-container {
+  height: 100vh;
+}
+
+.mat-button {
+  border: 0px;
+  font-weight: normal;
+  line-height: 40px!important;
+}
+
+.mat-toolbar-row {
+    background-color: #32408f;
+    font-size:  0.8em;
+    height: 40px!important;
+}
+
+.mat-toolbar-second-row {
+  width: 100%;
+  background-color: #3f51b5;
+  height: 20px;
+  padding: 10px 0px 10px 0px;
+  color: #fff;
+}
+
+.mat-toolbar-third-row {
+  width: 100%;
+  background-color: #3f51b5;
+  height: 40px;
+  color: #fff;
+}
+
+.mat-toolbar-second-row > span {
+  font-size: 1.2em;
+  padding-left: 25px;
+}
+
+.mat-button.ativo {
+    background-color: #3f51b5!important;
+}
+
+.mat-toolbar-row > span {
+    padding-right: 30px;
+}
+
 
 .alert {
   padding: 1rem;

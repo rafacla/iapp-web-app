@@ -1,26 +1,65 @@
-
-
 .sidenav-content {
     height: 100vh;
 }
 
-.sidenav-content {
-    padding-top: 20px;
-    padding-left: 20vw;
-    padding-right: 20vw;
-    width: 60vw;
-    height: 100%;
-    text-align: center;
-    overflow: hidden;
+.sidenav-menu {
+    width: 300px;
 }
+
+.sidenav-menu-profile {
+    background-image: url('../../../assets/sidenav/menu-background.png');
+    width: 100%;
+    height: 150px;
+    position: relative;
+}
+
+.sidenav-menu-profile-content {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.sidenav-menu-profile-content > .userdetails {
+    padding: 10px;
+    color: #fff;
+    display: inline-block;
+    height: 40px;
+}
+
+.sidenav-menu-profile-content > .userdetails-arrow {
+    color: #fff;
+    float: right;
+    line-height: 60px;
+    margin-right: 10px;
+}
+
+.sidenav-menu-profile-content > .userdetails > span:first-child {
+    font-size: 1.1em;
+    width: 100%;
+    font-weight: bold;
+    display: block;
+}
+.sidenav-menu-profile-content > .userdetails > span:last-child {
+    width: 100%;
+    display: block;
+}
+
+.mat-nav-list .mat-icon {
+    padding-right: 10px;
+}
+
+.content-div {
+    width: 100%;
+    margin: auto;
+    height: calc(100% - 40px);
+    overflow-y: hidden;
+}
+
 .toolbar-spacer {
     flex: 1 1 auto;
 }
 
-.sidenav-menu {
-    padding: 10px;
-    width: 250px;
-}
 
 .button-username {
     font-size: 1.3em;

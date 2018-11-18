@@ -45,6 +45,7 @@ export class UserService {
             var userDetail: UserDetail;
             userDetail = resposta;
             userDetail.userLastDiarioUID = null;
+            userDetail.userLastDiarioName = '';
             this.userDetail = userDetail;
             this.setCacheUserDetail();
           })
@@ -58,11 +59,14 @@ export class UserService {
     this.httpClient.userGet().pipe(
       tap(resposta=>{
         var currentDiarioUID: string;
+        var currentDiarioName: string;
         try {
           currentDiarioUID = this.userDetail.userLastDiarioUID;
+          currentDiarioName = this.userDetail.userLastDiarioName;
         } catch(e) {}
         this.userDetail = resposta;
         this.userDetail.userLastDiarioUID = currentDiarioUID;
+        this.userDetail.userLastDiarioName = currentDiarioName;
         this.setCacheUserDetail();
         this._userDetail.next(this.userDetail);
       }));
@@ -76,8 +80,11 @@ export class UserService {
   }
 
   /** Atualiza o último diário selecionado na aplicação */
-  setUserDetailLastDiarioUID(diarioUID: string) {
+  setUserDetailLastDiarioUID(diarioUID: string, diarioName?) {
     this.userDetail.userLastDiarioUID = diarioUID;
+    if (diarioName!=undefined) {
+      this.userDetail.userLastDiarioName = diarioName;
+    }
     this.setCacheUserDetail();
     this._userDetail.next(this.userDetail);
   }
