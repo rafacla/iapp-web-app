@@ -1,34 +1,35 @@
-//Angular Imports:
-import { NgModule }       from '@angular/core';
-import { BrowserModule }  from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
+// Angular Imports:
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 
-//Main Components:
-import { AppComponent }         from './app.component';
-import { AppRoutingModule }     from './servicos/routing/app-routing.module';
+// Main Components:
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './servicos/routing/app-routing.module';
 
-//MaterialComponents
-import { MatToolbarModule, MatCard, MatCardActions,MatCardAvatar,MatCardContent,MatCardFooter,
+// MaterialComponents
+import { MatToolbarModule, MatCard, MatCardActions, MatCardAvatar, MatCardContent, MatCardFooter,
   MatCardHeader, MatCardImage, MatCardTitle, MatCardLgImage, MatCardMdImage, MatCardModule, MatCardSmImage,
-  MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule, 
-  MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance, 
-  MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions,MatProgressSpinnerModule, matFormFieldAnimations, 
-  MatInputModule, MatMenu, MatMenuModule, MatTreeModule } from '@angular/material';
-  
-//Serviços:
-import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor'
+  MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule,
+  MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
+  MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions, MatProgressSpinnerModule, matFormFieldAnimations,
+  MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
+  MatNativeDateModule } from '@angular/material';
+
+// Serviços:
+import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-//Componentes:
+// Componentes:
 import { TemplateComponent } from './componentes/template/template.component';
 import { LoginFormComponent } from './componentes/login-form/login-form.component';
 import { DiarioSelecionaComponent } from './componentes/diario-seleciona/diario-seleciona.component';
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
 import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.component';
-import { ContasListComponent } from './componentes/contas-list/contas-list.component';
+import { ContasListComponent, ContasEditComponent } from './componentes/contas-list/contas-list.component';
 
 // Import angular-fusioncharts
 import { FusionChartsModule } from 'angular-fusioncharts';
@@ -46,7 +47,7 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
   imports: [
     BrowserModule,
     FormsModule,
-	  HttpClientModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
@@ -62,9 +63,15 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatMenuModule,
-    MatTreeModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     FusionChartsModule
   ],
+  entryComponents: [
+    ContasListComponent,
+    ContasEditComponent],
   declarations: [
     AppComponent,
     TemplateComponent,
@@ -72,7 +79,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     DashboardComponent,
     DiarioSelecionaComponent,
     DiarioEditComponent,
-    ContasListComponent
+    ContasListComponent,
+    ContasEditComponent
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

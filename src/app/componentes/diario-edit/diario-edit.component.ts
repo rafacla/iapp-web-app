@@ -15,17 +15,17 @@ export class DiarioEditComponent implements OnInit {
   btSalvarEnabled = true;
   loading = false;
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClientService, 
-    private user:UserService,
-    private formBuilder: FormBuilder) { 
+    private http: HttpClientService,
+    private user: UserService,
+    private formBuilder: FormBuilder) {
       this.createForm();
     }
 
   private createForm() {
     this.formDiario = this.formBuilder.group({
-      diarioNome: ['', [Validators.required,Validators.minLength(2)] ],
+      diarioNome: ['', [Validators.required, Validators.minLength(2)] ],
       diarioDescription: ['', Validators.required]
     });
     this.formDiario.enable();
@@ -35,26 +35,26 @@ export class DiarioEditComponent implements OnInit {
     let diarioUID = this.route.snapshot.paramMap.get('id');
     let diarioNome = this.formDiario.get('diarioNome').value;
     let diarioDescription = this.formDiario.get('diarioDescription').value;
-    
-    
+
+
     if (this.formDiario.valid) {
       this.formDiario.disable();
       if (diarioUID == 'new') {
         //estamos criando um novo diario
         this.user.getUserDetail().subscribe(userDetail => {
           this.http.diarioPost(diarioNome, diarioDescription, userDetail.userID).subscribe(
-            sucesso => { this.router.navigate(['/diario/seleciona']) },
-            erro => { 
+            sucesso => { this.router.navigate(['/diario/seleciona']); },
+            erro => {
               console.log (erro);
               this.formDiario.enable();
               this.formDiario.setErrors(Validators.requiredTrue);
             }
-          )
+          );
         });
       } else {
         this.http.diarioPut(diarioUID,diarioNome,diarioDescription).subscribe(
           sucesso => { this.router.navigate(['/diario/seleciona']) },
-          erro => { 
+          erro => {
             console.log (erro);
             this.formDiario.enable();
             this.formDiario.setErrors(Validators.requiredTrue);

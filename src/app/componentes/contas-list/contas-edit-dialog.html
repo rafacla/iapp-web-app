@@ -1,0 +1,57 @@
+<style>
+  .form-field  {
+    margin-right: 20px;
+  }
+  .mat-form-field {
+    font-size: 14px!important;
+  }
+  button {
+    margin: 5px;
+  }
+</style>
+<h1 mat-dialog-title>{{data.conta_id == 'new' ? 'Criar nova conta' : data.conta_nome}}</h1>
+<form [formGroup]="formContas">
+  <mat-form-field class="form-field" style="width: 100%;">
+    <mat-label>Nome da Conta</mat-label>
+    <input matInput placeholder="Minha Conta Corrente" name="contaNome" required value="{{data.conta_nome}}" formControlName="contaNome">
+  </mat-form-field>
+  <mat-form-field class="form-field" style="width: 100%;">
+    <mat-label>Descrição da Conta</mat-label>
+    <input matInput placeholder="Breve descricação da Conta" name="contaDescricao" formControlName="contaDescricao" required value="{{data.conta_descricao}}">
+  </mat-form-field>
+  <div *ngIf="data.conta_id == 'new'">
+    <br />
+    <mat-slide-toggle formControlName="contaCartao">
+      Esta é uma conta do tipo Cartão de Crédito
+    </mat-slide-toggle>
+    <br />
+    <div *ngIf="formContas.get('contaCartao').value == true">
+      <p>Informações da Fatura do Cartão de Crédito</p>
+      <mat-form-field class="form-field" style="width: 45%;">
+        <mat-label>Data de Fechamento da Fatura</mat-label>
+        <input matInput [matDatepicker]="fechamentoData" placeholder="Escolha uma Data"  formControlName="contaCartaoFechamento">
+        <mat-datepicker-toggle matSuffix [for]="fechamentoData"></mat-datepicker-toggle>
+        <mat-datepicker #fechamentoData></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="form-field" style="width: 45%;">
+        <mat-label>Data de Vencimento da Fatura</mat-label>
+        <input matInput [matDatepicker]="vencimentoData" placeholder="Escolha uma Data" formControlName="contaCartaoVencimento">
+        <mat-datepicker-toggle matSuffix [for]="vencimentoData"></mat-datepicker-toggle>
+        <mat-datepicker #vencimentoData></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <p>Informações de Abertura da Conta</p>
+    <mat-form-field class="form-field" style="width: 45%;">
+      <mat-label>Data de Abertura da Conta</mat-label>
+      <input matInput [matDatepicker]="aberturaData" placeholder="Escolha uma Data" formControlName="contaAberturaData">
+      <mat-datepicker-toggle matSuffix [for]="aberturaData"></mat-datepicker-toggle>
+      <mat-datepicker #aberturaData></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width: 45%;">
+      <mat-label>Valor na Abertura da Conta</mat-label>
+      <input matInput #aberturaValor type="number" step=".01" value="0,00" formControlName="contaAberturaValor">
+    </mat-form-field>
+  </div>
+  <button mat-raised-button color="primary" (click)="editaConta()">Salvar</button>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+</form>

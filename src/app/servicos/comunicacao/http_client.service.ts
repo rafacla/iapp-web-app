@@ -15,14 +15,14 @@ import { DiarioPut } from '../../data-model/diario-put';
 
 export class HttpClientService {
 	private apiUrl = 'https://api.rafacla.com';
-	
 
-  	constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
+
+    constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
 	/** POST autentica um usuário e retorna um token */
 	authPost(username: string, password: string): Observable<in_oauth_auth> {
 		var json = JSON.stringify({username: username, password: password, client_id: 'web', grant_type: 'password'});
-	
+
 		var httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type':  'application/json; charset=UTF-8'
@@ -41,23 +41,13 @@ export class HttpClientService {
 				'Content-Type':  'application/json; charset=UTF-8'
 			})
 		};
-		
+
 		return this.http.post<in_oauth_auth>(this.apiUrl+'/auth', json, httpOptions);
 	}
-	
+
 	/** GET User details by id. Will 500 if id not found */
 	userGet(): Observable<UserDetail> {
 		return this.http.get<UserDetail>(this.apiUrl+'/users/logged');
-	}
-
-	/** GET Lista de Contas dado um DiarioUID */
-	contasGet(diarioUID: string): Observable<ContaList[]> {
-		var httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type':  'application/json; charset=UTF-8'
-			})
-		};
-		return this.http.get<ContaList[]>(this.apiUrl+'/contas/'+diarioUID,httpOptions);
 	}
 
 	/** GET Lista de Diários dado o ID do Usuário */
@@ -87,7 +77,7 @@ export class HttpClientService {
 		json.userid = userID;
 		json.nome = diarioNome;
 		json.description = diarioDescription;
-		
+
 		//var json = JSON.stringify({nome: diarioNome, diarioDescription: diarioDescription, userid: userID});
 		var httpOptions = {
 			headers: new HttpHeaders({
@@ -117,4 +107,26 @@ export class HttpClientService {
 	}
 
 
+	/** GET Lista de Contas dado um DiarioUID */
+	contasGet(diarioUID: string): Observable<ContaList[]> {
+		var httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.get<ContaList[]>(this.apiUrl+'/contas/'+diarioUID,httpOptions);
+	}
+
+
+	/** POST Cria ou Altera uma Conta */
+	contaPost(conta: ContaList): Observable<object> {
+		return this.http.post<object>(this.apiUrl + '/conta', conta);
+	}
+
+	/** POST Deleta uma Conta */
+	contaDelete(conta_id: string): Observable<object> {
+		let contaDeletar = new ContaList();
+		contaDeletar.conta_id = +conta_id;
+		return this.http.post<object>(this.apiUrl + '/conta/delete', contaDeletar);
+	}
 }
