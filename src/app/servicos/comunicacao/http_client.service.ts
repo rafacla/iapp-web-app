@@ -10,6 +10,8 @@ import { DiarioList } from '../../data-model/diario-list';
 import { ContaList } from '../../data-model/conta-list';
 import { DiarioPost } from '../../data-model/diario-post';
 import { DiarioPut } from '../../data-model/diario-put';
+import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
+import { CategoriaMove } from '../../data-model/categoria-move';
 
 @Injectable({ providedIn: 'root' })
 
@@ -106,7 +108,6 @@ export class HttpClientService {
 		return this.http.post<object>(this.apiUrl+'/diario/delete', json);
 	}
 
-
 	/** GET Lista de Contas dado um DiarioUID */
 	contasGet(diarioUID: string): Observable<ContaList[]> {
 		var httpOptions = {
@@ -128,5 +129,49 @@ export class HttpClientService {
 		let contaDeletar = new ContaList();
 		contaDeletar.conta_id = +conta_id;
 		return this.http.post<object>(this.apiUrl + '/conta/delete', contaDeletar);
+	}
+
+	/** GET Lista todas as Categorias e Subcategorias de forma tabular */
+	categoriasTabularGet(diarioUID: string): Observable<CategoriasTabularList[]> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.get<CategoriasTabularList[]>(this.apiUrl + '/categoriatabular/' + diarioUID, httpOptions);
+	}
+
+	/** POST Cria ou Altera uma Categoria */
+	categoriaPost(categoria: CategoriasTabularList): Observable<any> {
+		return this.http.post<any>(this.apiUrl + '/categoria', categoria);
+	}
+	
+	/** POST Cria ou Altera uma Subcategoria */
+	subcategoriaPost(subcategoria: CategoriasTabularList): Observable<any> {
+		return this.http.post<any>(this.apiUrl + '/subcategoria', subcategoria);
+	}
+
+	/** POST Deleta uma Categoria */
+	categoriaDelete(categoria_id: string): Observable<any> {
+		const categoriaDeletar = new CategoriasTabularList();
+		categoriaDeletar.categoria_id = +categoria_id;
+		return this.http.post<any>(this.apiUrl + '/categoria/delete', categoriaDeletar);
+	}
+
+	/** POST Deleta uma Subcategoria */
+	subcategoriaDelete(subcategoria_id: string): Observable<any> {
+		const subcategoriaDeletar = new CategoriasTabularList();
+		subcategoriaDeletar.subcategoria_id = +subcategoria_id;
+		return this.http.post<any>(this.apiUrl + '/subcategoria/delete', subcategoriaDeletar);
+	}
+
+	/** POST Move uma Categoria */
+	categoriaMove(categoria_move: CategoriaMove): Observable<any> {
+		return this.http.post<any>(this.apiUrl + '/categoria/move', categoria_move);
+	}
+
+	/** POST Move uma Subcategoria */
+	subcategoriaMove(subcategoria_move: CategoriaMove): Observable<any> {
+		return this.http.post<any>(this.apiUrl + '/subcategoria/move', subcategoria_move);
 	}
 }

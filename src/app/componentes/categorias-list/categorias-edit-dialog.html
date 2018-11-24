@@ -1,0 +1,32 @@
+<style>
+  .form-field  {
+    margin-right: 20px;
+  }
+  .mat-form-field {
+    font-size: 14px!important;
+  }
+  button {
+    margin: 5px;
+  }
+</style>
+<h1 mat-dialog-title>{{data.categoria_id == 'new' ? 'Criar nova categoria' : data.categoria_nome}}</h1>
+<form [formGroup]="formCategorias">
+  <mat-form-field class="form-field" style="width: 100%;">
+    <mat-label>Nome da Categoria</mat-label>
+    <input matInput placeholder="Nova Categoria" required formControlName="categoriaNome">
+  </mat-form-field>
+  <mat-form-field class="form-field" style="width: 100%;">
+    <mat-label>Descrição da Categoria</mat-label>
+    <input matInput placeholder="Breve descricação da Categoria" formControlName="categoriaDescricao" required>
+  </mat-form-field>
+  <mat-form-field style="width: 100%;">
+      <mat-select placeholder="Inserir depois de:" formControlName="categoriaNovaOrdem" required>
+        <mat-option value="0">(inserir na primeira linha)</mat-option>
+        <mat-option *ngFor="let item of listaCategorias" [value]="+item.categoria_ordem + 1">
+          {{item.categoria_nome}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  <button mat-raised-button color="primary" (click)="editaConta()">Salvar</button>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+</form>

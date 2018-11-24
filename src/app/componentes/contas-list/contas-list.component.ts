@@ -74,7 +74,9 @@ export class ContasListComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        window.location.reload();
+        if (result) {
+          window.location.reload();
+        }
       });
     }
 
@@ -212,7 +214,7 @@ export class ContasEditComponent {
       this.formContas.disable();
       this.http.contaPost(conta).subscribe(
         sucesso => { 
-          this.dialogRef.close();
+          this.dialogRef.close(true);
         },
         erro => {
           console.log (erro);

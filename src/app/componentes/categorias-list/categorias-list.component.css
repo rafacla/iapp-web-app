@@ -1,0 +1,65 @@
+.deletar_toolbutton {
+    display: none;
+}
+.tabela-categorias {
+    overflow: auto;
+    height: calc(100vh - 120px);
+    width: 100%;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-column-select {
+    width: 50px;
+}
+
+.mat-column-categoria_nome {
+    width: 350px;
+}
+
+.mat-column-categoria_acao {
+    width: 170px;
+}
+
+.subcategoria > td.mat-column-subcategoria_nome {
+    line-height: 47px;
+    background-image: url("/assets/icons/subcategoria_folder.png");
+    background-repeat: no-repeat;
+    padding-left: 45px;
+}
+.subcategoria-ultima > td.mat-column-subcategoria_nome {
+    line-height: 47px;
+    background-image: url("/assets/icons/subcategoria_folder_end.png");
+    background-repeat: no-repeat;
+    padding-left: 45px;
+}
+.categoria > td.mat-column-categoria_nome {
+    line-height: 47px;
+    padding-left: 12px;
+}
+.categoria-mae > td.mat-column-categoria_nome {
+    line-height: 47px;
+    background-image: url("/assets/icons/categoria_folder.png");
+    background-repeat: no-repeat;
+    padding-left: 12px;
+}
+
+.acoes {
+    display: none;
+    float: right;
+}
+.acoes .edit {
+    color: #79B2EB;
+}
+.acoes .delete {
+    color: #EB7979;
+}
+.acoes .add_sub {
+    color: #59EC5E;
+}
+tr:hover .acoes {
+    display: inherit;
+}

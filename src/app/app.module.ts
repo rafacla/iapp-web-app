@@ -17,11 +17,19 @@ import { MatToolbarModule, MatCard, MatCardActions, MatCardAvatar, MatCardConten
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
   MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions, MatProgressSpinnerModule, matFormFieldAnimations,
   MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
-  MatNativeDateModule } from '@angular/material';
+  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule } from '@angular/material';
 
 // Serviços:
 import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+// Import angular-fusioncharts
+import { FusionChartsModule } from 'angular-fusioncharts';
+
+// Import FusionCharts library and chart modules
+import * as FusionCharts from 'fusioncharts';
+import * as Charts from 'fusioncharts/fusioncharts.charts';
+import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 
 // Componentes:
 import { TemplateComponent } from './componentes/template/template.component';
@@ -30,15 +38,7 @@ import { DiarioSelecionaComponent } from './componentes/diario-seleciona/diario-
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
 import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.component';
 import { ContasListComponent, ContasEditComponent } from './componentes/contas-list/contas-list.component';
-
-// Import angular-fusioncharts
-import { FusionChartsModule } from 'angular-fusioncharts';
-
-// Import FusionCharts library and chart modules
-import * as FusionCharts from 'fusioncharts';
-import * as Charts from 'fusioncharts/fusioncharts.charts';
-
-import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
+import { CategoriasListComponent, CategoriasEditComponent } from './componentes/categorias-list/categorias-list.component';
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -67,11 +67,17 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTableModule,
+    MatDividerModule,
+    MatOptionModule,
+    MatSelectModule,
     FusionChartsModule
   ],
   entryComponents: [
     ContasListComponent,
-    ContasEditComponent],
+    ContasEditComponent,
+    CategoriasEditComponent,
+    CategoriasListComponent],
   declarations: [
     AppComponent,
     TemplateComponent,
@@ -80,7 +86,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     DiarioSelecionaComponent,
     DiarioEditComponent,
     ContasListComponent,
-    ContasEditComponent
+    ContasEditComponent,
+    CategoriasListComponent,
+    CategoriasEditComponent
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
