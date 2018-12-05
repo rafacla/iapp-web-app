@@ -38,7 +38,7 @@ import { DiarioSelecionaComponent } from './componentes/diario-seleciona/diario-
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
 import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.component';
 import { ContasListComponent, ContasEditComponent } from './componentes/contas-list/contas-list.component';
-import { CategoriasListComponent, CategoriasEditComponent } from './componentes/categorias-list/categorias-list.component';
+import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComponent } from './componentes/categorias-list/categorias-list.component';
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -77,7 +77,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     ContasListComponent,
     ContasEditComponent,
     CategoriasEditComponent,
-    CategoriasListComponent],
+    CategoriasListComponent,
+    SubcategoriasEditComponent],
   declarations: [
     AppComponent,
     TemplateComponent,
@@ -88,7 +89,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     ContasListComponent,
     ContasEditComponent,
     CategoriasListComponent,
-    CategoriasEditComponent
+    CategoriasEditComponent,
+    SubcategoriasEditComponent
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

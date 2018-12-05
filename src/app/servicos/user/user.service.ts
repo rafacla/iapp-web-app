@@ -26,8 +26,8 @@ export class UserService {
   /** Carrega no cache os dados do usuario */
   private setCacheUserDetail() {
     try {
-      localStorage.setItem('currentUser',JSON.stringify(this.userDetail))
-    } catch(e) {}
+      localStorage.setItem('currentUser', JSON.stringify(this.userDetail));
+    } catch (e) {} 
   }
 
   /** retorna os detalhes do usuário do cache, caso não exista, pega informações do servidor */
@@ -39,10 +39,10 @@ export class UserService {
       if (this.userDetail != null) {
         return this.userDetail$;
       } else {
-        //não há detalhes do usuário no cache, vamos precisar recuperar do servidor:
+        // não há detalhes do usuário no cache, vamos precisar recuperar do servidor:
         return this.httpClient.userGet().pipe(
-          tap(resposta=>{
-            var userDetail: UserDetail;
+          tap(resposta => {
+            let userDetail: UserDetail;
             userDetail = resposta;
             userDetail.userLastDiarioUID = null;
             userDetail.userLastDiarioName = '';
@@ -57,13 +57,13 @@ export class UserService {
   /** Atualiza as informações do usuário no cache do servidor */
   refreshUserDetail() {
     this.httpClient.userGet().pipe(
-      tap(resposta=>{
-        var currentDiarioUID: string;
-        var currentDiarioName: string;
+      tap(resposta => {
+        let currentDiarioUID: string;
+        let currentDiarioName: string;
         try {
           currentDiarioUID = this.userDetail.userLastDiarioUID;
           currentDiarioName = this.userDetail.userLastDiarioName;
-        } catch(e) {}
+        } catch (e) {}
         this.userDetail = resposta;
         this.userDetail.userLastDiarioUID = currentDiarioUID;
         this.userDetail.userLastDiarioName = currentDiarioName;
@@ -82,7 +82,7 @@ export class UserService {
   /** Atualiza o último diário selecionado na aplicação */
   setUserDetailLastDiarioUID(diarioUID: string, diarioName?) {
     this.userDetail.userLastDiarioUID = diarioUID;
-    if (diarioName!=undefined) {
+    if (diarioName !== undefined) {
       this.userDetail.userLastDiarioName = diarioName;
     }
     this.setCacheUserDetail();

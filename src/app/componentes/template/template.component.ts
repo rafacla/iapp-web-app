@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AppComponent } from '../../app.component';
-import { Oauth2Service } from '../../servicos/oauth2/oauth2.service'
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Oauth2Service } from '../../servicos/oauth2/oauth2.service';
+import { Router, NavigationStart } from '@angular/router';
 import { UserService } from '../../servicos/user/user.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 
@@ -11,26 +11,39 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./template.component.css']
 })
 export class TemplateComponent implements OnInit {
-
-  constructor(
-    private oauth2: Oauth2Service,
-    private router:Router,
-    private user:UserService
-  ) { }
   userFirstName = '';
   userEmail = '';
   userDiario = '';
 
+  constructor(
+    private oauth2: Oauth2Service,
+    private router: Router,
+    private user: UserService,
+    private location: Location
+  ) {
+      const mythis = this;
+      router.events.subscribe((val) => {
+        if (val instanceof NavigationStart) {
+          const rotaDiario = (val.url.indexOf('/diario') >= 0);
+          user.getUserDetail().subscribe(muser => {
+            if (muser.userLastDiarioUID == null && !rotaDiario) {
+              this.router.navigate(['/diario/seleciona']);
+            }
+          });
+        }
+      });
+    }
+
   private atualizaUsuario() {
-    var mythis = this;
+    const mythis = this;
     this.user.getUserDetail().subscribe(userDetail => {
-      let rotaDiario = (mythis.router.url.indexOf('/diario') >= 0);
+      const rotaDiario = (mythis.router.url.indexOf('/diario') >= 0);
       mythis.userFirstName = userDetail.userFirstName;
       mythis.userEmail = userDetail.userEmail;
       mythis.userDiario = 'Nenhum diario selecionado';
       if (userDetail.userLastDiarioUID == null 
         && !rotaDiario) {
-        //usuário nunca escolheu um diário nesta instance, vamos convidá-lo a fazê-lo:
+        // usuário nunca escolheu um diário nesta instance, vamos convidá-lo a fazê-lo:
         this.userFirstName = userDetail.userFirstName;
         this.userEmail = userDetail.userEmail;
         this.router.navigate(['/diario/seleciona']);
@@ -46,11 +59,6 @@ export class TemplateComponent implements OnInit {
 
   logout() {
     this.oauth2.signout();
-  }
-
-  abreMenuDiarios() {
-    
-    console.log("YAH");
   }
 
 }

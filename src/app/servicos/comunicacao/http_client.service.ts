@@ -11,7 +11,7 @@ import { ContaList } from '../../data-model/conta-list';
 import { DiarioPost } from '../../data-model/diario-post';
 import { DiarioPut } from '../../data-model/diario-put';
 import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
-import { CategoriaMove } from '../../data-model/categoria-move';
+import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 
 @Injectable({ providedIn: 'root' })
 
@@ -171,7 +171,7 @@ export class HttpClientService {
 	}
 
 	/** POST Move uma Subcategoria */
-	subcategoriaMove(subcategoria_move: CategoriaMove): Observable<any> {
+	subcategoriaMove(subcategoria_move: SubcategoriaMove): Observable<any> {
 		return this.http.post<any>(this.apiUrl + '/subcategoria/move', subcategoria_move);
 	}
 }

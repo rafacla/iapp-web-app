@@ -5,7 +5,7 @@ import { HttpClientService } from '../../servicos/comunicacao/http_client.servic
 import { UserService } from '../../servicos/user/user.service';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
-import { CategoriaMove } from '../../data-model/categoria-move';
+import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 
 export interface CategoriasTabular {
   categoria_id: number;
@@ -25,6 +25,12 @@ export interface CategoriasTabular {
 export interface DialogData {
   categoria_id: string;
   categorias: CategoriasTabular[];
+}
+
+export interface SubDialogData {
+  subcategoria_id: string;
+  categoria_id: string;
+  subcategorias: CategoriasTabular[];
 }
 
 
@@ -83,6 +89,19 @@ export class CategoriasListComponent implements OnInit {
     const dialogRef = this.dialog.open(CategoriasEditComponent, {
       width: '500px',
       data: {categoria_id: categoria_id, categorias: this.dataSource.data}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        window.location.reload();
+      }
+    });
+  }
+
+  openSubDialog(subcategoria_id: string, categoria_id: string): void {
+    const dialogRef = this.dialog.open(SubcategoriasEditComponent, {
+      width: '500px',
+      data: {subcategoria_id: subcategoria_id, categoria_id: categoria_id, subcategorias: this.dataSource.data}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -242,6 +261,134 @@ export class CategoriasEditComponent implements OnInit {
           this.formCategorias.enable();
           this.formCategorias.get('categoriaNome').setErrors({'incorrect': true});
           this.formCategorias.setErrors(Validators.requiredTrue);
+        }
+      );
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-categorias-sub-edit',
+  templateUrl: 'subcategorias-edit-dialog.html',
+})
+
+export class SubcategoriasEditComponent implements OnInit {
+  formSubcategorias = new FormGroup({
+    subcategoriaNome: new FormControl(''),
+    subcategoriaDescricao: new FormControl(''),
+    subcategoriaNovaOrdem: new FormControl(''),
+    categoriaId: new FormControl('')
+  });
+  subcategoriaOrdemAtual: number;
+  listaSubcategorias: CategoriasTabular[] = [];
+  listaCategorias: CategoriasTabular[] = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<CategoriasEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: SubDialogData,
+    private http: HttpClientService,
+    private formBuilder: FormBuilder) {
+      this.createForm();
+    }
+
+
+  listarsubCategorias(categoria_id: number): CategoriasTabular[] {
+    let listaFiltrada: CategoriasTabular[] = [];
+    this.data.subcategorias.forEach(element => {
+      if (element.subcategoria_is) {
+        if (element.categoria_id === categoria_id) {
+          listaFiltrada.push(element);
+        }
+      } 
+    });
+    return listaFiltrada;
+  }
+  ngOnInit() {
+    this.listaCategorias.push();
+    this.listaSubcategorias.push();
+    this.data.subcategorias.forEach(element => {
+      if (element.subcategoria_is) {
+        this.listaSubcategorias.push(element);
+      } else {
+        this.listaCategorias.push(element);
+      }
+    });
+
+    if (this.data.subcategoria_id !== 'new') {
+      this.listaSubcategorias.forEach(element => {
+        if (element.subcategoria_id.toString() ===  this.data.subcategoria_id) {
+          this.formSubcategorias.patchValue({
+            subcategoriaNome: element.subcategoria_nome,
+            subcategoriaDescricao: element.subcategoria_description,
+            subcategoriaNovaOrdem: +element.subcategoria_ordem,
+            categoriaId: +this.data.categoria_id
+          });
+          this.subcategoriaOrdemAtual = element.subcategoria_ordem;
+        }
+      });
+    }
+  }
+
+
+  private createForm() {
+    this.formSubcategorias = this.formBuilder.group({
+      subcategoriaNome: ['', [Validators.required, Validators.minLength(2)] ],
+      subcategoriaDescricao: ['', Validators.required],
+      subcategoriaNovaOrdem: ['', Validators.required],
+      categoriaId: ['', Validators.required]
+    });
+    this.formSubcategorias.enable();
+    
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  editaSubcategoria(): void {
+    const subcategoria = new CategoriasTabularList();
+    if (this.data.subcategoria_id === 'new') {
+      // nova subcategoria:
+        subcategoria.categoria_nome = this.formSubcategorias.get('subcategoriaNome').value;
+        subcategoria.categoria_description = this.formSubcategorias.get('subcategoriaDescricao').value;
+    } else {
+      // atualização:
+      subcategoria.categoria_id = +this.data.subcategoria_id;
+      subcategoria.categoria_nome =  this.formSubcategorias.get('subcategoriaNome').value;
+      subcategoria.categoria_description =  this.formSubcategorias.get('subcategoriaDescricao').value;
+    }
+
+    if (this.formSubcategorias.valid) {
+      this.formSubcategorias.disable();
+      this.http.subcategoriaPost(subcategoria).subscribe(
+        sucesso => { 
+          // agora vamos mover:
+          let moverPara = new SubcategoriaMove;
+          if (subcategoria.subcategoria_id === undefined) {
+            moverPara.subcategoria_id = sucesso.subcategoria_id;
+          } else {
+            moverPara.subcategoria_id = subcategoria.subcategoria_id;
+          }
+          moverPara.move_to = this.formSubcategorias.get('subcategoriaNovaOrdem').value;
+          if (this.subcategoriaOrdemAtual < moverPara.move_to) {
+            moverPara.move_to--;
+          }
+          if (this.formSubcategorias.get('categoriaId').value !== subcategoria.categoria_id) {
+            moverPara.move_to_categoria_id = this.formSubcategorias.get('categoria_id').value;  
+          }
+          
+          this.http.subcategoriaMove(moverPara).subscribe(sucesso1 => {
+            this.dialogRef.close(true);
+          }, erro => {
+            this.dialogRef.close(true);
+          });
+        },
+        erro => {
+          console.log (erro);
+          this.formSubcategorias.enable();
+          this.formSubcategorias.get('subcategoriaNome').setErrors({'incorrect': true});
+          this.formSubcategorias.setErrors(Validators.requiredTrue);
         }
       );
     }
