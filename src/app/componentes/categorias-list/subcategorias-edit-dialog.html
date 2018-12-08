@@ -20,7 +20,7 @@
       <input matInput placeholder="Breve descricação da Subcategoria" formControlName="subcategoriaDescricao" required>
     </mat-form-field>
     <mat-form-field style="width: 100%;">
-        <mat-select placeholder="Inserir na categoria:" formControlName="categoriaId" required>
+        <mat-select placeholder="Inserir na categoria:" formControlName="categoriaId" required (selectionChange)="onChange($event.value)">
             <mat-option *ngFor="let item of listaCategorias" [value]="+item.categoria_id">
                 {{item.categoria_nome}}
             </mat-option>
@@ -28,13 +28,13 @@
     </mat-form-field>
     <mat-form-field style="width: 100%;"> 
         <mat-select placeholder="Inserir depois de:" formControlName="subcategoriaNovaOrdem" required>
-            <mat-option value="0">(inserir na primeira linha)</mat-option>
-            <mat-option *ngFor="let item of listarsubCategorias(data.categoria_id)" [value]="+item.subcategoria_ordem + 1">
+            <mat-option [value]="0">(inserir na primeira linha)</mat-option>
+            <mat-option *ngFor="let item of listaSubcategoriasFiltradas" [value]="+item.subcategoria_ordem + 1">
             {{item.subcategoria_nome}}
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="editaSubcategoria()">Salvar</button>
+    <button mat-raised-button color="primary" (click)="editaSubcategoria()"  [disabled]="!formSubcategorias.valid">Salvar</button>
     <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
   </form>
   

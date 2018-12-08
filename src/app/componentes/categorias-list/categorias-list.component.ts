@@ -86,6 +86,7 @@ export class CategoriasListComponent implements OnInit {
     private userService: UserService, public dialog: MatDialog) { }
 
   openDialog(categoria_id: string): void {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(CategoriasEditComponent, {
       width: '500px',
       data: {categoria_id: categoria_id, categorias: this.dataSource.data}
@@ -99,6 +100,7 @@ export class CategoriasListComponent implements OnInit {
   }
 
   openSubDialog(subcategoria_id: string, categoria_id: string): void {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(SubcategoriasEditComponent, {
       width: '500px',
       data: {subcategoria_id: subcategoria_id, categoria_id: categoria_id, subcategorias: this.dataSource.data}
@@ -130,6 +132,11 @@ export class CategoriasListComponent implements OnInit {
     
   }
 
+  DeleteSelected() {
+    this.selection.selected.forEach(element => {
+      this.deletaItem(element);
+    });
+  }
   
   deletaItem(item: CategoriasTabular) {
     if (item.subcategoria_is) {
@@ -283,7 +290,8 @@ export class SubcategoriasEditComponent implements OnInit {
   subcategoriaOrdemAtual: number;
   listaSubcategorias: CategoriasTabular[] = [];
   listaCategorias: CategoriasTabular[] = [];
-
+  listaSubcategoriasFiltradas: CategoriasTabular[] = [];
+  
   constructor(
     public dialogRef: MatDialogRef<CategoriasEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SubDialogData,
@@ -292,18 +300,22 @@ export class SubcategoriasEditComponent implements OnInit {
       this.createForm();
     }
 
+  onChange(categoria_id) {
+    this.listaSubcategoriasFiltradas = this.listarsubCategorias(categoria_id);
+  }
 
   listarsubCategorias(categoria_id: number): CategoriasTabular[] {
-    let listaFiltrada: CategoriasTabular[] = [];
+    const listaFiltrada: CategoriasTabular[] = [];
     this.data.subcategorias.forEach(element => {
       if (element.subcategoria_is) {
-        if (element.categoria_id === categoria_id) {
+        if (+element.categoria_id === categoria_id) {
           listaFiltrada.push(element);
         }
       } 
     });
     return listaFiltrada;
   }
+
   ngOnInit() {
     this.listaCategorias.push();
     this.listaSubcategorias.push();
@@ -314,6 +326,8 @@ export class SubcategoriasEditComponent implements OnInit {
         this.listaCategorias.push(element);
       }
     });
+
+    this.listaSubcategoriasFiltradas = this.listarsubCategorias(+this.data.categoria_id);
 
     if (this.data.subcategoria_id !== 'new') {
       this.listaSubcategorias.forEach(element => {
@@ -350,33 +364,36 @@ export class SubcategoriasEditComponent implements OnInit {
     const subcategoria = new CategoriasTabularList();
     if (this.data.subcategoria_id === 'new') {
       // nova subcategoria:
-        subcategoria.categoria_nome = this.formSubcategorias.get('subcategoriaNome').value;
-        subcategoria.categoria_description = this.formSubcategorias.get('subcategoriaDescricao').value;
+        subcategoria.subcategoria_nome = this.formSubcategorias.get('subcategoriaNome').value;
+        subcategoria.subcategoria_description = this.formSubcategorias.get('subcategoriaDescricao').value;
+        subcategoria.categoria_id = this.formSubcategorias.get('categoriaId').value;
     } else {
       // atualização:
-      subcategoria.categoria_id = +this.data.subcategoria_id;
-      subcategoria.categoria_nome =  this.formSubcategorias.get('subcategoriaNome').value;
-      subcategoria.categoria_description =  this.formSubcategorias.get('subcategoriaDescricao').value;
+      subcategoria.subcategoria_id = +this.data.subcategoria_id;
+      subcategoria.subcategoria_nome =  this.formSubcategorias.get('subcategoriaNome').value;
+      subcategoria.subcategoria_description =  this.formSubcategorias.get('subcategoriaDescricao').value;
     }
+
+    console.log(this.formSubcategorias.get('subcategoriaOrdemAtual').value);
 
     if (this.formSubcategorias.valid) {
       this.formSubcategorias.disable();
       this.http.subcategoriaPost(subcategoria).subscribe(
         sucesso => { 
           // agora vamos mover:
-          let moverPara = new SubcategoriaMove;
+          const moverPara = new SubcategoriaMove;
           if (subcategoria.subcategoria_id === undefined) {
             moverPara.subcategoria_id = sucesso.subcategoria_id;
           } else {
             moverPara.subcategoria_id = subcategoria.subcategoria_id;
           }
           moverPara.move_to = this.formSubcategorias.get('subcategoriaNovaOrdem').value;
-          if (this.subcategoriaOrdemAtual < moverPara.move_to) {
-            moverPara.move_to--;
+          if (subcategoria.categoria_id !== undefined) {
+            if (this.subcategoriaOrdemAtual < moverPara.move_to) {
+              moverPara.move_to--;
+            }
           }
-          if (this.formSubcategorias.get('categoriaId').value !== subcategoria.categoria_id) {
-            moverPara.move_to_categoria_id = this.formSubcategorias.get('categoria_id').value;  
-          }
+          moverPara.move_to_categoria_id = this.formSubcategorias.get('categoriaId').value;
           
           this.http.subcategoriaMove(moverPara).subscribe(sucesso1 => {
             this.dialogRef.close(true);
@@ -385,7 +402,6 @@ export class SubcategoriasEditComponent implements OnInit {
           });
         },
         erro => {
-          console.log (erro);
           this.formSubcategorias.enable();
           this.formSubcategorias.get('subcategoriaNome').setErrors({'incorrect': true});
           this.formSubcategorias.setErrors(Validators.requiredTrue);
