@@ -1,116 +1,116 @@
 <div class="mat-toolbar-second-row">
-    <span>Categorias</span>
-  </div>
-  <div class="mat-toolbar-third-row">
-      <button mat-button *ngIf="numeroSelecionados() > 0" (click)="DeleteSelected()">
-        <mat-icon>delete</mat-icon> Deletar Selecionados
-      </button>
-    <button mat-button (click)="openDialog('new')"><mat-icon>add</mat-icon> Adicionar nova categoria</button>
-  </div>
-  <div class="categorias-content">
-    <div class="tabela-categorias">
-      <table mat-table [dataSource]="dataSource" tableCategorias>
-        <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
+  <span>Categorias</span>
+</div>
+<div class="mat-toolbar-third-row">
+    <button mat-button *ngIf="numeroSelecionados() > 0" (click)="DeleteSelected()">
+      <mat-icon>delete</mat-icon> Deletar Selecionados
+    </button>
+  <button mat-button (click)="openDialog('new')"><mat-icon>add</mat-icon> Adicionar nova categoria</button>
+</div>
+<div class="categorias-content">
+  <div class="tabela-categorias">
+    <table mat-table [dataSource]="dataSource" tableCategorias>
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <!-- Group Column -->
+      <ng-container matColumnDef="group">
           <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null"
-                          [checked]="selection.hasValue() && isAllSelected()"
-                          [indeterminate]="selection.hasValue() && !isAllSelected()">
-            </mat-checkbox>
           </th>
           <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()"
-                          (change)="$event ? selection.toggle(row) : null"
-                          [checked]="selection.isSelected(row)">
-            </mat-checkbox>
+            <button mat-icon-button *ngIf="row.categoria_filhos > 0 && !row.subcategoria_is" (click)="toggleGrupo(row.categoria_id)">
+              <mat-icon *ngIf="categoria_id[row.categoria_id]">keyboard_arrow_down</mat-icon>
+              <mat-icon *ngIf="!categoria_id[row.categoria_id]">keyboard_arrow_right</mat-icon>
+            </button>
+            <button mat-icon-button disabled *ngIf="row.categoria_filhos == 0 && !row.subcategoria_is">
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
           </td>
         </ng-container>
-        <!-- Group Column -->
-        <ng-container matColumnDef="group">
-            <th mat-header-cell *matHeaderCellDef>
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <button mat-icon-button *ngIf="row.categoria_filhos > 0 && !row.subcategoria_is" (click)="toggleGrupo(row.categoria_id)">
-                <mat-icon *ngIf="categoria_id[row.categoria_id]">keyboard_arrow_down</mat-icon>
-                <mat-icon *ngIf="!categoria_id[row.categoria_id]">keyboard_arrow_right</mat-icon>
-              </button>
-              <button mat-icon-button disabled *ngIf="row.categoria_filhos == 0 && !row.subcategoria_is">
-                <mat-icon>keyboard_arrow_down</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-      
-        <ng-container matColumnDef="categoria_ordem">
+    
+      <ng-container matColumnDef="categoria_ordem">
+        <th mat-header-cell *matHeaderCellDef> Ordem </th>
+        <td mat-cell *matCellDef="let element"> {{element.categoria_ordem}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="categoria_nome">
+        <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
+        <td mat-cell *matCellDef="let element"><img src="assets/icons/folder.png"> {{element.categoria_nome}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="categoria_description">
+        <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
+        <td mat-cell *matCellDef="let element"> {{element.categoria_description}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subcategoria_ordem">
           <th mat-header-cell *matHeaderCellDef> Ordem </th>
-          <td mat-cell *matCellDef="let element"> {{element.categoria_ordem}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.subcategoria_ordem}} </td>
         </ng-container>
       
-        <ng-container matColumnDef="categoria_nome">
-          <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
-          <td mat-cell *matCellDef="let element"><img src="assets/icons/folder.png"> {{element.categoria_nome}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="categoria_description">
-          <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
-          <td mat-cell *matCellDef="let element"> {{element.categoria_description}} </td>
-        </ng-container>
+      <ng-container matColumnDef="subcategoria_nome">
+        <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
+        <td mat-cell *matCellDef="let element"><img src="assets/icons/folder.png"> {{element.subcategoria_nome}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="subcategoria_description">
+        <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
+        <td mat-cell *matCellDef="let element"> {{element.subcategoria_description}} </td>
+      </ng-container>
 
-        <ng-container matColumnDef="subcategoria_ordem">
-            <th mat-header-cell *matHeaderCellDef> Ordem </th>
-            <td mat-cell *matCellDef="let element"> {{element.subcategoria_ordem}} </td>
-          </ng-container>
-        
-        <ng-container matColumnDef="subcategoria_nome">
-          <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
-          <td mat-cell *matCellDef="let element"><img src="assets/icons/folder.png"> {{element.subcategoria_nome}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="subcategoria_description">
-          <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
-          <td mat-cell *matCellDef="let element"> {{element.subcategoria_description}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="categoria_acao">
-          <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
-          <td mat-cell *matCellDef="let element">   
-            <div class="acoes">
-              <button mat-icon-button (click)="openSubDialog('new', element.categoria_id)">
-                <mat-icon class="add_sub">add_to_photos</mat-icon>
-              </button>
-              <button mat-icon-button (click)="deletaItem(element)">
-                <mat-icon class="delete">delete</mat-icon>
-              </button>
-              <button mat-icon-button (click)="openDialog(element.categoria_id)">
-                <mat-icon class="edit">edit</mat-icon>
-              </button>
-            </div>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="subcategoria_acao">
-          <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
-          <td mat-cell *matCellDef="let element"> 
-            <div class="acoes">
-              <button mat-icon-button (click)="deletaItem(element)">
-                <mat-icon class="delete">delete</mat-icon>
-              </button>
-              <button mat-icon-button (click)="openSubDialog(element.subcategoria_id, element.categoria_id)">
-                <mat-icon class="edit">edit</mat-icon>
-              </button>
-            </div>
-          </td>
-        </ng-container>
-      
-        <tr mat-header-row *matHeaderRowDef="categoriasColumns;sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: categoriasColumns;"
-            (click)="selection.toggle(row)" class="categoria"> </tr>
-            <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isLastSubcategoria"
-            (click)="selection.toggle(row)" class="subcategoria-ultima"
-            [hidden]="!categoria_id[row.categoria_id]"> </tr>
-            <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isSubcategoria"
-            (click)="selection.toggle(row)" class="subcategoria"
-            [hidden]="!categoria_id[row.categoria_id]"> </tr>
-            <tr mat-row *matRowDef="let row; columns: categoriasColumns; when: hasChild"
-            (click)="selection.toggle(row)" class="categoria-mae"> </tr>
-      </table>
-    </div>
+      <ng-container matColumnDef="categoria_acao">
+        <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
+        <td mat-cell *matCellDef="let element">   
+          <div class="acoes">
+            <button mat-icon-button (click)="openSubDialog('new', element.categoria_id)">
+              <mat-icon class="add_sub">add_to_photos</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deletaItem(element)">
+              <mat-icon class="delete">delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openDialog(element.categoria_id)">
+              <mat-icon class="edit">edit</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="subcategoria_acao">
+        <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
+        <td mat-cell *matCellDef="let element"> 
+          <div class="acoes">
+            <button mat-icon-button (click)="deletaItem(element)">
+              <mat-icon class="delete">delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openSubDialog(element.subcategoria_id, element.categoria_id)">
+              <mat-icon class="edit">edit</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="categoriasColumns;sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: categoriasColumns;"
+          (click)="selection.toggle(row)" class="categoria"> </tr>
+          <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isLastSubcategoria"
+          (click)="selection.toggle(row)" class="subcategoria-ultima"
+          [hidden]="!categoria_id[row.categoria_id]"> </tr>
+          <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isSubcategoria"
+          (click)="selection.toggle(row)" class="subcategoria"
+          [hidden]="!categoria_id[row.categoria_id]"> </tr>
+          <tr mat-row *matRowDef="let row; columns: categoriasColumns; when: hasChild"
+          (click)="selection.toggle(row)" class="categoria-mae"> </tr>
+    </table>
   </div>
+</div>

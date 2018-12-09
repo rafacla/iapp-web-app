@@ -13,6 +13,10 @@
     position: relative;
 }
 
+.sidenav-menu-profile-content:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .sidenav-menu-profile-content {
     position: absolute;
     bottom: 0;

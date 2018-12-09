@@ -1,5 +1,9 @@
-<div class="page-header">Meus diários</div>
-<div class="alert alert-warning" *ngIf="diariosList == false">Nenhum diário encontrado!</div>
+<div class="mat-toolbar-second-row">
+  <span>Meus diários</span>
+</div>
+<div class="mat-toolbar-third-row">
+  <button mat-button (click)="openDialog('new')"><mat-icon>add</mat-icon> Adicionar novo diário</button>
+</div>
 <div class="card-list">
   <mat-card class="card-carregando" *ngIf="diariosList === undefined">
     <mat-card-header>
@@ -27,13 +31,8 @@
     </mat-card-content>
     <mat-card-actions class="card-actions">
       <button mat-button (click)="selecionaDiario(diario)" [disabled]="diariosDeletados[diario.diarioUID]">ABRIR</button>
-      <a routerLink="/diario/edit/{{diario.diarioUID}}" mat-button [disabled]="diariosDeletados[diario.diarioUID]">EDITAR</a>
+      <button mat-button (click)="openDialog(diario)" [disabled]="diariosDeletados[diario.diarioUID]">EDITAR</button>
       <button mat-button (click)="deletaDiario(diario)" [disabled]="diariosDeletados[diario.diarioUID]">APAGAR</button>
     </mat-card-actions>
   </mat-card>
-  <a routerLink="/diario/edit/new">
-    <mat-card class="card-novo-diario" *ngIf="diariosList != undefined">
-      <span>+ novo diário</span>
-    </mat-card>
-  </a>
 </div>

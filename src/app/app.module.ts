@@ -34,11 +34,11 @@ import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 // Componentes:
 import { TemplateComponent } from './componentes/template/template.component';
 import { LoginFormComponent } from './componentes/login-form/login-form.component';
-import { DiarioSelecionaComponent } from './componentes/diario-seleciona/diario-seleciona.component';
+import { DiarioSelecionaComponent, DiarioEditComponent } from './componentes/diario-seleciona/diario-seleciona.component';
 import { DashboardComponent } from './componentes/dashboard/dashboard.component';
-import { DiarioEditComponent } from './componentes/diario-edit/diario-edit.component';
 import { ContasListComponent, ContasEditComponent } from './componentes/contas-list/contas-list.component';
-import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComponent } from './componentes/categorias-list/categorias-list.component';
+import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComponent } 
+from './componentes/categorias-list/categorias-list.component';
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -78,7 +78,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     ContasEditComponent,
     CategoriasEditComponent,
     CategoriasListComponent,
-    SubcategoriasEditComponent],
+    SubcategoriasEditComponent,
+    DiarioSelecionaComponent,
+    DiarioEditComponent],
   declarations: [
     AppComponent,
     TemplateComponent,

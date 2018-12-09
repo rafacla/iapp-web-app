@@ -1,0 +1,24 @@
+<style>
+  .form-field  {
+    margin-right: 20px;
+  }
+  .mat-form-field {
+    font-size: 14px!important;
+  }
+  button {
+    margin: 5px;
+  }
+</style>
+<h1 mat-dialog-title>{{data.diario_id == 'new' ? 'Criar novo diário' : data.diario_nome}}</h1>
+<form [formGroup]="formDiario">
+  <mat-form-field class="form-field" style="width:100%;">
+    <mat-label>Nome do diário</mat-label>
+    <input matInput placeholder="Meu diário" name="txtDiarioNome" formControlName="diarioNome" required>
+  </mat-form-field>
+  <mat-form-field class="form-field" style="width:100%;">
+    <mat-label>Descrição do diário</mat-label>
+    <textarea  matInput placeholder="Diário com as transações do dia-a-dia" name="txtDiarioDescription" formControlName="diarioDescription" required></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="salvaDiario()" [disabled]="formDiario.disabled">Salvar</button>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+</form>

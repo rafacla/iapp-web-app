@@ -74,3 +74,12 @@
     position: absolute;
     bottom: 30px;
 }
+
+.form-field {
+    display: block;
+    width: 100%;
+}
+
+.button {
+    margin: 5px;
+}

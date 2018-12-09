@@ -61,24 +61,24 @@ export class ContasListComponent implements OnInit {
       };
     }
 
-    openDialog(conta_id: string, conta_nome?: string, conta_descricao?: string): void {
-      if (conta_nome === undefined) {
-        conta_nome = '';
-      }
-      if (conta_descricao === undefined) {
-        conta_descricao = '';
-      }
-      const dialogRef = this.dialog.open(ContasEditComponent, {
-        width: '500px',
-        data: {conta_id: conta_id, conta_nome: conta_nome, conta_descricao: conta_descricao}
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          window.location.reload();
-        }
-      });
+  openDialog(conta_id: string, conta_nome?: string, conta_descricao?: string): void {
+    if (conta_nome === undefined) {
+      conta_nome = '';
     }
+    if (conta_descricao === undefined) {
+      conta_descricao = '';
+    }
+    const dialogRef = this.dialog.open(ContasEditComponent, {
+      width: '500px',
+      data: {conta_id: conta_id, conta_nome: conta_nome, conta_descricao: conta_descricao}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        window.location.reload();
+      }
+    });
+  }
 
 
   private atualizaResumoContas() {
@@ -187,7 +187,7 @@ export class ContasEditComponent {
   }
 
   editaConta(): void {
-    let conta = new ContaList();
+    const conta = new ContaList();
     if (this.data.conta_id === 'new') {
       // nova conta:
         conta.conta_nome = this.formContas.get('contaNome').value;
