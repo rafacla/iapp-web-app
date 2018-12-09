@@ -39,6 +39,8 @@ import { DashboardComponent } from './componentes/dashboard/dashboard.component'
 import { ContasListComponent, ContasEditComponent } from './componentes/contas-list/contas-list.component';
 import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComponent } 
 from './componentes/categorias-list/categorias-list.component';
+import { UserEditComponent } from './componentes/user-edit/user-edit.component';
+import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -92,13 +94,18 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     ContasEditComponent,
     CategoriasListComponent,
     CategoriasEditComponent,
-    SubcategoriasEditComponent
+    SubcategoriasEditComponent,
+    UserEditComponent, 
+    PhoneMaskDirective
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true,
   }],
+  exports: [
+    PhoneMaskDirective
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

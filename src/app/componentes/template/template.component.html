@@ -41,8 +41,8 @@
             </span>
           </button>
           <mat-menu #menu="matMenu" yPosition="below" [overlapTrigger]="false">
-            <button mat-menu-item (click)="logout()"><mat-icon>edit</mat-icon> Editar usuário</button>
-            <button mat-menu-item (click)="logout()"><mat-icon>edit</mat-icon> Sair</button>
+            <a mat-menu-item [routerLink]="[ '/user/edit']"><mat-icon>person</mat-icon> Editar usuário</a>
+            <button mat-menu-item (click)="logout()"><mat-icon>exit_to_app</mat-icon> Sair</button>
           </mat-menu>
         </mat-toolbar-row>
       </mat-toolbar>

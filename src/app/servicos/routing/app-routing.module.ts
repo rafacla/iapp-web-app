@@ -4,13 +4,15 @@ import { DashboardComponent } from '../../componentes/dashboard/dashboard.compon
 import { DiarioSelecionaComponent } from '../../componentes/diario-seleciona/diario-seleciona.component';
 import { ContasListComponent } from '../../componentes/contas-list/contas-list.component';
 import { CategoriasListComponent } from '../../componentes/categorias-list/categorias-list.component';
+import { UserEditComponent } from '../../componentes/user-edit/user-edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard',  component: DashboardComponent},
   { path: 'diario/seleciona', component: DiarioSelecionaComponent },
   { path: 'contas', component: ContasListComponent },
-  { path: 'categorias', component: CategoriasListComponent}
+  { path: 'categorias', component: CategoriasListComponent},
+  { path: 'user/edit', component: UserEditComponent }
 ];
 
 @NgModule({

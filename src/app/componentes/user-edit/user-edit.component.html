@@ -1,0 +1,59 @@
+<div class="mat-toolbar-second-row">
+  <span>Editar usuário</span>
+</div>
+<div class="mat-toolbar-third-row">
+  <button mat-button (click)="alterar('DadosPessoais')"><mat-icon>person</mat-icon> Dados pessoais</button>
+  <button mat-button (click)="alterar('Email')"><mat-icon>email</mat-icon> Alterar e-mail</button>
+  <button mat-button (click)="alterar('Senha')"><mat-icon>lock</mat-icon> Alterar senha</button>
+</div>
+<div class="content">
+  <div class="dadosPessoais" *ngIf="DadosPessoais">
+    <h1 mat-dialog-title>Alterar Dados Pessoais</h1>
+    <form [formGroup]="formDadosPessoais">
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Nome</mat-label>
+        <input matInput placeholder="Primeiro Nome" formControlName="userFirstName" required>
+      </mat-form-field> 
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Sobrenome</mat-label>
+        <input matInput placeholder="Sobrenome" formControlName="userLastName" required>
+      </mat-form-field> 
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Celular</mat-label>
+        <input matInput appPhoneMask placeholder="(xx) xxxxx-xxxx" formControlName="userPhoneNumber" required>
+      </mat-form-field> 
+      <button mat-raised-button color="primary" (click)="editarDadosPessoais()">Salvar</button>
+    </form>
+  </div>
+
+  <div class="Email" *ngIf="Email">
+    <h1 mat-dialog-title>Alterar E-mail</h1>
+    <p>Atenção: ao alterar seu endereço de e-mail, um e-mail contendo um link de ativação será enviado a você. <br />Certifique-se de ter acesso a este e-mail ou sua conta estará bloqueada.</p>
+    <form [formGroup]="formEmail">
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Novo e-mail</mat-label>
+        <input matInput placeholder="endereco@email.com" formControlName="userEmail" required>
+      </mat-form-field> 
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Repita o endereço de e-mail</mat-label>
+        <input matInput placeholder="endereco@email.com" formControlName="userEmailAgain" required>
+      </mat-form-field> 
+      <button mat-raised-button color="primary" (click)="editarEmail()">Salvar</button>
+    </form>
+  </div>
+
+  <div class="Senha" *ngIf="Senha">
+    <h1 mat-dialog-title>Alterar Senha</h1>
+    <form [formGroup]="formSenha">
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Nova senha</mat-label>
+        <input matInput placeholder="Senha" formControlName="userPassword" type="password" required>
+      </mat-form-field> 
+      <mat-form-field class="form-field" style="width: 100%;">
+        <mat-label>Repita sua Nova senha</mat-label>
+        <input matInput placeholder="Repita sua Senha" formControlName="userPasswordAgain" type="password" required>
+      </mat-form-field> 
+      <button mat-raised-button color="primary" (click)="editarSenha()">Salvar</button>
+    </form>
+  </div>
+</div>
