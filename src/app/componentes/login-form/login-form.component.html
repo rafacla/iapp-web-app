@@ -1,5 +1,5 @@
 <div class="mat-app-background basic-container">
-  <mat-card class="login-card">
+  <mat-card class="login-card" *ngIf="!lostPassword">
     <mat-spinner *ngIf="loading"></mat-spinner>
     <div *ngIf="!loading">
       <mat-card-header>
@@ -24,11 +24,37 @@
         
         <mat-card-actions>
           <button mat-raised-button color="primary" type="submit" id="btLogin" [disabled]="btLoginDisabled" (click)="autentica()">Login</button>
-          <button mat-raised-button color="warn" id="btForgot">Esqueci minha senha</button>
+          <button mat-raised-button color="warn" id="btForgot" (click)="mostraLostPassword()" >Esqueci minha senha</button>
           <br /><br /><br />
           
         </mat-card-actions>
       </form>
     </div>
+  </mat-card>
+  <mat-card class="login-card" *ngIf="lostPassword">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+    <div *ngIf="!loading">
+      <mat-card-header>
+        <mat-card-title>Recuperar senha!</mat-card-title>
+      </mat-card-header>
+      <form>
+        <mat-card-content>
+          <p>Digite seu e-mail, um link para recuperar sua senha será enviado para o e-mail de cadastro.</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Endereço de e-mail</mat-label>
+            <input matInput placeholder="endereco@email.com" name="txtUsername" [(ngModel)]="txtUsername" required>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" type="submit" id="btLogin" [disabled]="btLoginDisabled" (click)="getLostPassword()">Recuperar senha!</button>
+            <br /><br /><br />
+        </mat-card-actions>
+      </form>
+    </div>
+  </mat-card>
+  <mat-card class="login-card" *ngIf="lostPasswordMsg">
+    <mat-card-content>
+      <p>Se um usuário existe para o e-mail informado, você receberá um link para recuperar sua senha!</p>
+    </mat-card-content>
   </mat-card>
 </div>
