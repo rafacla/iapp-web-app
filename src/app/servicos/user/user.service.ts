@@ -20,7 +20,7 @@ export class UserService {
     try {
       this.userDetail = JSON.parse(localStorage.getItem('currentUser'));
       this._userDetail.next(this.userDetail);
-    } catch(e) {}
+    } catch (e) {}
   }
 
   /** Carrega no cache os dados do usuario */
@@ -36,7 +36,11 @@ export class UserService {
       return this.userDetail$;
     } else {
       this.loadCacheUserDetail();
+      const mthis = this;
       if (this.userDetail != null) {
+        this.httpClient.userGet().subscribe(user => {
+          this.setUserDetail(user);
+        });
         return this.userDetail$;
       } else {
         // não há detalhes do usuário no cache, vamos precisar recuperar do servidor:
@@ -49,7 +53,7 @@ export class UserService {
             this.userDetail = userDetail;
             this.setCacheUserDetail();
           })
-        )
+        );
       }
     }
   }
