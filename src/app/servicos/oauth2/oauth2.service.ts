@@ -44,7 +44,7 @@ export class Oauth2Service {
     this.accessToken = access_token; 
     this.refreshToken = refresh_token; 
     this.rememberUser = rememberUser; 
-    let resposta: Oauth2Data = {
+    const resposta: Oauth2Data = {
       accessToken: access_token,
       refreshToken: refresh_token,
       rememberUser: this.rememberUser

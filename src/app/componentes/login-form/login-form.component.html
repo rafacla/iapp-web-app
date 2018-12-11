@@ -10,6 +10,7 @@
         <mat-card-content>
           <p>Entre com suas credenciais ou faça login através da sua Conta Google</p>
           <div class="alert alert-danger" *ngIf="wrongPassword">Usuário e/ou senha inválidos.</div>
+          <div class="alert alert-warning" *ngIf="inactiveUser">Usuário está inativo. Verifique seu e-mail para ativar.<br />Se você perdeu o link, use o formulário para recuperar sua senha.</div>
           <mat-form-field appearance="outline">
             <mat-label>Endereço de e-mail</mat-label>
             <input matInput placeholder="endereco@email.com" name="txtUsername" [(ngModel)]="txtUsername" required>
