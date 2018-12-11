@@ -8,4 +8,5 @@ export class UserDetail {
     userNotActiveReason: string;
     userLastDiarioUID: string;
     userLastDiarioName: string;
+    userPassword: string;
 }

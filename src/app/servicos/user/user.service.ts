@@ -59,8 +59,8 @@ export class UserService {
   }
   
   /** Atualiza as informações do usuário no cache do servidor */
-  refreshUserDetail() {
-    this.httpClient.userGet().pipe(
+  refreshUserDetail(): Observable<UserDetail> {
+    return this.httpClient.userGet().pipe(
       tap(resposta => {
         let currentDiarioUID: string;
         let currentDiarioName: string;
@@ -68,9 +68,11 @@ export class UserService {
           currentDiarioUID = this.userDetail.userLastDiarioUID;
           currentDiarioName = this.userDetail.userLastDiarioName;
         } catch (e) {}
-        this.userDetail = resposta;
-        this.userDetail.userLastDiarioUID = currentDiarioUID;
-        this.userDetail.userLastDiarioName = currentDiarioName;
+        let userDetail: UserDetail;
+        userDetail = resposta;
+        userDetail.userLastDiarioUID = null;
+        userDetail.userLastDiarioName = '';
+        this.userDetail = userDetail;
         this.setCacheUserDetail();
         this._userDetail.next(this.userDetail);
       }));

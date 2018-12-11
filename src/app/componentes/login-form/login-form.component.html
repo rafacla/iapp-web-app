@@ -1,5 +1,5 @@
 <div class="mat-app-background basic-container">
-  <mat-card class="login-card" *ngIf="!lostPassword">
+  <mat-card class="login-card" *ngIf="loginForm">
     <mat-spinner *ngIf="loading"></mat-spinner>
     <div *ngIf="!loading">
       <mat-card-header>
@@ -8,7 +8,7 @@
       
       <form>
         <mat-card-content>
-          <p>Entre com suas credenciais ou faça login através da sua Conta Google</p>
+          <p>Entre com suas credenciais:</p>
           <div class="alert alert-danger" *ngIf="wrongPassword">Usuário e/ou senha inválidos.</div>
           <div class="alert alert-warning" *ngIf="inactiveUser">Usuário está inativo. Verifique seu e-mail para ativar.<br />Se você perdeu o link, use o formulário para recuperar sua senha.</div>
           <mat-form-field appearance="outline">
@@ -25,6 +25,7 @@
         <mat-card-actions>
           <button mat-raised-button color="primary" type="submit" id="btLogin" [disabled]="btLoginDisabled" (click)="autentica()">Login</button>
           <button mat-raised-button color="warn" id="btForgot" (click)="mostraLostPassword()" >Esqueci minha senha</button>
+          <button mat-raised-button color="accent" id="btNewUser" (click)="mostraRegistro()" >Novo usuário</button>
           <br /><br /><br />
           
         </mat-card-actions>
@@ -56,5 +57,55 @@
     <mat-card-content>
       <p>Se um usuário existe para o e-mail informado, você receberá um link para recuperar sua senha!</p>
     </mat-card-content>
+  </mat-card>
+  <mat-card class="login-card" *ngIf="newUser">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+    <div *ngIf="!loading">
+      <mat-card-header>
+        <mat-card-title>Novo usuário!</mat-card-title>
+      </mat-card-header>
+      <form [formGroup]="formNewUser">
+        <mat-card-content>
+          <p>Preencha todos os campos a seguir para criar um novo usuário no sistema.<br/>O seu endereço de e-mail deve ser válido, pois um link de ativação será enviado para você.</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Endereço de e-mail (será seu nome de usuário)</mat-label>
+            <input matInput placeholder="endereco@email.com" name="userEmail" formControlName="userEmail" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Repita seu endereço de -email para validação</mat-label>
+            <input matInput placeholder="endereco@email.com" name="userEmailAgain" formControlName="userEmailAgain" required>
+            <mat-error *ngIf="formNewUser.get('userEmailAgain').invalid">Os endereços de e-mail não coincidem.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Primeiro Nome</mat-label>
+            <input matInput placeholder="João" name="userFirstName" formControlName="userFirstName" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Sobrenome</mat-label>
+            <input matInput placeholder="Silva" name="userLastName" formControlName="userLastName" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Celular</mat-label>
+            <input matInput appPhoneMask placeholder="(xx) xxxxx-xxxx" name="userPhoneNumber" formControlName="userPhoneNumber" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Senha</mat-label>
+            <input matInput placeholder="Senha" name="userPassword" formControlName="userPassword" type="password" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Repita sua senha</mat-label>
+            <input matInput placeholder="Repita sua senha" name="userPasswordAgain" formControlName="userPasswordAgain" type="password" required>
+            <mat-error *ngIf="formNewUser.get('userPasswordAgain').invalid">As senhas não coincidem.</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="accent" type="submit" id="btLogin" [disabled]="btLoginDisabled" (click)="registraUsuario()">Criar usuário!</button>
+            <br /><br />
+        </mat-card-actions>
+      </form>
+    </div>
+  </mat-card>
+  <mat-card class="login-card" *ngIf="newUserSuccess">
+    <p>Seu usuário foi criado, um link de ativação foi enviado para o e-mail informado.<br />Siga as instruções neste e-mail para ativar sua conta!</p>
   </mat-card>
 </div>

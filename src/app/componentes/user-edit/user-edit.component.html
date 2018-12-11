@@ -37,7 +37,9 @@
       <mat-form-field class="form-field" style="width: 100%;">
         <mat-label>Repita o endereço de e-mail</mat-label>
         <input matInput placeholder="endereco@email.com" formControlName="userEmailAgain" required>
+        <mat-error *ngIf="formEmail.get('userEmailAgain').invalid">Os endereços de e-mail não coincidem.</mat-error>
       </mat-form-field> 
+      <br /><br />
       <button mat-raised-button color="primary" (click)="editarEmail()">Salvar</button>
     </form>
   </div>
@@ -52,7 +54,9 @@
       <mat-form-field class="form-field" style="width: 100%;">
         <mat-label>Repita sua Nova senha</mat-label>
         <input matInput placeholder="Repita sua Senha" formControlName="userPasswordAgain" type="password" required>
+        <mat-error *ngIf="formSenha.get('userPasswordAgain').invalid">As senhas não coincidem.</mat-error>
       </mat-form-field> 
+      <br /><br />
       <button mat-raised-button color="primary" (click)="editarSenha()">Salvar</button>
     </form>
   </div>

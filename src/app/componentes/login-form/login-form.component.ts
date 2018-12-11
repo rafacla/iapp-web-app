@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Oauth2Service } from '../../servicos/oauth2/oauth2.service'
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service'
 import {FormControl, FormControlName, Validators, FormGroup} from '@angular/forms';
+import { UserDetail } from '../../data-model/user-detail';
 
 @Component({
   selector: 'app-login-form',
@@ -12,17 +13,38 @@ export class LoginFormComponent implements OnInit {
   lembrar = true;
   txtUsername = '';
   txtPassword = '';
+  formNewUser = new FormGroup({
+    userEmail: new FormControl('', [Validators.required, Validators.email]),
+    userEmailAgain: new FormControl('', [Validators.required, Validators.email]),
+    userPassword: new FormControl('', [Validators.minLength(5)]),
+    userPasswordAgain: new FormControl('', [Validators.minLength(5)]),
+    userFirstName: new FormControl('', [Validators.minLength(3)]),
+    userLastName: new FormControl('', [Validators.minLength(3)]),
+    userPhoneNumber: new FormControl('', [Validators.required])
+  });
   btLoginDisabled = false;
   wrongPassword = false;
   inactiveUser = false;
   loading = false;
   lostPassword = false;
   lostPasswordMsg = false;
+  newUser = false;
+  newUserSuccess = false;
+  loginForm = true;
+
 
   constructor(private oauth2: Oauth2Service, private httpClient: HttpClientService) { }
 
   ngOnInit() {
        
+  }
+
+  alternaView(viewAtiva: string) {
+    this.lostPassword     = (viewAtiva === 'lostPassword');
+    this.lostPasswordMsg  = (viewAtiva === 'lostPasswordMsg');
+    this.newUser  = (viewAtiva === 'newUser');
+    this.newUserSuccess  = (viewAtiva === 'newUserSuccess');
+    this.loginForm = (viewAtiva === 'loginForm');
   }
 
   autentica() {
@@ -47,7 +69,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   mostraLostPassword() {
-    this.lostPassword = true;
+    this.alternaView('lostPassword');
   }
 
   getLostPassword() {
@@ -67,6 +89,34 @@ export class LoginFormComponent implements OnInit {
         localStorage.removeItem('currentToken');
       }
     );
+  }
+
+  mostraRegistro() {
+    this.alternaView('newUser');
+  }
+
+  registraUsuario() {
+    if (this.formNewUser.get('userEmail').value !== this.formNewUser.get('userEmailAgain').value) {
+      this.formNewUser.get('userEmailAgain').setErrors(Validators.required);
+    } else if (this.formNewUser.get('userPassword').value !== this.formNewUser.get('userPasswordAgain').value) {
+      this.formNewUser.get('userPasswordAgain').setErrors(Validators.required);
+    } else if (this.formNewUser.valid) {
+      const user = new UserDetail();
+      user.userEmail        = this.formNewUser.get('userEmail').value;
+      user.userFirstName    = this.formNewUser.get('userFirstName').value;
+      user.userLastName     = this.formNewUser.get('userLastName').value;
+      user.userPhoneNumber  = this.formNewUser.get('userPhoneNumber').value;
+      user.userPassword     = this.formNewUser.get('userPassword').value;
+      this.loading = true;
+      this.httpClient.userPost(user).subscribe(sucesso => {
+        this.alternaView('newUserSuccess');
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        console.log(error);
+        this.formNewUser.get('userEmail').setErrors(Validators.required);
+      });
+    }
   }
 
 }
