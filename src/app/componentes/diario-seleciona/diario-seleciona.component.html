@@ -4,7 +4,12 @@
 <div class="mat-toolbar-third-row">
   <button mat-button (click)="openDialog('new')"><mat-icon>add</mat-icon> Adicionar novo diário</button>
 </div>
-<div class="card-list">
+<div class="content">
+  <p>Dários são utilizados como uma espécie simplificada de livros contábeis para seus orçamentos e movimentações financeiras. <br />
+    Tipicamente você precisará de apenas um diário: aquele que você utilizará para administrar suas contas e despesas pessoais.<br />
+    Porém nada te impede de ter mais de um diário para cenários ou mesmo segregar suas contas pessoais de suas contas jurídicas.
+  </p>
+  <p><b>Para continuar, por favor selecione um diário:</b></p>
   <mat-card class="card-carregando" *ngIf="diariosList === undefined">
     <mat-card-header>
         <mat-card-title>Carregando...</mat-card-title>
