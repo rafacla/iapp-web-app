@@ -5,6 +5,7 @@ import { DiarioSelecionaComponent } from '../../componentes/diario-seleciona/dia
 import { ContasListComponent } from '../../componentes/contas-list/contas-list.component';
 import { CategoriasListComponent } from '../../componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from '../../componentes/user-edit/user-edit.component';
+import { TransacoesListComponent } from '../../componentes/transacoes-list/transacoes-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'diario/seleciona', component: DiarioSelecionaComponent },
   { path: 'contas', component: ContasListComponent },
   { path: 'categorias', component: CategoriasListComponent},
-  { path: 'user/edit', component: UserEditComponent }
+  { path: 'user/edit', component: UserEditComponent },
+  { path: 'transacoes', component: TransacoesListComponent }
 ];
 
 @NgModule({

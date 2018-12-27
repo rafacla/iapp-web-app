@@ -10,6 +10,7 @@ import { ContaList } from '../../data-model/conta-list';
 import { DiarioPost } from '../../data-model/diario-post';
 import { DiarioPut } from '../../data-model/diario-put';
 import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
+import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 
 @Injectable({ providedIn: 'root' })
@@ -190,5 +191,27 @@ export class HttpClientService {
 	/** POST Move uma Subcategoria */
 	subcategoriaMove(subcategoria_move: SubcategoriaMove): Observable<any> {
 		return this.http.post<any>(this.apiUrl + '/subcategoria/move', subcategoria_move);
+	}
+
+	/** GET Subtransacoes no formato Tabular*/
+	subtransacoesTabularGet(diarioUID: string, filtros?: string): Observable<SubtransacoesTabular[]> {
+		if (filtros) {
+			const httpOptions = {
+				headers: new HttpHeaders({
+					'Content-Type':  'application/json; charset=UTF-8', 
+					'diariouid': diarioUID,
+					'filtros': filtros
+				})
+			};
+			return this.http.get<SubtransacoesTabular[]>(this.apiUrl + '/subtransacao', httpOptions);
+		} else {
+			const httpOptions = {
+				headers: new HttpHeaders({
+					'Content-Type':  'application/json; charset=UTF-8', 
+					'diariouid': diarioUID
+				})
+			};
+			return this.http.get<SubtransacoesTabular[]>(this.apiUrl + '/subtransacao', httpOptions);
+		}
 	}
 }

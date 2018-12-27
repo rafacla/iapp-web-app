@@ -247,7 +247,7 @@ export class CategoriasEditComponent implements OnInit {
       this.http.categoriaPost(categoria).subscribe(
         sucesso => { 
           // agora vamos mover:
-          let moverPara = new CategoriaMove;
+          const moverPara = new CategoriaMove;
           if (categoria.categoria_id === undefined) {
             moverPara.categoria_id = sucesso.categoria_id;
           } else {

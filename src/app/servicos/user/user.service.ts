@@ -80,6 +80,12 @@ export class UserService {
 
   /** Atualiza manualmente as informações do usuário no cache */
   setUserDetail(userDetail: UserDetail) {
+    const userLastDiarioUID = this.userDetail.userLastDiarioUID;
+    const userLastDiarioName = this.userDetail.userLastDiarioName;
+    if (this.userDetail.userID === userDetail.userID) {
+      userDetail.userLastDiarioName = userLastDiarioName;
+      userDetail.userLastDiarioUID = userLastDiarioUID;
+    }
     this.userDetail = userDetail;
     this.setCacheUserDetail();
     this._userDetail.next(this.userDetail);

@@ -5,6 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt );
+
+import { LOCALE_ID } from '@angular/core';
 
 // Main Components:
 import { AppComponent } from './app.component';
@@ -41,6 +46,7 @@ import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComp
 from './componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from './componentes/user-edit/user-edit.component';
 import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
+import { TransacoesListComponent } from './componentes/transacoes-list/transacoes-list.component';
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -96,13 +102,18 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     CategoriasEditComponent,
     SubcategoriasEditComponent,
     UserEditComponent, 
-    PhoneMaskDirective
+    PhoneMaskDirective, TransacoesListComponent
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    { 
+      provide: LOCALE_ID, useValue: 'pt' 
+    }
+  ],
   exports: [
     PhoneMaskDirective
   ],

@@ -1,0 +1,39 @@
+table {
+    width: 100%;   
+}
+th.mat-header-cell {
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: rgba(0,0,0,.12);
+}
+
+.mat-column-select {
+    text-align: center;
+}
+
+th,
+td {
+    padding-left: 5px!important;
+    padding-right: 10px!important;
+}
+
+.mat-header-row,
+.mat-row {
+    height: 36px;
+}
+
+.mat-column-transacao_classificacao,
+.mat-column-transacao_conciliada,
+.mat-column-conta_nome,
+.mat-column-select,
+.mat-column-transacao_data {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.mat-column-transacao_valor_saida,
+.mat-column-transacao_valor_entrada {
+    width: 8em;
+    white-space: nowrap;
+    text-align: right;
+}
