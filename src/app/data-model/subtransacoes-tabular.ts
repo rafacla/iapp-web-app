@@ -1,6 +1,5 @@
 export class SubtransacoesTabular {
     transacao_id: number;
-    transacao_nome: string;
     transacao_data: string;
     transacao_sacado: string;
     transacao_descricao: string;
@@ -19,4 +18,6 @@ export class SubtransacoesTabular {
     subcategoria_id: number;
     subcategoria_nome: string;
     transf_para_conta_id: number;
+    transf_para_conta_nome: string;
+    transf_para_tipo: string;
 }

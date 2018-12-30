@@ -1,5 +1,5 @@
 <div class="mat-toolbar-second-row">
-  <span>Transações</span>
+  <span>Transações para {{nomeContaAtual}}</span>
 </div>
 <div class="mat-toolbar-third-row">
     <button mat-button *ngIf="numeroSelecionados() > 0">
@@ -8,88 +8,159 @@
   <button mat-button><mat-icon>add</mat-icon> Nova transação</button>
   <button mat-button><mat-icon>calendar_today</mat-icon> Novo parcelamento</button>
 </div>
-<div class="categorias-content">
-  <div class="tabela-categorias">
-    <table mat-table [dataSource]="dataSource" tableTransacoes class="table-condensed">
-      <!-- Checkbox Column -->
-      <ng-container matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()">
-          </mat-checkbox>
-        </th>
-        <td mat-cell *matCellDef="let row">
-          <mat-checkbox (click)="$event.stopPropagation()"
-                        (change)="$event ? selection.toggle(row) : null"
-                        [checked]="selection.isSelected(row)">
-          </mat-checkbox>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_data">
-        <th mat-header-cell *matHeaderCellDef> DATA </th>
-        <td mat-cell *matCellDef="let element"> {{element.transacao_data | date:'shortDate'}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="conta_nome">
-        <th mat-header-cell *matHeaderCellDef> CONTA </th>
-        <td mat-cell *matCellDef="let element"> {{element.conta_nome}} </td>
-      </ng-container>
-    
-      <ng-container matColumnDef="transacao_sacado">
-        <th mat-header-cell *matHeaderCellDef> SACADO </th>
-        <td mat-cell *matCellDef="let element">{{element.transacao_sacado}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_descricao">
-        <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
-        <td mat-cell *matCellDef="let element">{{element.transacao_descricao}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_valor_saida">
-        <th mat-header-cell *matHeaderCellDef> SAÍDA </th>
-        <td mat-cell *matCellDef="let element">{{element.transacao_valor < 0 ? (-element.transacao_valor | number:'1.2') : ''}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_valor_entrada">
-        <th mat-header-cell *matHeaderCellDef> ENTRADA</th>
-        <td mat-cell *matCellDef="let element">{{element.transacao_valor >= 0 ? (element.transacao_valor | number:'1.2') : ''}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_classificacao">
-        <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
-        <td mat-cell *matCellDef="let element">
-          <span *ngIf="element.transf_para_conta_id">{{element.categoria_nome}}: {{element.subcategoria_nome}}</span> 
-          <span *ngIf="element.subcategoria_id">{{element.categoria_nome}}: {{element.subcategoria_nome}}</span> 
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="transacao_conciliada">
-        <th mat-header-cell *matHeaderCellDef>  </th>
-        <td mat-cell *matCellDef="let element">{{element.transacao_conciliada}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="categoria_acao">
-        <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
-        <td mat-cell *matCellDef="let element">   
-          <div class="acoes">
-            <button mat-icon-button>
-              <mat-icon class="add_sub">add_to_photos</mat-icon>
-            </button>
-            <button mat-icon-button>
-              <mat-icon class="delete">delete</mat-icon>
-            </button>
-            <button mat-icon-button>
-              <mat-icon class="edit">edit</mat-icon>
-            </button>
-          </div>
-        </td>
-      </ng-container>
-    
-      <tr mat-header-row *matHeaderRowDef="transacoesColumns;sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: transacoesColumns;"
-          (click)="selection.toggle(row)" class="categoria"> </tr>
-    </table>
+<div class="content">
+  <div class="filter-menu">
+    <div class="filter-menu-header">
+        <mat-icon>filter_list</mat-icon>
+        <span>FILTROS</span>
+    </div>
+    <div class="div-filtros">
+        <div class="filtros-heading">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <span> Datas</span>
+        </div>
+        <div class="filtros-content">
+          <mat-form-field>
+            <input matInput [matDatepicker]="filtroDataInicio" placeholder="Início" [(ngModel)]="fDataInicio" (dateChange)="filtraPorData()" (dateInput)="filtraPorData()">
+            <mat-datepicker-toggle matSuffix [for]="filtroDataInicio"></mat-datepicker-toggle>
+            <mat-datepicker #filtroDataInicio></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [matDatepicker]="filtroDataTermino" placeholder="Término" [(ngModel)]="fDataTermino" (dateChange)="filtraPorData()" (dateInput)="filtraPorData()">
+            <mat-datepicker-toggle matSuffix [for]="filtroDataTermino"></mat-datepicker-toggle>
+            <mat-datepicker #filtroDataTermino></mat-datepicker>
+          </mat-form-field>
+        </div>
+    </div>
+    <div class="div-filtros">
+        <div class="filtros-heading">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <span> Contas</span>
+        </div>
+        <div class="filtros-content">
+          <mat-checkbox (click)="filtraPorConta('all')" [checked]="ckContasAll">Todas as contas</mat-checkbox>
+          <mat-divider></mat-divider>
+          <mat-checkbox *ngFor="let conta of arrayContas" (click)="filtraPorConta(conta[0])" [checked]="ckContas[conta[0]]">{{conta[1]}}</mat-checkbox>
+        </div>
+    </div>
   </div>
+  <div class="content-transacoes">
+    <div class="tabela">
+      <table mat-table [dataSource]="dataSource" matSort tableTransacoes matSortActive="transacao_data" matSortDirection="asc">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_data">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> DATA </th>
+          <td mat-cell *matCellDef="let element"> {{element.transacao_data | date:'shortDate'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="conta_nome">
+          <th mat-header-cell *matHeaderCellDef> CONTA </th>
+          <td mat-cell *matCellDef="let element"> {{element.conta_nome}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="transacao_sacado">
+          <th mat-header-cell *matHeaderCellDef> SACADO </th>
+          <td mat-cell *matCellDef="let element">{{element.transacao_sacado}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_descricao">
+          <th mat-header-cell *matHeaderCellDef> DESCRIÇÃO </th>
+          <td mat-cell *matCellDef="let element">{{element.transacao_descricao}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_valor_saida">
+          <th mat-header-cell *matHeaderCellDef> SAÍDA </th>
+          <td mat-cell *matCellDef="let element">{{element.transacao_valor < 0 ? (-element.transacao_valor | number:'1.2') : ''}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_valor_entrada">
+          <th mat-header-cell *matHeaderCellDef> ENTRADA</th>
+          <td mat-cell *matCellDef="let element">{{element.transacao_valor >= 0 ? (element.transacao_valor | number:'1.2') : ''}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_classificacao">
+          <th mat-header-cell *matHeaderCellDef> CATEGORIA </th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element.subtransacoes.length > 1">(Múltiplas subtransações. Edite a Transação para verificar!)</span>
+            <span *ngIf="element.subtransacoes[0] && element.subtransacoes.length <= 1" class="transferencia">
+              <i class="fas fa-exchange-alt" *ngIf="element.subtransacoes[0].transf_para_tipo == 'Origem'  && element.subtransacoes.length <= 1" matTooltip="Esta é a transação original de Transferência que você criou."></i>
+              <i class="far fa-clone" *ngIf="element.subtransacoes[0].transf_para_tipo == 'Replica'  && element.subtransacoes.length <= 1" matTooltip="Esta é uma réplica criada automaticamente na conta destino de uma Transferência que você criou."></i> 
+              Transferência para: {{element.subtransacoes[0].transf_para_conta_nome}}
+            </span> 
+            <span *ngIf="!element.subtransacoes[0]" class="falta-categoria"><i class="fas fa-exclamation-triangle"></i> Classifique esta transação!</span> 
+            <div *ngIf="element.subtransacoes[0] && element.subtransacoes.length <=1">
+                <span *ngIf="element.subtransacoes[0].subcategoria_id && element.subtransacoes.length <= 1">{{element.subtransacoes[0].categoria_nome}}: {{element.subtransacoes[0].subcategoria_nome}}</span> 
+                <span *ngIf="element.subtransacoes[0].subcategoria_id == null && element.subtransacoes[0].transf_para_conta_id == null" class="falta-categoria"><i class="fas fa-exclamation-triangle"></i> Classifique esta transação!</span> 
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="transacao_conciliada">
+          <th mat-header-cell *matHeaderCellDef>  </th>
+          <td mat-cell *matCellDef="let element">{{element.transacao_conciliada}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="categoria_acao">
+          <th mat-header-cell *matHeaderCellDef> AÇÕES </th>
+          <td mat-cell *matCellDef="let element">   
+            <div class="acoes">
+              <button mat-icon-button>
+                <mat-icon class="add_sub">add_to_photos</mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon class="delete">delete</mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon class="edit">edit</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="transacoesColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: transacoesColumns;"
+            (click)="selection.toggle(row)" class="categoria"> </tr>
+      </table>
+    </div>
+    <div class="transacoes-resumo">
+      <div>
+        <div class="saldo-heading">Saldo Compensado</div>
+        <div class="saldo-content {{(saldoCompensado > 0 ? 'positivo' : 'negativo')}}">{{saldoCompensado | number:'1.2'}} </div>
+      </div>
+      <div class="saldo-operacao">
+        +
+      </div>
+      <div>
+        <div class="saldo-heading">Saldo a Compensar</div>
+        <div class="saldo-content {{(saldoACompensar > 0 ? 'positivo' : 'negativo')}}">{{saldoACompensar | number:'1.2'}} </div>
+      </div>
+      <div class="saldo-operacao">
+        =
+      </div>
+      <div>
+        <div class="saldo-heading">Saldo Total</div>
+        <div class="saldo-content {{(saldoTotal > 0 ? 'positivo' : 'negativo')}}">{{saldoTotal | number:'1.2'}} </div>
+      </div>
+      <div class="saldo-selecionadas" *ngIf="selection.selected.length">
+        <div class="saldo-heading">Saldo Selecionadas</div>
+        <div class="saldo-content {{(saldoSelecionados > 0 ? 'positivo' : 'negativo')}}">{{saldoSelecionados | number:'1.2'}} </div>
+      </div>  
+    </div>  
+  </div>
+
 </div>

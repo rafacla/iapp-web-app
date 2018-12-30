@@ -22,7 +22,8 @@ import { MatToolbarModule, MatCard, MatCardActions, MatCardAvatar, MatCardConten
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
   MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions, MatProgressSpinnerModule, matFormFieldAnimations,
   MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
-  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule } from '@angular/material';
+  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter } from '@angular/material';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 // Serviços:
 import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor';
@@ -75,10 +76,13 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     MatTableModule,
     MatDividerModule,
     MatOptionModule,
     MatSelectModule,
+    MatSortModule,
+    MatTooltipModule,
     FusionChartsModule
   ],
   entryComponents: [
@@ -112,6 +116,12 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     },
     { 
       provide: LOCALE_ID, useValue: 'pt' 
+    }, 
+    {
+      provide: DateAdapter, useClass: MomentDateAdapter
+    },
+    {
+      provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } 
     }
   ],
   exports: [

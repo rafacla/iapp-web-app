@@ -1,5 +1,32 @@
+.content {
+    display: flex;
+    height: 100%;
+}
+.content > div {
+    flex: 1 1 auto;
+}
+
+.filter-menu {
+    box-shadow: 5px 1px 20px -5px #ddd;
+    width: 250px;
+    max-width: 250px;
+    background-color: #fff;
+    padding: 5px;
+}
+tr:hover td  {
+    cursor: pointer;
+}
+tr:hover mat-checkbox:hover {
+    cursor: default;
+}
+
 table {
-    width: 100%;   
+    width: 100%;
+    box-shadow: 5px 5px 20px -5px #ddd;
+    border: 1px solid #dddddd;
+}
+.mat-cell {
+    font-size: 0.8em;
 }
 th.mat-header-cell {
     border-right-width: 1px;
@@ -36,4 +63,97 @@ td {
     width: 8em;
     white-space: nowrap;
     text-align: right;
+}
+
+
+.falta-categoria > i {
+    color: rgb(255, 50, 50);
+}
+.transferencia {
+    color: #888;
+}
+
+.filter-menu-header {
+    width: 100%;
+    line-height: 24px;
+    height: 24px;
+    padding-left: 5px;
+}
+.filter-menu-header .mat-icon {
+    display: inline;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+.filter-menu-header span {
+    font-weight: 500;
+    line-height: 24px;
+    vertical-align: middle;
+}
+.div-filtros {
+    padding-left: 10px;
+}
+.div-filtros .filtros-heading {
+    width: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    line-height: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+.div-filtros span,
+.div-filtros .mat-icon {
+    display: inline;
+    vertical-align: middle;
+}
+.div-filtros .filtros-content {
+    padding-left: 30px;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+.div-filtros .mat-checkbox:first-child {
+    font-weight: 500;
+}
+.div-filtros .mat-checkbox {
+    width: 100%;
+    display: inline-block;
+}
+.content-transacoes {
+    width: 100%;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.tabela {
+    padding: 25px;
+    overflow: auto;
+    flex-grow: 1;
+}
+.transacoes-resumo {
+    width: calc(100% - 20px);  
+    background-image: linear-gradient(#32408f, #3f51b5);
+    padding: 10px;   
+    display: flex;
+}
+.saldo-operacao {
+    padding: 0 10px;
+    align-self: center;
+    color: #588697;
+}
+.saldo-heading {
+    color: #fff;
+    font-size: 0.8em;
+    font-style: italic;
+}
+.saldo-content {
+    font-weight: 600;
+}
+.saldo-content.positivo {
+    color: #5bbe72;
+}
+.saldo-content.negativo {
+    color: #e0766c;
+}
+.saldo-selecionadas {
+    margin-left: auto;
 }
