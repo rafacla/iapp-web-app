@@ -3,6 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort } from '@angular/material';
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import { UserService } from '../../servicos/user/user.service';
+import { TransacoesDataSource } from './TransacoesDataSource';
 
 export interface TransacoesTabular {
   transacao_id: number;
@@ -65,6 +66,7 @@ export class TransacoesListComponent implements OnInit {
   transacoesColumns: string[] = ['select', 'transacao_data', 'conta_nome', 'transacao_sacado', 'transacao_classificacao',
                             'transacao_descricao', 'transacao_valor_saida', 'transacao_valor_entrada', 'transacao_conciliada'];
   dataSource = new MatTableDataSource<TransacoesCascata>([]);
+  transacoesDataSource: TransacoesDataSource;
   selection = new SelectionModel<TransacoesCascata>(true, []);
   listaTransacoes: Map<string, TransacoesCascata> = new Map();
   listaContas: Map<number, string> = new Map();
@@ -72,101 +74,51 @@ export class TransacoesListComponent implements OnInit {
   fDataTermino = new Date();
   arrayContas = new Array();
   nomeContaAtual = "Todas as Contas";
+
   //Checkboxes dos filtros de contas:
   ckContasAll = true;
   ckContas: boolean[] = [];
+
+  //Mat-Table
   @ViewChild(MatTable) table: MatTable<any>;
   @ViewChild(MatSort) sort: MatSort;
-  saldoCompensado = 9999999.24;
-  saldoACompensar = 9999999.24;
-  saldoTotal = 999999.25;
+  
+  //Variáveis de Saldo
+  saldoCompensado = 0;
+  saldoACompensar = 0;
+  saldoTotal = 0;
   saldoSelecionados = 0;
+
+
   constructor(private http: HttpClientService, private userService: UserService) { }
 
   
   ngOnInit() {
-    this.recuperaTransacoes();
+    this.userService.getUserDetail().subscribe(user => {
+      this.transacoesDataSource = new TransacoesDataSource(this.http);
+      this.transacoesDataSource.loadTransacoes(user.userLastDiarioUID);
+      this.transacoesDataSource.transacoes$.subscribe(transacoes => {
+        transacoes.forEach(element => {
+          if (!this.fDataInicio) {
+            this.fDataInicio = new Date(element.transacao_data);
+          } else if (this.fDataInicio > new Date(Date.parse(element.transacao_data))) {
+            this.fDataInicio = new Date(element.transacao_data);
+          }
+          this.saldoTotal += +element.transacao_valor;
+          if (element.transacao_conciliada) {
+            this.saldoCompensado += +element.transacao_valor;
+          } else {
+            this.saldoCompensado += +element.transacao_valor;
+          }
+          this.listaContas.set(element.conta_id,element.conta_nome);
+          this.ckContas[element.conta_id] = true;
+        });
+        this.arrayContas = Array.from(this.listaContas.entries());
+      });
+    });
+
     this.selection.changed.subscribe(event => {
       this.calcSaldoSelecionados();
-    })
-  }
-
-  recuperaTransacoes() {
-    let fDataInicio = new Date();
-    let fDataTermino = new Date();
-    this.userService.getUserDetail().subscribe(user => {
-      this.http.subtransacoesTabularGet(user.userLastDiarioUID).subscribe(
-        sucesso => {
-          this.listaTransacoes.clear();
-          sucesso.forEach(element => {
-            const novaTransacao: TransacoesCascata = {
-              transacao_id: element.transacao_id,
-              transacao_data: element.transacao_data,
-              transacao_descricao: element.transacao_descricao,
-              transacao_merged_to_id: element.transacao_merged_to_id,
-              transacao_sacado: element.transacao_sacado,
-              transacao_valor: element.transacao_valor,
-              transacao_aprovada: element.transacao_aprovada,
-              transacao_conciliada: element.transacao_conciliada,
-              conta_id: element.conta_id,
-              conta_nome: element.conta_nome,
-              diario_uid: element.diario_uid,
-              subtransacoes: []
-            };
-            this.listaContas.set(element.conta_id,element.conta_nome);
-            this.ckContas[element.conta_id] = true;
-            if (!fDataInicio) {
-              fDataInicio = new Date(element.transacao_data);
-            } else if (fDataInicio > new Date(Date.parse(element.transacao_data))) {
-              fDataInicio = new Date(element.transacao_data);
-            }
-            if (this.listaTransacoes.has(element.conta_id+'>'+element.transacao_id)) {
-              // a transação já existe, vamos só adicionar eventuais subtransações
-              const editaTransacao = this.listaTransacoes.get(element.conta_id+'>'+element.transacao_id);
-              if (element.transacoes_item_id) {
-                const novaSubtransacao: Subtransacoes = {
-                  subcategoria_id: element.subcategoria_id,
-                  subcategoria_nome: element.subcategoria_nome,
-                  transacoes_item_descricao: element.transacoes_item_descricao,
-                  transacoes_item_id: element.transacoes_item_id,
-                  transacoes_item_valor: element.transacoes_item_valor,
-                  transf_para_conta_id: element.transf_para_conta_id,
-                  transf_para_conta_nome: element.transf_para_conta_nome,
-                  transf_para_tipo: element.transf_para_tipo,
-                  categoria_id: element.categoria_id,
-                  categoria_nome: element.categoria_nome
-                };
-                editaTransacao.subtransacoes.push(novaSubtransacao);
-                this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, editaTransacao);
-              }
-            } else {
-              // a transação ainda não existe no nosso objeto, vamos criá-la e então adicionar eventuais subtransações:
-              if (element.transacoes_item_id) {
-                const novaSubtransacao: Subtransacoes = {
-                  subcategoria_id: element.subcategoria_id,
-                  subcategoria_nome: element.subcategoria_nome,
-                  transacoes_item_descricao: element.transacoes_item_descricao,
-                  transacoes_item_id: element.transacoes_item_id,
-                  transacoes_item_valor: element.transacoes_item_valor,
-                  transf_para_conta_id: element.transf_para_conta_id,
-                  transf_para_conta_nome: element.transf_para_conta_nome,
-                  transf_para_tipo: element.transf_para_tipo,
-                  categoria_id: element.categoria_id,
-                  categoria_nome: element.categoria_nome
-                };
-                novaTransacao.subtransacoes.push(novaSubtransacao);
-              }
-              this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, novaTransacao);
-            }
-          }); 
-          this.fDataInicio = fDataInicio;
-          this.dataSource.data = Array.from(this.listaTransacoes.values());
-          this.dataSource.sort = this.sort;
-          this.arrayContas = Array.from(this.listaContas.entries());
-        },
-        erro => {
-          console.log(erro);
-        });
     });
   }
 
@@ -220,7 +172,7 @@ export class TransacoesListComponent implements OnInit {
     return this.selection.selected.length;
   }
   calcSaldoSelecionados() {
-    this.selection.selected.reduce((a, b) => a + b.transacao_valor, 0);
+    this.saldoSelecionados = +this.selection.selected.reduce((a, b) => +a + +b.transacao_valor, 0);
   }
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {

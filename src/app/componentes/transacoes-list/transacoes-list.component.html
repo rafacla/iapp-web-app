@@ -46,7 +46,7 @@
   </div>
   <div class="content-transacoes">
     <div class="tabela">
-      <table mat-table [dataSource]="dataSource" matSort tableTransacoes matSortActive="transacao_data" matSortDirection="asc">
+      <table mat-table [dataSource]="transacoesDataSource" matSort tableTransacoes matSortActive="transacao_data" matSortDirection="asc">
         <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef>
