@@ -12,6 +12,7 @@ import { DiarioPut } from '../../data-model/diario-put';
 import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
 import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
+import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
 
 @Injectable({ providedIn: 'root' })
 
@@ -213,5 +214,14 @@ export class HttpClientService {
 			};
 			return this.http.get<SubtransacoesTabular[]>(this.apiUrl + '/subtransacao', httpOptions);
 		}
+	}
+
+	transacaoPost(transacao: TransacoesTabular): Observable<any> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.post<any>(this.apiUrl+'/transacao',transacao,httpOptions);
 	}
 }

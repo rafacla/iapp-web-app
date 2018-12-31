@@ -3,7 +3,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort } from '@angular/material';
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import { UserService } from '../../servicos/user/user.service';
-import { TransacoesDataSource } from './TransacoesDataSource';
+import { TransacoesDataSource, Filtro } from './TransacoesDataSource';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
 export interface TransacoesTabular {
   transacao_id: number;
@@ -65,13 +67,13 @@ export interface TransacoesCascata {
 export class TransacoesListComponent implements OnInit {
   transacoesColumns: string[] = ['select', 'transacao_data', 'conta_nome', 'transacao_sacado', 'transacao_classificacao',
                             'transacao_descricao', 'transacao_valor_saida', 'transacao_valor_entrada', 'transacao_conciliada'];
-  dataSource = new MatTableDataSource<TransacoesCascata>([]);
+  //dataSource = new MatTableDataSource<TransacoesCascata>([]);
   transacoesDataSource: TransacoesDataSource;
   selection = new SelectionModel<TransacoesCascata>(true, []);
-  listaTransacoes: Map<string, TransacoesCascata> = new Map();
+  //listaTransacoes: Map<string, TransacoesCascata> = new Map();
   listaContas: Map<number, string> = new Map();
-  fDataInicio = new Date();
-  fDataTermino = new Date();
+  fDataInicio = moment.utc();
+  fDataTermino = moment.utc();
   arrayContas = new Array();
   nomeContaAtual = "Todas as Contas";
 
@@ -98,17 +100,20 @@ export class TransacoesListComponent implements OnInit {
       this.transacoesDataSource = new TransacoesDataSource(this.http);
       this.transacoesDataSource.loadTransacoes(user.userLastDiarioUID);
       this.transacoesDataSource.transacoes$.subscribe(transacoes => {
+        this.saldoCompensado = 0;
+        this.saldoACompensar = 0;
+        this.saldoTotal = 0;
         transacoes.forEach(element => {
           if (!this.fDataInicio) {
-            this.fDataInicio = new Date(element.transacao_data);
-          } else if (this.fDataInicio > new Date(Date.parse(element.transacao_data))) {
-            this.fDataInicio = new Date(element.transacao_data);
+            this.fDataInicio = moment.utc();
+          } else if (this.fDataInicio.isAfter(moment.utc(element.transacao_data,'YYYY-MM-DD'))) {
+            this.fDataInicio = moment.utc(element.transacao_data,'YYYY-MM-DD');
           }
           this.saldoTotal += +element.transacao_valor;
-          if (element.transacao_conciliada) {
+          if (+element.transacao_conciliada) {
             this.saldoCompensado += +element.transacao_valor;
           } else {
-            this.saldoCompensado += +element.transacao_valor;
+            this.saldoACompensar += +element.transacao_valor;
           }
           this.listaContas.set(element.conta_id,element.conta_nome);
           this.ckContas[element.conta_id] = true;
@@ -130,6 +135,8 @@ export class TransacoesListComponent implements OnInit {
         this.ckContas[item[0]] = true;
       });
       this.ckContasAll = true;
+      this.transacoesDataSource.removeFiltroPorColuna('conta_nome');
+      this.transacoesDataSource.aplicaFiltros();
     } else {
       this.ckContasAll = false;
       this.arrayContas.forEach(item => {
@@ -139,33 +146,42 @@ export class TransacoesListComponent implements OnInit {
           this.ckContas[item[0]] = false;
       });
       this.nomeContaAtual = this.listaContas.get(conta_id);
+      this.transacoesDataSource.removeFiltroPorColuna('conta_nome');
+      const filtro: Filtro = {
+        filtroColuna: 'conta_nome',
+        filtroOperador: '=',
+        filtroValor: this.nomeContaAtual
+      };
+      this.transacoesDataSource.adicionaFiltro(filtro);
     }
   }
   
   filtraPorData() {
-    const dataInicio = this.fDataInicio;
-    const dataTermino = this.fDataTermino;
-    if (dataInicio && dataTermino) {
-      this.dataSource.filterPredicate = (data: TransacoesCascata, filter: string) => 
-        (new Date(Date.parse(data.transacao_data)) >=(dataInicio) && new Date(Date.parse(data.transacao_data)) <= (dataTermino));
-        this.dataSource.filter = "!";
-    } else if (dataInicio) {
-      this.dataSource.filterPredicate = (data: TransacoesCascata, filter: string) => 
-        (new Date(Date.parse(data.transacao_data)) >= (dataInicio));
-        this.dataSource.filter = "!";
-    } else if (dataTermino) {
-      this.dataSource.filterPredicate = (data: TransacoesCascata, filter: string) => 
-        (new Date(Date.parse(data.transacao_data)) <= (dataTermino));
-        this.dataSource.filter = "!";
-    } else {
-      this.dataSource.filter = null;
+    const dataInicio: Moment = this.fDataInicio;
+    const dataTermino:Moment = this.fDataTermino;
+    this.transacoesDataSource.removeFiltroPorColuna('transacao_data');
+    if (dataInicio) {
+      const filtroInicio: Filtro = {
+        filtroColuna: 'transacao_data',
+        filtroOperador: '>=',
+        filtroValor: dataInicio
+      };
+      this.transacoesDataSource.adicionaFiltro(filtroInicio);
+    }
+    if (dataTermino) {
+      const filtroTermino: Filtro = {
+        filtroColuna: 'transacao_data',
+        filtroOperador: '<=',
+        filtroValor: dataTermino
+      };
+      this.transacoesDataSource.adicionaFiltro(filtroTermino);
     }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.transacoesDataSource.listaTransacoes.size;
     return numSelected === numRows;
   }
   numeroSelecionados() {
@@ -178,6 +194,13 @@ export class TransacoesListComponent implements OnInit {
   masterToggle() {
     this.isAllSelected() ?
         this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+        this.transacoesDataSource.listaTransacoes.forEach(row => this.selection.select(row));
+  }
+
+  alternaConciliada(transacao: TransacoesCascata, transacao_conciliada) {
+    event.stopPropagation();
+    let copyTransacao = { ...transacao };
+    copyTransacao.transacao_conciliada = transacao_conciliada;
+    this.transacoesDataSource.alteraTransacao(copyTransacao);
   }
 }

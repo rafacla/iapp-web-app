@@ -2,8 +2,12 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "module": "es6",
-    "types": []
+    "target": "es6",
+    "types": [],
+    "lib": [
+      "es6",
+      "dom"
+    ],
   },
   "exclude": [
     "src/test.ts",

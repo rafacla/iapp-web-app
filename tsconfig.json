@@ -9,13 +9,23 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2015",
+    "target": "es6",
+    "module": "es6",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "es2015",
+      "es6",
       "dom"
+    ],
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin"
+      }
     ]
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "jspm_packages"
+  ]
 }
