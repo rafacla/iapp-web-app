@@ -41,13 +41,14 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
      */
     loadTransacoes(diarioUID: string, filter = '', sortDirection = 'asc') {
         this.loadingSubject.next(true);
-
+        
         this.httpCliente.subtransacoesTabularGet(diarioUID, filter)
         .pipe(
             finalize(() => this.loadingSubject.next(false))
         )
         .subscribe(sucesso => {
             this.listaTransacoes.clear();
+            let listaTransacoesMescladasPara: string[] =[];
             sucesso.forEach(element => {
               const novaTransacao: TransacoesCascata = {
                 transacao_id: element.transacao_id,
@@ -84,6 +85,11 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 }
               } else {
                 // a transação ainda não existe no nosso objeto, vamos criá-la e então adicionar eventuais subtransações:
+                if (element.transacao_merged_to_id) {
+                  //essa transação está mesclada com outra transação, vamos achar esta outra transação e apontar:
+                  //só devemos mesclar transações na mesma conta:
+                  listaTransacoesMescladasPara.push(element.conta_id+'>'+element.transacao_merged_to_id);
+                }
                 if (element.transacoes_item_id) {
                   const novaSubtransacao: Subtransacoes = {
                     subcategoria_id: element.subcategoria_id,
@@ -102,6 +108,10 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, novaTransacao);
               }
             }); 
+            //Ok, agora vamos verificar quais transações possuem outras transações apontadas para ela:
+            listaTransacoesMescladasPara.forEach(value => {
+              this.listaTransacoes.get(value).transacao_merged_master = true;
+            });
             let arrayTransacoes = Array.from(this.listaTransacoes.values());
             //arrayTransacoes = arrayTransacoes.sort(function(a, b){return moment.utc(a.transacao_data,'YYYY-MM-DD').diff(moment.utc(b.transacao_data,'YYYY-MM-DD'))});
             this.transacoesSubject.next(arrayTransacoes);

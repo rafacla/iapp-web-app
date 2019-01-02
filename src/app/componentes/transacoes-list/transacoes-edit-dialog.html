@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>{{data.conta_id == 'new' ? 'Criar nova conta' : data.conta_nome}}</h1>
+<form [formGroup]="formContas">
+  <mat-form-field class="form-field" style="width: 100%;">
+    <mat-label>Nome da Conta</mat-label>
+    <input matInput placeholder="Minha Conta Corrente" name="contaNome" required value="{{data.conta_nome}}" formControlName="contaNome">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="editaConta()">Salvar</button>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+</form>

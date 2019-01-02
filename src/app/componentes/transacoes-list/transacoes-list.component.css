@@ -69,10 +69,6 @@ td {
 .falta-categoria > i {
     color: rgb(255, 50, 50);
 }
-.transferencia {
-    color: #888;
-}
-
 .filter-menu-header {
     width: 100%;
     line-height: 24px;
@@ -169,4 +165,12 @@ td {
 }
 .nao-conciliado .mat-icon {
     color: #ccc;
+}
+
+.transferencia {
+    color: #888;
+}
+.mat-column-transacao_sacado .fa-link {
+    color: #888;
+    float: right;
 }

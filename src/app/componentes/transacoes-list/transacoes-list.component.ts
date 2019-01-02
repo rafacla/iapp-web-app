@@ -55,6 +55,7 @@ export interface TransacoesCascata {
   conta_nome: string;
   diario_uid: string;
   subtransacoes: Subtransacoes[];
+  transacao_merged_master?: boolean; //Este item não vem do servidor (deveria?), calculamos localmente (a SQL já está demasiadamente complexa, ok?)
 }
 
 

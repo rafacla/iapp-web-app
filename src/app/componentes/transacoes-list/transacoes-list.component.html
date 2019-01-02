@@ -75,7 +75,7 @@
       
         <ng-container matColumnDef="transacao_sacado">
           <th mat-header-cell *matHeaderCellDef> SACADO </th>
-          <td mat-cell *matCellDef="let element">{{element.transacao_sacado}} </td>
+          <td mat-cell *matCellDef="let element">{{element.transacao_sacado}} <i class="fas fa-link" *ngIf="element.transacao_merged_master" matTooltip="Esta transação possui outras transações mescladas. Edite a transação para verificar."></i></td>
         </ng-container>
 
         <ng-container matColumnDef="transacao_descricao">
