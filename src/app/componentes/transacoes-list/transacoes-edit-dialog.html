@@ -1,9 +1,48 @@
-<h1 mat-dialog-title>{{data.conta_id == 'new' ? 'Criar nova conta' : data.conta_nome}}</h1>
-<form [formGroup]="formContas">
-  <mat-form-field class="form-field" style="width: 100%;">
-    <mat-label>Nome da Conta</mat-label>
-    <input matInput placeholder="Minha Conta Corrente" name="contaNome" required value="{{data.conta_nome}}" formControlName="contaNome">
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="editaConta()">Salvar</button>
-  <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+<div mat-dialog-title>{{data.transacao ? 'Editar transação' : 'Nova Transação'}}</div>
+<form [formGroup]="formTransacoes">
+    <mat-form-field class="form-field" style="width: 25%;">
+        <mat-label>Conta Origem</mat-label>
+        <mat-select placeholder="Escolha uma conta" required formControlName="conta_id" (selectionChange)="alternaTipoConta()">
+            <mat-option value="{{element.conta_id}}" *ngFor="let element of data.contas">{{element.conta_nome}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width: 15%;">
+        <mat-label>Data</mat-label>
+        <input matInput [matDatepicker]="dataTransacao" placeholder="Data da Transação" disabled required formControlName="transacao_data" (dateInput)="calculaDataFatura()">
+        <mat-datepicker-toggle matSuffix [for]="dataTransacao"></mat-datepicker-toggle>
+        <mat-datepicker #dataTransacao disabled="false"></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width: 35%;">
+        <mat-label>Beneficiário/Sacado</mat-label>
+        <input matInput placeholder="Nome do Beneficiário/Sacado" required formControlName="transacao_sacado">
+        <mat-hint>Quem recebeu ou enviou o dinheiro?</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width: 20%;">
+        <mat-label>Valor da Transação</mat-label>
+        <input matInput placeholder="Valor" required formControlName="transacao_valor" type="number" step="0.01">
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width:25%;">
+        <mat-label>Número do Documento</mat-label>
+        <input matInput placeholder="Número do Documento" formControlName="transacao_numero">
+        <mat-hint>Número de identificação no extrato, evita transações duplicadas.</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="form-field" [ngStyle]="{'width': transacaoCartao ? '55%' : '70%'}">
+        <mat-label>Descrição</mat-label>
+        <input matInput placeholder="Breve descrição da transação" formControlName="transacao_descricao">
+        <mat-hint>Para ajudar a lembrar no futuro.</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="form-field" style="width:15%;" *ngIf="transacaoCartao">
+        <mat-label>Data da Fatura</mat-label>
+        <input matInput disabled [ngModel]="transacaoFaturaDataMMMYY" [ngModelOptions]="{standalone: true}">
+        <input matInput [hidden]="true" [matDatepicker]="dataFatura" placeholder="Data da Fatura" required formControlName="transacao_fatura_data">
+        <mat-datepicker-toggle matSuffix [for]="dataFatura"></mat-datepicker-toggle>
+        <mat-datepicker #dataFatura startView="year" (monthSelected)="chosenMonthHandler($event, dataFatura)"></mat-datepicker>
+    </mat-form-field>
+    <h4>Categorias</h4>
+    <mat-divider></mat-divider>
+    <h3>Transferências</h3>
+    <mat-divider></mat-divider>
+    <br /> <br />
+    <button mat-raised-button color="primary" (click)="editarTransacao()">Salvar</button>
+    <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
 </form>

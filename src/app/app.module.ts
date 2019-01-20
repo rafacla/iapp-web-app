@@ -47,7 +47,8 @@ import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComp
 from './componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from './componentes/user-edit/user-edit.component';
 import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
-import { TransacoesListComponent } from './componentes/transacoes-list/transacoes-list.component';
+import { TransacoesListComponent, TransacoesEditComponent } from './componentes/transacoes-list/transacoes-list.component';
+
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -93,7 +94,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     CategoriasListComponent,
     SubcategoriasEditComponent,
     DiarioSelecionaComponent,
-    DiarioEditComponent],
+    DiarioEditComponent,
+    TransacoesListComponent,
+    TransacoesEditComponent],
   declarations: [
     AppComponent,
     TemplateComponent,
@@ -107,7 +110,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     CategoriasEditComponent,
     SubcategoriasEditComponent,
     UserEditComponent, 
-    PhoneMaskDirective, TransacoesListComponent
+    PhoneMaskDirective, 
+    TransacoesListComponent,
+    TransacoesEditComponent
   ],
   providers: [
     {
@@ -116,7 +121,7 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
       multi: true,
     },
     { 
-      provide: LOCALE_ID, useValue: 'pt' 
+      provide: LOCALE_ID, useValue: 'pt-br' 
     }, 
     {
       provide: DateAdapter, useClass: MomentDateAdapter

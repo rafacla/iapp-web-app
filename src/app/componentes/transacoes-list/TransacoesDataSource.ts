@@ -59,6 +59,8 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 transacao_valor: element.transacao_valor,
                 transacao_aprovada: element.transacao_aprovada,
                 transacao_conciliada: element.transacao_conciliada,
+                transacao_numero: element.transacao_numero,
+                transacao_fatura_data: element.transacao_fatura_data,
                 conta_id: element.conta_id,
                 conta_nome: element.conta_nome,
                 diario_uid: element.diario_uid,
@@ -89,8 +91,8 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                   //essa transação está mesclada com outra transação, vamos achar esta outra transação e apontar:
                   //só devemos mesclar transações na mesma conta:
                   listaTransacoesMescladasPara.push(element.conta_id+'>'+element.transacao_merged_to_id);
-                }
-                if (element.transacoes_item_id) {
+                } else if (element.transacoes_item_id) {
+                  // não é uma transaçao mesclada, então seguimos:
                   const novaSubtransacao: Subtransacoes = {
                     subcategoria_id: element.subcategoria_id,
                     subcategoria_nome: element.subcategoria_nome,
@@ -104,8 +106,11 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                     categoria_nome: element.categoria_nome
                   };
                   novaTransacao.subtransacoes.push(novaSubtransacao);
+                  this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, novaTransacao);
+                } else {
+                  // não possui uma subtransação, vamos inserir apenas a transação:
+                  this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, novaTransacao);
                 }
-                this.listaTransacoes.set(element.conta_id+'>'+element.transacao_id, novaTransacao);
               }
             }); 
             //Ok, agora vamos verificar quais transações possuem outras transações apontadas para ela:
@@ -125,12 +130,20 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
     /**
      * Esta função faz a atualização da transação no cache local (apenas a transação, não as subtransações) e também no servidor.
      * Lembre-se, parâmetros em JavaScript são passados por referência, você deve passar uma cópia da transação já alterada.
-     * @param transacao Uma cópia da transação já alterada
+     * @param transacaoAlterada Uma cópia da transação já alterada
+     * @param transacaoAntiga Opcional: uma cópia da transação antiga, obrigatório se for alterar a conta de origem
      */
-    alteraTransacao(transacao: TransacoesCascata) {
-      const transacaoAntiga = this.listaTransacoes.get(transacao.conta_id+'>'+transacao.transacao_id);
-      this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
-      const colunasAAtualizar = Array('transacao_numero','transacao_data','transacao_sacado','transacao_descricao','transacao_valor','transacao_conciliada','transacao_aprovada','transacao_merged_to_id');
+    alteraTransacao(transacao: TransacoesCascata, transacaoAntiga?: TransacoesCascata) {
+      if (!transacaoAntiga) {
+        transacaoAntiga = this.listaTransacoes.get(transacao.conta_id+'>'+transacao.transacao_id);
+      }
+      if (transacao.conta_id !== transacaoAntiga.conta_id) {
+        this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
+        this.listaTransacoes.delete(transacaoAntiga.conta_id+'>'+transacaoAntiga.transacao_id);
+      } else {
+        this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
+      }
+      const colunasAAtualizar = Array('conta_id','transacao_numero','transacao_data','transacao_sacado','transacao_descricao','transacao_valor','transacao_conciliada','transacao_aprovada','transacao_merged_to_id');
       const atualizaJSON = {} as TransacoesTabular;
       colunasAAtualizar.forEach(coluna => {
         if (transacaoAntiga[coluna]!==transacao[coluna]) {

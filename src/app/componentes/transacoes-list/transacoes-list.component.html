@@ -5,7 +5,7 @@
     <button mat-button *ngIf="numeroSelecionados() > 0">
       <mat-icon>delete</mat-icon> Deletar Selecionados
     </button>
-  <button mat-button><mat-icon>add</mat-icon> Nova transação</button>
+  <button mat-button (click)="openDialog()"><mat-icon>add</mat-icon> Nova transação</button>
   <button mat-button><mat-icon>calendar_today</mat-icon> Novo parcelamento</button>
 </div>
 <div class="content">
@@ -74,7 +74,7 @@
         </ng-container>
       
         <ng-container matColumnDef="transacao_sacado">
-          <th mat-header-cell *matHeaderCellDef> SACADO </th>
+          <th mat-header-cell *matHeaderCellDef> BENEFICIÁRIO </th>
           <td mat-cell *matCellDef="let element">{{element.transacao_sacado}} <i class="fas fa-link" *ngIf="element.transacao_merged_master" matTooltip="Esta transação possui outras transações mescladas. Edite a transação para verificar."></i></td>
         </ng-container>
 
@@ -117,7 +117,7 @@
       
         <tr mat-header-row *matHeaderRowDef="transacoesColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: transacoesColumns;"
-            (click)="selection.toggle(row)" class="categoria"> </tr>
+            (click)="openDialog(row)" class="categoria"> </tr>
       </table>
     </div>
     <div class="transacoes-resumo">

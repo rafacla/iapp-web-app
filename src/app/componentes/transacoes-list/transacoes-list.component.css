@@ -5,7 +5,9 @@
 .content > div {
     flex: 1 1 auto;
 }
-
+.form-field {
+    padding: 5px;
+}
 .filter-menu {
     box-shadow: 5px 1px 20px -5px #ddd;
     width: 250px;

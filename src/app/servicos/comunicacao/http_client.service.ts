@@ -17,9 +17,9 @@ import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-
 @Injectable({ providedIn: 'root' })
 
 export class HttpClientService {
-	private apiUrl = 'https://api.rafacla.com';
-
-
+	// private apiUrl = 'https://api.rafacla.com';
+	private apiUrl = 'http://localhost';
+	
     constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
 	/** POST autentica um usuário e retorna um token */
