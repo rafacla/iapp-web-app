@@ -1,48 +1,141 @@
-<div mat-dialog-title>{{data.transacao ? 'Editar transação' : 'Nova Transação'}}</div>
-<form [formGroup]="formTransacoes">
-    <mat-form-field class="form-field" style="width: 25%;">
-        <mat-label>Conta Origem</mat-label>
-        <mat-select placeholder="Escolha uma conta" required formControlName="conta_id" (selectionChange)="alternaTipoConta()">
-            <mat-option value="{{element.conta_id}}" *ngFor="let element of data.contas">{{element.conta_nome}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field class="form-field" style="width: 15%;">
-        <mat-label>Data</mat-label>
-        <input matInput [matDatepicker]="dataTransacao" placeholder="Data da Transação" disabled required formControlName="transacao_data" (dateInput)="calculaDataFatura()">
-        <mat-datepicker-toggle matSuffix [for]="dataTransacao"></mat-datepicker-toggle>
-        <mat-datepicker #dataTransacao disabled="false"></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field class="form-field" style="width: 35%;">
-        <mat-label>Beneficiário/Sacado</mat-label>
-        <input matInput placeholder="Nome do Beneficiário/Sacado" required formControlName="transacao_sacado">
-        <mat-hint>Quem recebeu ou enviou o dinheiro?</mat-hint>
-    </mat-form-field>
-    <mat-form-field class="form-field" style="width: 20%;">
-        <mat-label>Valor da Transação</mat-label>
-        <input matInput placeholder="Valor" required formControlName="transacao_valor" type="number" step="0.01">
-    </mat-form-field>
-    <mat-form-field class="form-field" style="width:25%;">
-        <mat-label>Número do Documento</mat-label>
-        <input matInput placeholder="Número do Documento" formControlName="transacao_numero">
-        <mat-hint>Número de identificação no extrato, evita transações duplicadas.</mat-hint>
-    </mat-form-field>
-    <mat-form-field class="form-field" [ngStyle]="{'width': transacaoCartao ? '55%' : '70%'}">
-        <mat-label>Descrição</mat-label>
-        <input matInput placeholder="Breve descrição da transação" formControlName="transacao_descricao">
-        <mat-hint>Para ajudar a lembrar no futuro.</mat-hint>
-    </mat-form-field>
-    <mat-form-field class="form-field" style="width:15%;" *ngIf="transacaoCartao">
-        <mat-label>Data da Fatura</mat-label>
-        <input matInput disabled [ngModel]="transacaoFaturaDataMMMYY" [ngModelOptions]="{standalone: true}">
-        <input matInput [hidden]="true" [matDatepicker]="dataFatura" placeholder="Data da Fatura" required formControlName="transacao_fatura_data">
-        <mat-datepicker-toggle matSuffix [for]="dataFatura"></mat-datepicker-toggle>
-        <mat-datepicker #dataFatura startView="year" (monthSelected)="chosenMonthHandler($event, dataFatura)"></mat-datepicker>
-    </mat-form-field>
-    <h4>Categorias</h4>
-    <mat-divider></mat-divider>
-    <h3>Transferências</h3>
-    <mat-divider></mat-divider>
-    <br /> <br />
-    <button mat-raised-button color="primary" (click)="editarTransacao()">Salvar</button>
-    <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
-</form>
+<div class="mat-dialog">
+    <div class="mat-dialog-header">
+        <div mat-dialog-title>{{data.transacao ? 'Editar transação' : 'Nova Transação'}}</div>
+        <form [formGroup]="formTransacoes">
+            <mat-form-field class="form-field" style="width: 20%;">
+                <mat-label>Conta Origem</mat-label>
+                <mat-select placeholder="Escolha uma conta" required formControlName="conta_id" (selectionChange)="alternaTipoConta()">
+                    <mat-option value="{{element.conta_id}}" *ngFor="let element of data.contas">{{element.conta_nome}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="width: 13%;">
+                <mat-label>Data</mat-label>
+                <input matInput [matDatepicker]="dataTransacao" placeholder="Data da Transação" required formControlName="transacao_data" (dateChange)="calculaDataFatura()">
+                <mat-datepicker-toggle matSuffix [for]="dataTransacao"></mat-datepicker-toggle>
+                <mat-datepicker #dataTransacao disabled="false"></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="width: 30%;">
+                <mat-label>Beneficiário/Sacado</mat-label>
+                <input matInput placeholder="Nome do Beneficiário/Sacado" required formControlName="transacao_sacado">
+                <mat-hint>Quem recebeu ou enviou o dinheiro?</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field class="form-field" style="width: 15%;">
+                <mat-label>Saída</mat-label>
+                <input matInput placeholder="Valor" required formControlName="transacao_valor_saida" type="number" step="0.01">
+                <span matPrefix>R$&nbsp;</span>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="width: 15%;">
+                <mat-label>Entrada</mat-label>
+                <input matInput placeholder="Valor" required formControlName="transacao_valor_entrada" type="number" step="0.01">
+                <span matPrefix>R$&nbsp;</span>
+            </mat-form-field>
+            
+            <mat-form-field class="form-field" style="width:25%;">
+                <mat-label>Número do Documento</mat-label>
+                <input matInput placeholder="Número do Documento" formControlName="transacao_numero">
+                <mat-hint>Número de identificação no extrato, evita transações duplicadas.</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="form-field" [ngStyle]="{'width': transacaoCartao ? '55%' : '70%'}">
+                <mat-label>Descrição</mat-label>
+                <input matInput placeholder="Breve descrição da transação" formControlName="transacao_descricao">
+                <mat-hint>Para ajudar a lembrar no futuro.</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="form-field" style="width:15%;" *ngIf="transacaoCartao">
+                <mat-label>Data da Fatura</mat-label>
+                <input matInput disabled [ngModel]="transacaoFaturaDataMMMYY" [ngModelOptions]="{standalone: true}">
+                <input matInput [hidden]="true" [matDatepicker]="dataFatura" placeholder="Data da Fatura" required formControlName="transacao_fatura_data">
+                <mat-datepicker-toggle matSuffix [for]="dataFatura"></mat-datepicker-toggle>
+                <mat-datepicker #dataFatura startView="year" (monthSelected)="chosenMonthHandler($event, dataFatura)"></mat-datepicker>
+                <mat-error *ngIf="transacao_fatura_data.invalid">Escolha uma data de fatura para a transação!</mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-content>
+        <form [formGroup]="formTransacoesItensCategorias">
+            <div class="subheader">Categorias <button mat-button (click)="addItensCategorias()"><mat-icon>library_add</mat-icon></button></div>
+            <mat-divider></mat-divider>
+            <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption >
+                <mat-optgroup *ngFor="let categoria of data.categorias" [label]="categoria.categoria_nome">
+                    <mat-option *ngFor="let subcategoria of categoria.subcategorias" [value]="subcategoria.subcategoria_id">
+                    {{subcategoria.subcategoria_nome}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+            <table>
+                <tbody formArrayName="arrowItensCategorias">
+                    <ng-container *ngFor="let item of itensCategorias.controls; let i=index">
+                        <tr [formGroup]="item">
+                            <td class="categoria">
+                                <mat-form-field class="transacoes-itens">
+                                    <input type="text" matInput placeholder="Categoria" required [matAutocomplete]="autoGroup" formControlName="subcategoria_id" [errorStateMatcher]="matcher">
+                                </mat-form-field>
+                            </td>
+                            <td class="descricao">
+                                <mat-form-field class="transacoes-itens">
+                                    <input type="text" matInput placeholder="Descrição" formControlName="subtransacao_memo"> 
+                                </mat-form-field>
+                            </td>
+                            <td class="valor">
+                                <mat-form-field class="transacoes-itens">
+                                    <input type="text" matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida">
+                                    <span matPrefix>R$&nbsp;</span>
+                                </mat-form-field>
+                            </td>
+                            <td class="valor">
+                                <mat-form-field class="transacoes-itens">
+                                    <input type="text" matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada">
+                                    <span matPrefix>R$&nbsp;</span>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                    </ng-container>                    
+                </tbody>
+            </table>
+        </form>
+        <form [formGroup]="formTransacoesItensTransferencias">
+            <div class="subheader">Transferências</div>
+            <mat-divider></mat-divider>
+            <table>
+                <tbody formArrayName="arrowItensTransferencias">
+                    <ng-container *ngFor="let item of itensTransferencias.controls; let i=index">
+                        <tr [formGroup]="item">
+                            <td class="categoria">
+                                <mat-form-field class="transacoes-itens">
+                                    <mat-select placeholder="Conta p/ Transferência" required formControlName="transf_para_conta_id">
+                                        <mat-option value="{{element.conta_id}}" *ngFor="let element of data.contas">{{element.conta_nome}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                            <td class="descricao">
+                                <mat-form-field class="transacoes-itens">
+                                    <input type="text" matInput placeholder="Descrição" formControlName="subtransacao_memo">
+                                </mat-form-field>
+                            </td>
+                            <td class="valor">
+                                <mat-form-field class="transacoes-itens">
+                                    <input matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida">
+                                    <span matPrefix>R$&nbsp;</span>
+                                </mat-form-field>
+                            </td>
+                            <td class="valor">
+                                <mat-form-field class="transacoes-itens">
+                                    <input matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada">
+                                    <span matPrefix>R$&nbsp;</span>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="primary" (click)="editarTransacao()">Salvar</button>
+        <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+        <mat-form-field class="transacoes-itens total">
+            <input matInput placeholder="A distribuir:" disabled value="0"  type="number" step="0.01" [(ngModel)]="txtADistribuir">
+            <span matPrefix>R$&nbsp;</span>
+        </mat-form-field>
+    </div>
+</div>

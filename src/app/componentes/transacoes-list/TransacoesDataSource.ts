@@ -1,5 +1,6 @@
 import { DataSource } from "@angular/cdk/table";
 import { TransacoesCascata, Subtransacoes, TransacoesTabular } from "./transacoes-list.component";
+import { SubtransacoesTabular } from "../../data-model/subtransacoes-tabular";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { CollectionViewer } from "@angular/cdk/collections";
 import { finalize, catchError } from "rxjs/operators";
@@ -143,7 +144,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
       } else {
         this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
       }
-      const colunasAAtualizar = Array('conta_id','transacao_numero','transacao_data','transacao_sacado','transacao_descricao','transacao_valor','transacao_conciliada','transacao_aprovada','transacao_merged_to_id');
+      const colunasAAtualizar = Array('conta_id','transacao_numero','transacao_data','transacao_sacado','transacao_descricao','transacao_valor','transacao_conciliada','transacao_aprovada','transacao_merged_to_id','transacao_fatura_data');
       const atualizaJSON = {} as TransacoesTabular;
       colunasAAtualizar.forEach(coluna => {
         if (transacaoAntiga[coluna]!==transacao[coluna]) {
@@ -152,7 +153,45 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
       });
       atualizaJSON.transacao_id = transacao.transacao_id;
       this.httpCliente.transacaoPost(atualizaJSON).subscribe(undefined, error => (console.log(error)));
+      transacaoAntiga.subtransacoes.forEach(element => {
+        //vamos deletar aquelas que nao existem mais:
+        if (transacao.subtransacoes.indexOf(element) == -1) {
+          let deletaSubtransacao = {} as SubtransacoesTabular;
+          deletaSubtransacao.transacoes_item_id = element.transacoes_item_id;
+          this.httpCliente.subtransacaoDelete(deletaSubtransacao);
+        }
+      });
+      transacao.subtransacoes.forEach(element => {
+        if (element.transacoes_item_id) {
+          //atualiza:
+          const atualizaJSONSub = {} as SubtransacoesTabular;
+          atualizaJSONSub.transacoes_item_id = element.transacoes_item_id;
+          atualizaJSONSub.transacoes_item_descricao = element.transacoes_item_descricao;
+          atualizaJSONSub.transacoes_item_valor = element.transacoes_item_valor;
+          atualizaJSONSub.subcategoria_id = element.subcategoria_id;
+          atualizaJSONSub.transf_para_conta_id = element.transf_para_conta_id;
+          this.httpCliente.subtransacaoPost(atualizaJSONSub).subscribe(undefined, error => (console.log(error)));
+        } else {
+          //nova subtransacao
+        }
+      });
       this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
+    }
+
+    novaTransacao(transacao: TransacoesCascata) {
+      this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
+      this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
+      const novaTransacao = {} as TransacoesTabular;
+      novaTransacao.conta_id = transacao.conta_id;
+      novaTransacao.transacao_data = transacao.transacao_data;
+      novaTransacao.transacao_descricao = transacao.transacao_descricao;
+      novaTransacao.transacao_fatura_data = transacao.transacao_fatura_data;
+      novaTransacao.transacao_numero = transacao.transacao_numero;
+      novaTransacao.transacao_sacado = transacao.transacao_sacado;
+      novaTransacao.transacao_valor = transacao.transacao_valor;
+      this.httpCliente.transacaoPost(novaTransacao).subscribe(null,error => {
+        console.log(error);
+      })
     }
 
     adicionaFiltro(filtro: Filtro) {

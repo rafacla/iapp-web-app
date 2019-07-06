@@ -224,4 +224,24 @@ export class HttpClientService {
 		};
 		return this.http.post<any>(this.apiUrl+'/transacao',transacao,httpOptions);
 	}
+
+	subtransacaoPost(subtransacao: SubtransacoesTabular): Observable<any> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.post<any>(this.apiUrl+'/subtransacao',subtransacao,httpOptions);
+	}
+
+	subtransacaoDelete(subtransacao: SubtransacoesTabular): Observable<any> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.post<any>(this.apiUrl+'/subtransacao/delete',subtransacao,httpOptions);
+	}
+
+
 }

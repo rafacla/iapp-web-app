@@ -1,0 +1,52 @@
+.subheader {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-top: 10px;
+}
+.subheader .mat-icon {
+    font-size: 0.8em;
+    font-weight: normal;
+}
+table {
+    width: 100%;
+    table-layout:fixed;
+}
+.form-field {
+    padding: 5px;
+}
+
+.transacoes-itens {
+    width: 100%;
+}
+td.categoria {
+    width: 20em;
+}
+.transacoes-itens.total,
+td.valor {
+    width: 10em;
+}
+
+.transacoes-itens.total{
+    margin-left: auto;
+    margin-top: 4px;
+}
+
+td.descricao {
+    width: auto;
+}
+
+.mat-dialog {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mat-dialog-content {
+    overflow: auto;
+    flex-grow: 1;
+}
+
+.mat-dialog-actions {
+    margin: 0;
+}

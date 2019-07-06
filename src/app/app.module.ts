@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './servicos/routing/app-routing.module';
 
 // MaterialComponents
-import { MatToolbarModule, MatCard, MatCardActions, MatCardAvatar, MatCardContent, MatCardFooter,
+import { MatToolbarModule, MatAutocompleteModule, MatCard, MatCardActions, MatCardAvatar, MatCardContent, MatCardFooter,
   MatCardHeader, MatCardImage, MatCardTitle, MatCardLgImage, MatCardMdImage, MatCardModule, MatCardSmImage,
   MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule,
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
@@ -61,6 +61,7 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
+    MatAutocompleteModule,
     MatCheckboxModule,
     MatToolbarModule,
     MatButtonModule,
