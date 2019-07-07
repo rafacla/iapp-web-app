@@ -120,6 +120,10 @@ export class TransacoesListComponent implements OnInit {
     private userService: UserService,
     public dialog: MatDialog) {}
 
+  openOFXDialog() {
+    
+  }
+
   openDialog(transacao?: TransacoesCascata): void {
     if (!transacao) {
       transacao = {
