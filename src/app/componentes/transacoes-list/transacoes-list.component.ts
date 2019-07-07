@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDatepicker, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort } from '@angular/material';
+import { MatDatepicker, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort, MatTooltip } from '@angular/material';
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import { UserService } from '../../servicos/user/user.service';
 import { TransacoesDataSource, Filtro } from './TransacoesDataSource';
@@ -50,6 +50,7 @@ export interface TransacoesTabular {
 }
 
 export interface Subtransacoes {
+  transacao_id: number;
   transacoes_item_id: number;
   transacoes_item_descricao: string;
   transacoes_item_valor: number;
@@ -121,7 +122,22 @@ export class TransacoesListComponent implements OnInit {
 
   openDialog(transacao?: TransacoesCascata): void {
     if (!transacao) {
-      transacao = null;
+      transacao = {
+        transacao_id: null,
+        transacao_data: '',
+        transacao_sacado: '',
+        transacao_descricao: '',
+        transacao_valor: 0,
+        transacao_conciliada: false,
+        transacao_aprovada: false,
+        transacao_merged_to_id: null,
+        transacao_numero: '',
+        transacao_fatura_data: null,
+        conta_id: null,
+        conta_nome: null,
+        diario_uid: null,
+        subtransacoes: []
+      };
     }
     const dialogRef = this.dialog.open(TransacoesEditComponent, {
       width: '1024px',
@@ -130,10 +146,10 @@ export class TransacoesListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        if (result.transacaoAlterada) {
+        if (result.transacaoAlterada.transacao_id) {
           this.transacoesDataSource.alteraTransacao(result.transacaoAlterada, result.transacaoAntiga);
-        } else if (result.transacaoNova) {
-          this.transacoesDataSource.novaTransacao(result.transacaoNova);
+        } else {
+          this.transacoesDataSource.novaTransacao(result.transacaoAlterada);
         }
         
       }
@@ -254,6 +270,15 @@ export class TransacoesListComponent implements OnInit {
     }
   }
 
+  deletaSelecionados() {
+    this.selection.selected.forEach(element => {
+      this.http.transacaoDelete(element.transacao_id).subscribe(resultado => {
+        this.transacoesDataSource.deletaTransacao(element);
+      });
+    });
+    this.selection.clear();
+  }
+
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -335,7 +360,7 @@ export class TransacoesEditComponent {
       transacao_data: [{value: this.data.transacao ? this.data.transacao.transacao_data : '', disabled: true}, [Validators.required]],
       transacao_sacado: [this.data.transacao ? this.data.transacao.transacao_sacado : '', [Validators.required]],
       transacao_numero: [this.data.transacao ? this.data.transacao.transacao_numero : ''],
-      transacao_descricao: [this.data.transacao ? this.data.transacao.transacao_descricao : '', [Validators.required]],
+      transacao_descricao: [this.data.transacao ? this.data.transacao.transacao_descricao : ''],
       transacao_fatura_data: [this.data.transacao ? this.data.transacao.transacao_fatura_data : ''],
       transacao_valor_entrada: [this.data.transacao ? (this.data.transacao.transacao_valor >=0 ? this.data.transacao.transacao_valor : 0) : ''],
       transacao_valor_saida: [this.data.transacao ? (this.data.transacao.transacao_valor <0 ? (-1)*this.data.transacao.transacao_valor : 0) : '']
@@ -345,18 +370,22 @@ export class TransacoesEditComponent {
     this.itensCategoria.forEach(itemCategoria => {
       arrowItensCategorias.push(
         this.formBuilder.group({
+          transacao_id: itemCategoria.transacao_id,
           subtransacao_id: itemCategoria.transacoes_item_id,
           subcategoria_id: itemCategoria.subcategoria_id,
+          subcategoria_nome: itemCategoria.subcategoria_nome,
+          categoria_nome: itemCategoria.categoria_nome,
           subtransacao_memo: itemCategoria.transacoes_item_descricao,
           subtransacao_valor_saida: (itemCategoria.transacoes_item_valor < 0 ? (-1)*itemCategoria.transacoes_item_valor : 0),
           subtransacao_valor_entrada: (itemCategoria.transacoes_item_valor > 0 ? itemCategoria.transacoes_item_valor : 0)
         })
       );
     });
-    let arrowItensTransferencias = this.formBuilder.array([]);
+    let arrowItensTransferencias = this.formBuilder.array([].map(x => this.formBuilder.group(x)));
     this.itensTransferencia.forEach(itemTransferencia => {
       arrowItensTransferencias.push(
         this.formBuilder.group({
+          transacao_id: itemTransferencia.transacao_id,
           subtransacao_id: itemTransferencia.transacoes_item_id,
           transf_para_conta_id: itemTransferencia.transf_para_conta_id,
           subtransacao_memo: itemTransferencia.transacoes_item_descricao,
@@ -380,19 +409,19 @@ export class TransacoesEditComponent {
       subtransacao_id: '',
       subcategoria_id: '',
       subtransacao_memo: '',
-      subtransacao_valor_saida: '',
-      subtransacao_valor_entrada: ''
+      subtransacao_valor_saida: 0,
+      subtransacao_valor_entrada: 0
     }));
   }
 
   addItensTransferencias() {
-    const arrowItensTransferencias = this.formTransacoesItensCategorias.get('arrowItensTransferencias') as FormArray;
+    const arrowItensTransferencias = this.formTransacoesItensTransferencias.get('arrowItensTransferencias') as FormArray;
     arrowItensTransferencias.push(this.formBuilder.group({
       subtransacao_id: '',
       transf_para_conta_id: '',
       subtransacao_memo: '',
-      subtransacao_valor_saida: '',
-      subtransacao_valor_entrada: ''
+      subtransacao_valor_saida: 0,
+      subtransacao_valor_entrada: 0
     }));
   }
 
@@ -408,8 +437,10 @@ export class TransacoesEditComponent {
     this.dialogRef.close();
   }
 
-  editarTransacao(): void {
-    if (this.data.transacao) {
+  editarTransacao(tooltip: MatTooltip): void {
+    if (this.txtADistribuir*1!==0) {
+      tooltip.show();
+    } else if (this.data.transacao) {
       // atualização
       if (this.formTransacoes.valid) {
         const transacaoEditar = {} as TransacoesCascata;
@@ -422,23 +453,26 @@ export class TransacoesEditComponent {
         transacaoEditar.transacao_fatura_data = this.formTransacoes.get('transacao_fatura_data').value;
         transacaoEditar.transacao_valor = this.formTransacoes.get('transacao_valor_entrada').value - this.formTransacoes.get('transacao_valor_saida').value;
         transacaoEditar.transacao_id = this.data.transacao.transacao_id;
+        transacaoEditar.transacao_conciliada = this.data.transacao.transacao_conciliada;
         const Subtransacoes = [] as Subtransacoes[];
-        //formTransacoesItensTransferencias arrowItensTransferencias
-        //formTransacoesItensCategorias arrowItensCategorias
         this.formTransacoesItensCategorias.controls.arrowItensCategorias.value.forEach(element => {
           const subtransacao = {} as Subtransacoes;
-          subtransacao.transacoes_item_id = element.controls.subtransacao_id.value;
-          subtransacao.transacoes_item_descricao = element.controls.subtransacao_memo.value;
-          subtransacao.transacoes_item_valor = element.controls.subtransacao_valor_entrada.value*1 - element.controls.subtransacao_valor_saida.value*1;
-          subtransacao.subcategoria_id = element.controls.subcategoria_id.value;
+          subtransacao.transacao_id = transacaoEditar.transacao_id;
+          subtransacao.transacoes_item_id = element.subtransacao_id;
+          subtransacao.transacoes_item_descricao = element.subtransacao_memo;
+          subtransacao.transacoes_item_valor = element.subtransacao_valor_entrada*1 - element.subtransacao_valor_saida*1;
+          subtransacao.subcategoria_id = element.subcategoria_id;
+          subtransacao.categoria_nome = this.getCategoria(element.subcategoria_id)[0].categoria_nome;
+          subtransacao.subcategoria_nome = this.getCategoria(element.subcategoria_id)[1].subcategoria_nome;
           Subtransacoes.push(subtransacao);
         });
         this.formTransacoesItensTransferencias.controls.arrowItensTransferencias.value.forEach(element => {
           const subtransacao = {} as Subtransacoes;
-          subtransacao.transacoes_item_id = element.controls.subtransacao_id.value;
-          subtransacao.transacoes_item_descricao = element.controls.subtransacao_memo.value;
-          subtransacao.transacoes_item_valor = element.controls.subtransacao_valor_entrada.value*1 - element.controls.subtransacao_valor_saida.value*1;
-          subtransacao.transf_para_conta_id = element.controls.transf_para_conta_id.value;
+          subtransacao.transacao_id = transacaoEditar.transacao_id;
+          subtransacao.transacoes_item_id = element.subtransacao_id;
+          subtransacao.transacoes_item_descricao = element.subtransacao_memo;
+          subtransacao.transacoes_item_valor = element.subtransacao_valor_entrada*1 - element.subtransacao_valor_saida*1;
+          subtransacao.transf_para_conta_id = element.transf_para_conta_id;
           Subtransacoes.push(subtransacao);
         });
         transacaoEditar.subtransacoes = Subtransacoes;
@@ -476,25 +510,7 @@ export class TransacoesEditComponent {
       this.transacaoCartao = (conta.conta_cartao == '1');
       if (this.transacaoCartao) {
         this.formTransacoes.get('transacao_fatura_data').setValidators(Validators.required);
-        if (this.data.transacao) {
-          const dataFatura = moment(this.data.transacao.transacao_fatura_data);
-          if (dataFatura.isValid()) {
-            this.formTransacoes.get('transacao_fatura_data').setValue(this.data.transacao.transacao_fatura_data);
-            this.transacaoFaturaDataMMMYY = dataFatura.format('MMM-YY');
-          } else if (moment(this.data.transacao.transacao_data).isValid()) {
-            let data = moment(this.data.transacao.transacao_data).clone();
-            if (+data.format('D') > +conta.conta_cartao_data_fechamento) {
-              // entrará na próxima fatura
-              data.add(1,'months').calendar();
-              data.startOf('month');
-            } else {
-              // entrará na fatura do mês atual
-              data.startOf('month');
-            }
-            this.formTransacoes.get('transacao_fatura_data').setValue(data.format('YYYY-MM-DD'));
-            this.transacaoFaturaDataMMMYY = data.format('MMM-YY');
-          }
-        }       
+        this.calculaDataFatura();
       } else {
         this.formTransacoes.get('transacao_fatura_data').clearValidators();
       }
@@ -511,13 +527,26 @@ export class TransacoesEditComponent {
     let conta = this.data.contas.find(element => element.conta_id == this.formTransacoes.get('conta_id').value);
     if (conta && conta.conta_cartao == '1') {
       let data = moment(this.formTransacoes.get('transacao_data').value).clone();
-        if (+data.format('D') > +conta.conta_cartao_data_fechamento) {
+      let diaFechamento = moment(conta.conta_cartao_data_fechamento);
+      let diaVencimento = moment(conta.conta_cartao_data_vencimento)
+        if (+data.format('D') > +diaFechamento.format('D')) {
           // entrará na próxima fatura
-          data.add(1,'months').calendar();
-          data.startOf('month');
+          // precisamos ver se isso significa um ou dois meses a frente:
+          if (+diaFechamento.format('D')>+diaVencimento.format('D')) {
+            data.add(2,'months').calendar();
+            data.startOf('month');
+          } else {
+            data.add(1,'months').calendar();
+            data.startOf('month');
+          }
         } else {
           // entrará na fatura do mês atual
-          data.startOf('month');
+          if (+diaFechamento.format('D')>+diaVencimento.format('D')) {
+            data.add(1,'months').calendar();
+            data.startOf('month');
+          } else {
+            data.startOf('month');
+          }
         }
         this.formTransacoes.get('transacao_fatura_data').setValue(data.format('YYYY-MM-DD'));
         this.transacaoFaturaDataMMMYY = data.format('MMM-YY');
@@ -564,11 +593,14 @@ export class TransacoesEditComponent {
   }
 
   calculaADistribuir() {
-    const valorTransacao = 1*this.formTransacoes.get('transacao_valor_entrada').value+1*this.formTransacoes.get('transacao_valor_saida').value;
+    const valorTransacao = 1*this.formTransacoes.get('transacao_valor_entrada').value-1*this.formTransacoes.get('transacao_valor_saida').value;
     let valorItens = 0;
     this.itensCategorias.controls.forEach(element => {
       valorItens += element.get('subtransacao_valor_entrada').value*1-element.get('subtransacao_valor_saida').value*1;
     });
-    this.txtADistribuir = valorTransacao - valorItens;
+    this.itensTransferencias.controls.forEach(element => {
+      valorItens += element.get('subtransacao_valor_entrada').value*1-element.get('subtransacao_valor_saida').value*1;
+    });
+    this.txtADistribuir = Math.abs(valorTransacao - valorItens);
   }
 }

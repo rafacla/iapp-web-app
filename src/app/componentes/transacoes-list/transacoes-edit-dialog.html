@@ -22,12 +22,12 @@
             
             <mat-form-field class="form-field" style="width: 15%;">
                 <mat-label>Saída</mat-label>
-                <input matInput placeholder="Valor" required formControlName="transacao_valor_saida" type="number" step="0.01">
+                <input matInput placeholder="Valor" required formControlName="transacao_valor_saida" type="number" step="0.01" class="valor" (change)="calculaADistribuir()" >
                 <span matPrefix>R$&nbsp;</span>
             </mat-form-field>
             <mat-form-field class="form-field" style="width: 15%;">
                 <mat-label>Entrada</mat-label>
-                <input matInput placeholder="Valor" required formControlName="transacao_valor_entrada" type="number" step="0.01">
+                <input matInput placeholder="Valor" required formControlName="transacao_valor_entrada" type="number" step="0.01" class="valor" (change)="calculaADistribuir()" >
                 <span matPrefix>R$&nbsp;</span>
             </mat-form-field>
             
@@ -78,13 +78,13 @@
                             </td>
                             <td class="valor">
                                 <mat-form-field class="transacoes-itens">
-                                    <input type="text" matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida">
+                                    <input type="text" matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida" (change)="calculaADistribuir()" class="valor">
                                     <span matPrefix>R$&nbsp;</span>
                                 </mat-form-field>
                             </td>
                             <td class="valor">
                                 <mat-form-field class="transacoes-itens">
-                                    <input type="text" matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada">
+                                    <input type="text" matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada" (change)="calculaADistribuir()" class="valor">
                                     <span matPrefix>R$&nbsp;</span>
                                 </mat-form-field>
                             </td>
@@ -94,7 +94,7 @@
             </table>
         </form>
         <form [formGroup]="formTransacoesItensTransferencias">
-            <div class="subheader">Transferências</div>
+            <div class="subheader">Transferências <button mat-button (click)="addItensTransferencias()"><mat-icon>library_add</mat-icon></button></div>
             <mat-divider></mat-divider>
             <table>
                 <tbody formArrayName="arrowItensTransferencias">
@@ -114,13 +114,13 @@
                             </td>
                             <td class="valor">
                                 <mat-form-field class="transacoes-itens">
-                                    <input matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida">
+                                    <input matInput placeholder="Saída" required  type="number" step="0.01" formControlName="subtransacao_valor_saida"  (change)="calculaADistribuir()" class="valor">
                                     <span matPrefix>R$&nbsp;</span>
                                 </mat-form-field>
                             </td>
                             <td class="valor">
                                 <mat-form-field class="transacoes-itens">
-                                    <input matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada">
+                                    <input matInput placeholder="Entrada" required  type="number" step="0.01" formControlName="subtransacao_valor_entrada"  (change)="calculaADistribuir()" class="valor">
                                     <span matPrefix>R$&nbsp;</span>
                                 </mat-form-field>
                             </td>
@@ -131,10 +131,10 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button color="primary" (click)="editarTransacao()">Salvar</button>
+        <button mat-raised-button color="primary" (click)="editarTransacao(tooltip)">Salvar</button>
         <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
-        <mat-form-field class="transacoes-itens total">
-            <input matInput placeholder="A distribuir:" disabled value="0"  type="number" step="0.01" [(ngModel)]="txtADistribuir">
+        <mat-form-field class="transacoes-itens total" #tooltip="matTooltip" matTooltip="Você deve distribuir os valores até zerar" matTooltipClass="tooltip-red" matTooltipPosition="above"> 
+            <input matInput placeholder="A distribuir:" disabled value="0"  type="number" step="0.01" [(ngModel)]="txtADistribuir" class="valor">
             <span matPrefix>R$&nbsp;</span>
         </mat-form-field>
     </div>

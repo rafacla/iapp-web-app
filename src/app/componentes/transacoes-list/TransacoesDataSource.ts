@@ -72,6 +72,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 const editaTransacao = this.listaTransacoes.get(element.conta_id+'>'+element.transacao_id);
                 if (element.transacoes_item_id) {
                   const novaSubtransacao: Subtransacoes = {
+                    transacao_id: element.transacao_id,
                     subcategoria_id: element.subcategoria_id,
                     subcategoria_nome: element.subcategoria_nome,
                     transacoes_item_descricao: element.transacoes_item_descricao,
@@ -95,6 +96,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 } else if (element.transacoes_item_id) {
                   // não é uma transaçao mesclada, então seguimos:
                   const novaSubtransacao: Subtransacoes = {
+                    transacao_id: element.transacao_id,
                     subcategoria_id: element.subcategoria_id,
                     subcategoria_nome: element.subcategoria_nome,
                     transacoes_item_descricao: element.transacoes_item_descricao,
@@ -126,6 +128,11 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
             console.log(erro);
             this.transacoesSubject.next([]);
           });
+    }
+
+    deletaTransacao(transacao: TransacoesCascata) {
+      this.listaTransacoes.delete(transacao.conta_id+'>'+transacao.transacao_id);
+      this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
     }
 
     /**
@@ -162,7 +169,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
         }
       });
       transacao.subtransacoes.forEach(element => {
-        if (element.transacoes_item_id) {
+        if (element.transacoes_item_id*1 !== 0) {
           //atualiza:
           const atualizaJSONSub = {} as SubtransacoesTabular;
           atualizaJSONSub.transacoes_item_id = element.transacoes_item_id;
@@ -173,6 +180,13 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
           this.httpCliente.subtransacaoPost(atualizaJSONSub).subscribe(undefined, error => (console.log(error)));
         } else {
           //nova subtransacao
+          const novaJSONSub = {} as SubtransacoesTabular;
+          novaJSONSub.transacao_id = element.transacao_id;
+          novaJSONSub.transacoes_item_descricao = element.transacoes_item_descricao;
+          novaJSONSub.transacoes_item_valor = element.transacoes_item_valor;
+          novaJSONSub.subcategoria_id = element.subcategoria_id;
+          novaJSONSub.transf_para_conta_id = element.transf_para_conta_id;
+          this.httpCliente.subtransacaoPost(novaJSONSub).subscribe(undefined, error => (console.log(error)));
         }
       });
       this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
@@ -189,7 +203,18 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
       novaTransacao.transacao_numero = transacao.transacao_numero;
       novaTransacao.transacao_sacado = transacao.transacao_sacado;
       novaTransacao.transacao_valor = transacao.transacao_valor;
-      this.httpCliente.transacaoPost(novaTransacao).subscribe(null,error => {
+      this.httpCliente.transacaoPost(novaTransacao).subscribe(sucesso => {
+        transacao.subtransacoes.forEach(element => {
+          let subtransacao = {
+            transacao_id: sucesso.id,
+            transacoes_item_descricao: element.transacoes_item_descricao,
+            transacoes_item_valor: element.transacoes_item_valor,
+            subcategoria_id: element.subcategoria_id,
+            transf_para_conta_id: element.transf_para_conta_id,
+          };
+          this.httpCliente.subtransacaoPost(subtransacao).subscribe(null, error => console.log(error));
+        });
+      },error => {
         console.log(error);
       })
     }

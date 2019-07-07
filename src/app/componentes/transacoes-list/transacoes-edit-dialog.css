@@ -3,9 +3,8 @@
     font-weight: 600;
     margin-top: 10px;
 }
-.subheader .mat-icon {
-    font-size: 0.8em;
-    font-weight: normal;
+.subheader button {
+    float: right;
 }
 table {
     width: 100%;
@@ -49,4 +48,12 @@ td.descricao {
 
 .mat-dialog-actions {
     margin: 0;
+}
+
+::ng-deep .tooltip-red {
+    background: #b71c1c;
+}
+
+.valor {
+    text-align: right;
 }

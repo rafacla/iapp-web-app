@@ -2,7 +2,7 @@
   <span>Transações para {{nomeContaAtual}}</span>
 </div>
 <div class="mat-toolbar-third-row">
-    <button mat-button *ngIf="numeroSelecionados() > 0">
+    <button mat-button *ngIf="numeroSelecionados() > 0" (click)="deletaSelecionados()">
       <mat-icon>delete</mat-icon> Deletar Selecionados
     </button>
   <button mat-button (click)="openDialog()"><mat-icon>add</mat-icon> Nova transação</button>

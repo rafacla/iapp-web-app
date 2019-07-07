@@ -225,7 +225,17 @@ export class HttpClientService {
 		return this.http.post<any>(this.apiUrl+'/transacao',transacao,httpOptions);
 	}
 
-	subtransacaoPost(subtransacao: SubtransacoesTabular): Observable<any> {
+	transacaoDelete(transacao_id: number): Observable<any> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		let transacao = {transacao_id: [transacao_id]};
+		return this.http.post<any>(this.apiUrl+'/transacao/delete',transacao,httpOptions);
+	}
+
+	subtransacaoPost(subtransacao: any): Observable<any> {
 		const httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type':  'application/json; charset=UTF-8'
