@@ -22,7 +22,7 @@ import { MatToolbarModule, MatAutocompleteModule, MatCard, MatCardActions, MatCa
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
   MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions, MatProgressSpinnerModule,MatProgressBarModule, matFormFieldAnimations,
   MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
-  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter } from '@angular/material';
+  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter, MatStepperModule } from '@angular/material';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 // Serviços:
@@ -47,7 +47,7 @@ import { CategoriasListComponent, CategoriasEditComponent, SubcategoriasEditComp
 from './componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from './componentes/user-edit/user-edit.component';
 import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
-import { TransacoesListComponent, TransacoesEditComponent } from './componentes/transacoes-list/transacoes-list.component';
+import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
 
 
 // Pass the fusioncharts library and chart modules
@@ -86,7 +86,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     MatSelectModule,
     MatSortModule,
     MatTooltipModule,
-    FusionChartsModule
+    FusionChartsModule,
+    MatStepperModule
   ],
   entryComponents: [
     ContasListComponent,
@@ -97,7 +98,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     DiarioSelecionaComponent,
     DiarioEditComponent,
     TransacoesListComponent,
-    TransacoesEditComponent],
+    TransacoesEditComponent,
+    TransacoesOFXComponent],
   declarations: [
     AppComponent,
     TemplateComponent,
@@ -113,7 +115,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     UserEditComponent, 
     PhoneMaskDirective, 
     TransacoesListComponent,
-    TransacoesEditComponent
+    TransacoesEditComponent,
+    TransacoesOFXComponent
   ],
   providers: [
     {

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDatepicker, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort, MatTooltip } from '@angular/material';
+import { MatDatepicker, MatTable, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSort, MatTooltip, MatStepper, MatTableDataSource } from '@angular/material';
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import { UserService } from '../../servicos/user/user.service';
 import { TransacoesDataSource, Filtro } from './TransacoesDataSource';
@@ -11,6 +11,7 @@ import { ContaList } from '../../data-model/conta-list';
 import { CategoriasCascata, Subcategorias } from '../../data-model/categoria-cascata';
 
 import {ErrorStateMatcher} from '@angular/material/core';
+import {parse as parseOFX} from 'ofx-js';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -20,33 +21,48 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+export interface TransacoesOFX {
+  data: string;
+  beneficiario: string;
+  numero: string;
+  valor: number;
+  importar: boolean;
+}
+
 export interface DialogData {
   transacao: TransacoesCascata;
   contas: any;
   categorias: CategoriasCascata[];
 }
+
+export interface DialogDataOFX {
+  transacoes: TransacoesTabular[];
+  contas: any;
+  categorias: CategoriasCascata[];
+}
+
 export interface TransacoesTabular {
-  transacao_id: number;
+  transacao_id?: number;
   transacao_data: string;
   transacao_sacado: string;
-  transacao_descricao: string;
+  transacao_descricao?: string;
   transacao_valor: number;
-  transacao_conciliada: boolean;
-  transacao_aprovada: boolean;
-  transacao_merged_to_id: number;
+  transacao_conciliada?: boolean;
+  transacao_aprovada?: boolean;
+  transacao_merged_to_id?: number;
   transacao_numero: string;
-  transacao_fatura_data: string;
+  transacao_fatura_data?: string;
   conta_id: number;
-  conta_nome: string;
-  diario_uid: string;
-  transacoes_item_id: number;
-  transacoes_item_descricao: string;
-  transacoes_item_valor: number;
-  categoria_id: number;
-  categoria_nome: string;
-  subcategoria_id: number;
-  subcategoria_nome: string;
-  transf_para_conta_id: number;
+  conta_nome?: string;
+  diario_uid?: string;
+  transacoes_item_id?: number;
+  transacoes_item_descricao?: string;
+  transacoes_item_valor?: number;
+  categoria_id?: number;
+  categoria_nome?: string;
+  subcategoria_id?: number;
+  subcategoria_nome?: string;
+  transf_para_conta_id?: number;
 }
 
 export interface Subtransacoes {
@@ -121,7 +137,17 @@ export class TransacoesListComponent implements OnInit {
     public dialog: MatDialog) {}
 
   openOFXDialog() {
-    
+    const dialogRef = this.dialog.open(TransacoesOFXComponent, {
+      width: '95%',
+      height: '100%',
+      data: {contas: this.listaTodasContas, categorias: this.listaCategorias, transacoes: Array.from(this.transacoesDataSource.listaTransacoes.values())}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.ngOnInit();
+      }
+    });
   }
 
   openDialog(transacao?: TransacoesCascata): void {
@@ -607,4 +633,95 @@ export class TransacoesEditComponent {
     });
     this.txtADistribuir = Math.abs(valorTransacao - valorItens);
   }
+}
+
+@Component({
+  selector: 'app-transacoes-ofx',
+  templateUrl: 'transacoes-ofx-dialog.html',
+  styleUrls: ['./transacoes-ofx-dialog.css']
+})
+export class TransacoesOFXComponent {
+  displayedColumns: string[] = ['data', 'beneficiario', 'numero', 'saida','entrada','importar'];
+  OFXString = "Carregará aqui.";
+  dataSource = new MatTableDataSource<TransacoesOFX>([]);
+  stepperPrimeiroNivel = false;
+  stepperSegundoNivel = false;
+  arquivoInvalido = false;
+  percentualImportar=0;
+  falha=false;
+  contaSelect = new FormControl('', Validators.required);
+  constructor(
+    public dialogRef: MatDialogRef<DialogDataOFX>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogDataOFX,
+    private http: HttpClientService,
+    private userService: UserService,
+    private formBuilder: FormBuilder) 
+    {}
+
+    lerOFX(event, stepper: MatStepper) {
+      this.arquivoInvalido = false;
+      var reader = new FileReader();
+      reader.readAsText(event.srcElement.files[0]);
+      var me = this;
+      reader.onload = function () {
+        me.OFXString = reader.result.toString();
+        parseOFX(me.OFXString).then(ofxData => {
+          if (ofxData.OFX !== 'undefined') {
+            me.stepperPrimeiroNivel = true;
+            let dataTransacoes: TransacoesOFX[] = [];
+            let listaTransacoes = ofxData.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN;
+            listaTransacoes.forEach(element => {
+              let importaTransacao = me.data.transacoes.find(i => i.transacao_numero == element.FITID)
+              let transacaoImportar = {
+                data: moment(element.DTPOSTED,'YYYYMMDD').format('DD/MM/YYYY'),
+                beneficiario: element.MEMO,
+                numero: element.FITID,
+                valor: element.TRNAMT,
+                importar: (importaTransacao===undefined)
+              }
+              dataTransacoes.push(transacaoImportar);
+            });
+            me.dataSource = new MatTableDataSource(dataTransacoes);
+            stepper.selected.completed = true;
+            stepper.next();
+          } else {
+            me.arquivoInvalido = true;
+          }
+        });
+      }
+    }
+
+    importarOFX(stepper: MatStepper) {
+      if (!this.contaSelect.valid) {
+        this.contaSelect.markAsTouched();
+      } else {
+        let transacoesAImportar = this.dataSource.data.filter(filtrar => filtrar.importar == true);
+        let total = transacoesAImportar.length;
+        let contagem = 0;
+        
+        if (total > 0) {
+          stepper.selected.completed = true;
+          stepper.next();
+          transacoesAImportar.forEach(element => {
+            let transacao: TransacoesTabular = {
+              transacao_data: moment(element.data, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+              transacao_sacado: element.beneficiario,
+              transacao_valor: element.valor,
+              transacao_numero: element.numero,
+              conta_id: this.contaSelect.value
+            };
+            
+            this.http.transacaoPost(transacao).subscribe(sucesso => {
+              contagem = contagem + 1;
+              this.percentualImportar = 100*(contagem/total);
+            }, erro => {
+              contagem = contagem + 1;
+              this.percentualImportar = 100*(contagem/total);
+              this.falha=true;
+            });
+            
+          });
+        }
+      }
+    }
 }

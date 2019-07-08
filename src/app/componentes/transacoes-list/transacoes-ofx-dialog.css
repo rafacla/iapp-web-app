@@ -1,0 +1,72 @@
+.arquivo_invalido {
+    color: #FF0000;
+}
+
+table {
+    width: 100%;
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+}
+
+.main-dialog {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.mat-dialog-header {
+    flex: 0 1 auto;
+}
+
+.mat-dialog-content {
+    flex: 1 1 auto;
+    max-height: 100% !important;
+}
+
+.mat-dialog-actions {
+    flex: 0 1 auto;
+    align-self: flex-end;
+}
+
+.mat-stepper-horizontal {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.mat-horizontal-stepper-header-container {
+    flex: 0 1 auto;
+}
+
+::ng-deep .mat-horizontal-content-container {
+    flex: 1 1 auto;
+    overflow-y: scroll!important;
+}
+
+.mat-column-saida,
+.mat-column-entrada,
+.mat-column-importar {
+    text-align: right;
+}
+
+.mat-column-numero {
+    text-align: center;
+}
+
+th,
+td {
+    padding-right: 5px;
+}
+
+.mat-progress-bar {
+    margin-top: 10px;
+}
+
+.concluir {
+    width: 100%;
+    text-align: center;
+}
+
+.concluir .mat-icon {
+    font-size: 5em;
+}
