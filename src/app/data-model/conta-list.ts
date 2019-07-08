@@ -9,4 +9,5 @@ export class ContaList {
     conta_cartao_data_vencimento: string;
     conta_cartao_data_fechamento: string;
     diario_uid: string;
+    conta_saldo?: number;
 }

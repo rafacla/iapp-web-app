@@ -6,16 +6,29 @@
 </div>
 <div class="contas-content">
   <div class="contas-summary">
-      <mat-card class="contas-summary-card">
-          <mat-card-content>
-              <p>Contas Corrente:</p>
-              <p *ngFor="let item of contasCorrente" > {{item.conta_nome}} </p>
-              <p>Cartões de Crédito:</p>
-              <p *ngFor="let item of contasCartao" > {{item.conta_nome}} </p>
-          </mat-card-content>
+      <p class="conta_titulo">Contas Corrente</p>
+      <mat-card class="carregando" *ngIf="contasList === undefined">
+          <mat-icon>schedule</mat-icon>
+          <p class="conta_saldo">R$ {{0 | number:'1.2'}}</p>
+          <p class="conta_nome">carregando...</p>
+          <button mat-stroked-button><mat-icon>search</mat-icon>VER DETALHE</button>
+      </mat-card>
+      <mat-card *ngFor="let item of contasCorrente" >
+        <mat-icon>account_balance_wallet</mat-icon>
+        <p class="conta_saldo">R$ {{item.conta_saldo | number:'1.2'}}</p>
+        <p class="conta_nome">{{item.conta_nome}}</p>
+        <button (click)="openDetail(item)" mat-stroked-button color="primary"><mat-icon>search</mat-icon>VER DETALHE</button>
+      </mat-card>
+      <p class="conta_titulo">Cartões de Crédito</p>
+      <mat-card *ngFor="let item of contasCartao" >
+        <mat-icon>credit_card</mat-icon>
+        <p class="conta_saldo">R$ {{item.conta_saldo | number:'1.2'}}</p>
+        <p class="conta_nome">{{item.conta_nome}}</p>
+        <button (click)="openDetail(item)" mat-stroked-button color="primary"><mat-icon>search</mat-icon>VER DETALHE</button>
       </mat-card>
   </div>
   <div class="card-list">
+    <p class="conta_titulo">Detalhe da conta</p>
     <mat-card class="card-carregando" *ngIf="contasList === undefined">
       <mat-card-header>
           <mat-card-title>Carregando...</mat-card-title>
@@ -29,24 +42,19 @@
           </div>
         </mat-card-content>
     </mat-card>
-    <mat-card class="card-diario" *ngFor="let conta of contasList">
+    <mat-card class="card-diario" *ngIf="contaDetalhe !== undefined">
       <mat-card-header>
-          <div class="card-title">{{conta.conta_nome}}</div>
-          <div class="card-subtitle">(Última conciliação: {{conta.conta_reconciliado_data}})</div>
+          <div class="card-title">{{contaDetalhe.conta_nome}} {{(contaDetalhe.conta_cartao.toString() == '1' ? '(Cartão de Crédito)' : '(Conta Corrente)')}}</div>
+          <div class="card-subtitle">(Última conciliação: {{contaDetalhe.conta_reconciliado_data}})</div>
       </mat-card-header>
       <mat-card-content>
-        <div class="card-content">
-          <fusioncharts
-            width="800"
-            height="200"
-            type="area2d"
-            [dataSource]="dataSource">
-          </fusioncharts>
+        <div class="chart-container">
+            <canvas #lineChart width="1000px">{{ chart }}</canvas>
         </div>
       </mat-card-content>
       <mat-card-actions class="card-actions">
-        <button (click)="openDialog(conta.conta_id, conta.conta_nome, conta.conta_descricao)" mat-button [disabled]="contasDeletadas[conta.conta_id]">EDITAR CONTA</button>
-        <button mat-button (click)="deletaConta(conta)" [disabled]="contasDeletadas[conta.conta_id]">APAGAR CONTA</button>
+        <button mat-stroked-button color="primary" (click)="openDialog(contaDetalhe.conta_id, contaDetalhe.conta_nome, contaDetalhe.conta_descricao)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>edit</mat-icon>EDITAR CONTA</button>
+        <button mat-stroked-button color="warn" (click)="deletaConta(contaDetalhe)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>delete</mat-icon>APAGAR CONTA</button>
       </mat-card-actions>
     </mat-card>
   </div>

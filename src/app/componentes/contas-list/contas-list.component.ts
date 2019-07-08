@@ -1,9 +1,10 @@
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { ContaList } from '../../data-model/conta-list';
 import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import { UserService } from '../../servicos/user/user.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Chart } from 'chart.js';
 
 export interface DialogData {
   conta_id: string;
@@ -22,44 +23,78 @@ export class ContasListComponent implements OnInit {
   dataSource: Object;
   contasCorrente: ContaList[] = [];
   contasCartao: ContaList[] = [];
-
+  contaDetalhe: ContaList;
+  @ViewChild('lineChart') private chartRef;
+  chart: any;
+  
   constructor(
     private http: HttpClientService,
     private userService: UserService,
-    public dialog: MatDialog) {
-      this.dataSource = {
-          "chart": {
-              "xAxisName": "Mês",
-              "theme": "fusion",
-          },
-          // Chart Data
-          "data": [{
-              "label": "Venezuela",
-              "value": "290"
-          }, {
-              "label": "Saudi",
-              "value": "260"
-          }, {
-              "label": "Canada",
-              "value": "180"
-          }, {
-              "label": "Iran",
-              "value": "-140"
-          }, {
-              "label": "Russia",
-              "value": "115"
-          }, {
-              "label": "UAE",
-              "value": "100"
-          }, {
-              "label": "US",
-              "value": "30"
-          }, {
-              "label": "China",
-              "value": "30"
-          }]
-      };
-    }
+    public dialog: MatDialog) {}
+
+  openDetail(conta: ContaList) {
+    this.contaDetalhe = conta;
+    this.userService.getUserDetail().subscribe(user => {
+      this.http.subtransacoesTabularGet(user.userLastDiarioUID).subscribe(transacoes => {
+        
+      });
+    });
+    let labels = ['1','2','3'];
+    let dataPoints = [{
+      x: 1,
+      y: 10
+    }, {
+      x: 2,
+      y: -40
+    }, {
+      x: 3,
+      y: 20
+    }];
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels: labels, // your labels array
+        datasets: [
+          {
+            data: dataPoints, // your data array
+            borderColor: '#00AEFF',
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        aspectRatio: 3,
+        legend: {
+          display: false
+        }, 
+        tooltips: {
+          mode: 'index',
+					intersect: false
+        },
+        hover: {
+					mode: 'nearest',
+					intersect: true
+        },
+        scales: {
+					xAxes: [{
+						type: 'time',
+						distribution: 'series',
+						ticks: {
+							source: 'data',
+							autoSkip: true
+						}
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Saldo (R$)'
+						}
+					}]
+				},
+      }
+    });
+  }
 
   openDialog(conta_id: string, conta_nome?: string, conta_descricao?: string): void {
     if (conta_nome === undefined) {
@@ -88,6 +123,7 @@ export class ContasListComponent implements OnInit {
           this.contasList = contas;
           this.contasCartao = [];
           this.contasCorrente = [];
+          this.contaDetalhe = this.contasList[0];
           for (const conta of contas) {
             if (conta.conta_cartao === '1') {
               this.contasCartao.push(conta);

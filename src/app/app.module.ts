@@ -29,13 +29,6 @@ import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter
 import { AuthInterceptor } from './servicos/comunicacao/http_auth_interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-// Import angular-fusioncharts
-import { FusionChartsModule } from 'angular-fusioncharts';
-
-// Import FusionCharts library and chart modules
-import * as FusionCharts from 'fusioncharts';
-import * as Charts from 'fusioncharts/fusioncharts.charts';
-import * as FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 
 // Componentes:
 import { TemplateComponent } from './componentes/template/template.component';
@@ -50,8 +43,6 @@ import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
 
 
-// Pass the fusioncharts library and chart modules
-FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
 @NgModule({
   imports: [
@@ -86,7 +77,6 @@ FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
     MatSelectModule,
     MatSortModule,
     MatTooltipModule,
-    FusionChartsModule,
     MatStepperModule
   ],
   entryComponents: [

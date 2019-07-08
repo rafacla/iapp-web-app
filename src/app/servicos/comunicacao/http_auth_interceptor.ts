@@ -12,6 +12,7 @@ import { Oauth2Service } from '../oauth2/oauth2.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  falhouUmavez = false;
   constructor(private oauth2: Oauth2Service, private http: HttpClientService, private httpHandler: HttpHandler) {}
   respHandler: Observable<HttpEvent<any>>
   
@@ -34,7 +35,11 @@ export class AuthInterceptor implements HttpInterceptor {
             this.oauth2.signout();
             return throwError(error);
           } else {
+            if (this.falhouUmavez) {
+              this.oauth2.signout();
+            }
             this.oauth2.setAccessToken(null);
+            this.falhouUmavez = true;
             return this.oauth2.getOAccessToken().pipe(
               switchMap(resposta => this.RetryRequest(req, next, resposta))
               );

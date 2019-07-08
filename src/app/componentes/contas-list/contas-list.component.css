@@ -5,10 +5,12 @@
 }
 
 .contas-summary {
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 300px;
+    max-width: 300px;
     height: calc(100% - 20px);
     float: left;
+    margin-left: 10px;
+    text-align: center;
 }
 
 .contas-summary-card {
@@ -18,15 +20,17 @@
 }
 
 .card-list {
-    min-width: 800px;
+    padding-left: 20px;
+    min-width: 700px;
     overflow: auto;
     height: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
 }
 
 .card-diario {
     width: calc(100% - 70px);
-    height: 270px;
-    margin: 10px;
+    flex: 1 1 auto;
     display: inline-block;
     vertical-align: top;
 }
@@ -71,4 +75,29 @@
 .card-actions {
     position: absolute;
     bottom: 30px;
+}
+
+.conta_saldo {
+    font-weight: bold;
+    font-size: 0.8 em;
+    margin: 0;
+}
+.conta_nome {
+    margin-top: 0;
+}
+.conta_titulo {
+    width: 100%;
+    text-align: left;
+}
+.carregando .conta_saldo,
+.carregando .conta_nome,
+.carregando .mat-icon {
+    color: #ccc;
+}
+.mat-card {
+    margin-bottom: 15px;
+}
+
+.chart-container {
+    width: 100%;
 }
