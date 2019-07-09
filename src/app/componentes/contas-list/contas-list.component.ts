@@ -5,6 +5,7 @@ import { HttpClientService } from '../../servicos/comunicacao/http_client.servic
 import { UserService } from '../../servicos/user/user.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Chart } from 'chart.js';
+import * as moment from 'moment';
 
 export interface DialogData {
   conta_id: string;
@@ -18,6 +19,7 @@ export interface DialogData {
   styleUrls: ['./contas-list.component.css']
 })
 export class ContasListComponent implements OnInit {
+  carregandoConta = true;
   contasList: ContaList[];
   contasDeletadas: boolean[] = [];
   dataSource: Object;
@@ -26,6 +28,32 @@ export class ContasListComponent implements OnInit {
   contaDetalhe: ContaList;
   @ViewChild('lineChart') private chartRef;
   chart: any;
+  saldo = {
+    menos3: {
+      data: moment().subtract(3, 'months').endOf('month'),
+      saldo: 0
+    },
+    menos2: {
+      data: moment().subtract(2, 'months').endOf('month'),
+      saldo: 0
+    },
+    menos1: {
+      data: moment().subtract(1, 'months').endOf('month'),
+      saldo: 0
+    },
+    hoje: {
+      data: moment().endOf('day'),
+      saldo: 0
+    },
+    menos0: {
+      data: moment().endOf('month'),
+      saldo: 0
+    },
+    mais1: {
+      data: moment().add(1, 'months').endOf('month'),
+      saldo: 0
+    }
+  }
   
   constructor(
     private http: HttpClientService,
@@ -34,31 +62,109 @@ export class ContasListComponent implements OnInit {
 
   openDetail(conta: ContaList) {
     this.contaDetalhe = conta;
+    this.carregandoConta = true;
+    if (this.chart) {
+      this.chart.destroy();
+    }
+    //a seguir vamos gerar os dados para o gráfico de 3 meses para frente, valor atual e valor futuro:
     this.userService.getUserDetail().subscribe(user => {
       this.http.subtransacoesTabularGet(user.userLastDiarioUID).subscribe(transacoes => {
-        
+        this.saldo.menos3.saldo = 0;
+        this.saldo.menos2.saldo = 0;
+        this.saldo.menos1.saldo = 0;
+        this.saldo.hoje.saldo = 0;
+        this.saldo.menos0.saldo = 0;
+        this.saldo.mais1.saldo = 0;
+        transacoes.forEach(transacao => {
+          if (transacao.conta_id === conta.conta_id) {
+            //vamos somar os valores:
+            if (transacao.transacoes_item_id == null) {
+              //não há subtransacoes, vamos somar a transacao mestre:
+              if (moment(transacao.transacao_data)<=this.saldo.menos3.data) {
+                this.saldo.menos3.saldo += transacao.transacao_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos2.data) {
+                this.saldo.menos2.saldo += transacao.transacao_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos1.data) {
+                this.saldo.menos1.saldo += transacao.transacao_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.hoje.data) {
+                this.saldo.hoje.saldo += transacao.transacao_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos0.data) {
+                this.saldo.menos0.saldo += transacao.transacao_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.mais1.data) {
+                this.saldo.mais1.saldo += transacao.transacao_valor*1;
+              }
+            } else {
+              //vamos somar as subtransacoes:
+              if (moment(transacao.transacao_data)<=this.saldo.menos3.data) {
+                this.saldo.menos3.saldo += transacao.transacoes_item_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos2.data) {
+                this.saldo.menos2.saldo += transacao.transacoes_item_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos1.data) {
+                this.saldo.menos1.saldo += transacao.transacoes_item_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.hoje.data) {
+                this.saldo.hoje.saldo += transacao.transacoes_item_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.menos0.data) {
+                this.saldo.menos0.saldo += transacao.transacoes_item_valor*1;
+              } else if (moment(transacao.transacao_data)<=this.saldo.mais1.data) {
+                this.saldo.mais1.saldo += transacao.transacoes_item_valor*1;
+              }
+            }
+          }
+        });
+        this.criaGrafico();
+      }, erro => {
+        this.saldo.menos3.saldo = 0;
+        this.saldo.menos2.saldo = 0;
+        this.saldo.menos1.saldo = 0;
+        this.saldo.hoje.saldo = 0;
+        this.saldo.menos0.saldo = 0;
+        this.saldo.mais1.saldo = 0;
+        this.criaGrafico();
       });
     });
-    let labels = ['1','2','3'];
-    let dataPoints = [{
-      x: 1,
-      y: 10
+  }
+
+  criaGrafico() {
+    let labels = [this.saldo.menos3.data.format("MMM-YY"), this.saldo.menos2.data.format("MMM-YY"), this.saldo.menos1.data.format("MMM-YY"), 'HOJE', this.saldo.menos0.data.format("MMM-YY"), this.saldo.mais1.data.format("MMM-YY")];
+    let dataPointsPassado = [{
+      x: labels[0],
+      y: this.saldo.menos3.saldo
     }, {
-      x: 2,
-      y: -40
+      x: labels[1],
+      y: this.saldo.menos2.saldo+this.saldo.menos3.saldo
     }, {
-      x: 3,
-      y: 20
+      x: labels[2],
+      y: this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+    }, {
+      x: labels[3],
+      y: this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
     }];
+    let dataPointsFuturo =[{
+      x: labels[3],
+      y: this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+    },{
+      x: labels[4],
+      y: this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+    }, {
+      x: labels[5],
+      y: this.saldo.mais1.saldo+this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+    }];
+    this.carregandoConta = false;
     this.chart = new Chart(this.chartRef.nativeElement, {
       type: 'line',
       data: {
         labels: labels, // your labels array
         datasets: [
           {
-            data: dataPoints, // your data array
+            data: dataPointsPassado, // your data array
             borderColor: '#00AEFF',
             fill: true
+          },
+          {
+            data: dataPointsFuturo,
+            borderColor: '#F44336',
+            fill: true,
+            borderDash: [10,5]
           }
         ]
       },
@@ -69,29 +175,24 @@ export class ContasListComponent implements OnInit {
           display: false
         }, 
         tooltips: {
-          mode: 'index',
-					intersect: false
-        },
-        hover: {
-					mode: 'nearest',
-					intersect: true
+          mode: 'point',
+          intersect: false
         },
         scales: {
-					xAxes: [{
-						type: 'time',
-						distribution: 'series',
-						ticks: {
-							source: 'data',
-							autoSkip: true
-						}
-					}],
-					yAxes: [{
-						scaleLabel: {
-							display: true,
-							labelString: 'Saldo (R$)'
-						}
-					}]
-				},
+          xAxes: [{
+            distribution: 'series',
+            ticks: {
+              source: 'data',
+              autoSkip: true
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Saldo (R$)'
+            }
+          }]
+        },
       }
     });
   }
@@ -124,6 +225,7 @@ export class ContasListComponent implements OnInit {
           this.contasCartao = [];
           this.contasCorrente = [];
           this.contaDetalhe = this.contasList[0];
+          this.openDetail(this.contaDetalhe); 
           for (const conta of contas) {
             if (conta.conta_cartao === '1') {
               this.contasCartao.push(conta);

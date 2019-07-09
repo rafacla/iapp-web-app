@@ -31,7 +31,6 @@
 .card-diario {
     width: calc(100% - 70px);
     flex: 1 1 auto;
-    display: inline-block;
     vertical-align: top;
 }
 
@@ -100,4 +99,8 @@
 
 .chart-container {
     width: 100%;
+}
+
+.escondido {
+    display: none!important;
 }

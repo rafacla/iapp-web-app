@@ -29,33 +29,37 @@
   </div>
   <div class="card-list">
     <p class="conta_titulo">Detalhe da conta</p>
-    <mat-card class="card-carregando" *ngIf="contasList === undefined">
-      <mat-card-header>
-          <mat-card-title>Carregando...</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-          <div class="card-icon">
-            <mat-icon>clock-outline</mat-icon>
-          </div>
-          <div class="card-content">
-            Por favor aguarde.
+    <ng-container *ngIf="contasList === undefined || carregandoConta">
+      <mat-card class="card-carregando">
+        <mat-card-header>
+            <mat-card-title>Carregando...</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="card-icon">
+              <mat-icon>clock-outline</mat-icon>
+            </div>
+            <div class="card-content">
+              Por favor aguarde.
+            </div>
+          </mat-card-content>
+      </mat-card>
+    </ng-container>
+    <ng-container *ngIf="contaDetalhe !== undefined">
+      <mat-card class="card-diario" [ngClass]="{'escondido': carregandoConta}">
+        <mat-card-header>
+            <div class="card-title">{{contaDetalhe.conta_nome}} {{(contaDetalhe.conta_cartao.toString() == '1' ? '(Cartão de Crédito)' : '(Conta Corrente)')}}</div>
+            <div class="card-subtitle">(Última conciliação: {{contaDetalhe.conta_reconciliado_data}})</div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+              <canvas #lineChart width="1000px">{{ chart }}</canvas>
           </div>
         </mat-card-content>
-    </mat-card>
-    <mat-card class="card-diario" *ngIf="contaDetalhe !== undefined">
-      <mat-card-header>
-          <div class="card-title">{{contaDetalhe.conta_nome}} {{(contaDetalhe.conta_cartao.toString() == '1' ? '(Cartão de Crédito)' : '(Conta Corrente)')}}</div>
-          <div class="card-subtitle">(Última conciliação: {{contaDetalhe.conta_reconciliado_data}})</div>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="chart-container">
-            <canvas #lineChart width="1000px">{{ chart }}</canvas>
-        </div>
-      </mat-card-content>
-      <mat-card-actions class="card-actions">
-        <button mat-stroked-button color="primary" (click)="openDialog(contaDetalhe.conta_id, contaDetalhe.conta_nome, contaDetalhe.conta_descricao)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>edit</mat-icon>EDITAR CONTA</button>
-        <button mat-stroked-button color="warn" (click)="deletaConta(contaDetalhe)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>delete</mat-icon>APAGAR CONTA</button>
-      </mat-card-actions>
-    </mat-card>
+        <mat-card-actions class="card-actions">
+          <button mat-stroked-button color="primary" (click)="openDialog(contaDetalhe.conta_id, contaDetalhe.conta_nome, contaDetalhe.conta_descricao)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>edit</mat-icon>EDITAR CONTA</button>
+          <button mat-stroked-button color="warn" (click)="deletaConta(contaDetalhe)" [disabled]="contasDeletadas[contaDetalhe.conta_id]"><mat-icon>delete</mat-icon>APAGAR CONTA</button>
+        </mat-card-actions>
+      </mat-card>
+    </ng-container>
   </div>
 </div>
