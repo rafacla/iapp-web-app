@@ -41,6 +41,7 @@ from './componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from './componentes/user-edit/user-edit.component';
 import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
+import { OrcamentoComponent } from './componentes/orcamento/orcamento.component';
 
 
 
@@ -106,7 +107,8 @@ import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponen
     PhoneMaskDirective, 
     TransacoesListComponent,
     TransacoesEditComponent,
-    TransacoesOFXComponent
+    TransacoesOFXComponent,
+    OrcamentoComponent
   ],
   providers: [
     {

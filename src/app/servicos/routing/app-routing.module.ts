@@ -6,6 +6,7 @@ import { ContasListComponent } from '../../componentes/contas-list/contas-list.c
 import { CategoriasListComponent } from '../../componentes/categorias-list/categorias-list.component';
 import { UserEditComponent } from '../../componentes/user-edit/user-edit.component';
 import { TransacoesListComponent } from '../../componentes/transacoes-list/transacoes-list.component';
+import { OrcamentoComponent } from 'src/app/componentes/orcamento/orcamento.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'contas', component: ContasListComponent },
   { path: 'categorias', component: CategoriasListComponent},
   { path: 'user/edit', component: UserEditComponent },
-  { path: 'transacoes', component: TransacoesListComponent }
+  { path: 'transacoes', component: TransacoesListComponent },
+  { path: 'orcamento', component: OrcamentoComponent }
 ];
 
 @NgModule({
