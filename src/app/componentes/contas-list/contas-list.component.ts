@@ -128,26 +128,29 @@ export class ContasListComponent implements OnInit {
     let labels = [this.saldo.menos3.data.format("MMM-YY"), this.saldo.menos2.data.format("MMM-YY"), this.saldo.menos1.data.format("MMM-YY"), 'HOJE', this.saldo.menos0.data.format("MMM-YY"), this.saldo.mais1.data.format("MMM-YY")];
     let dataPointsPassado = [{
       x: labels[0],
-      y: this.saldo.menos3.saldo
+      y: this.saldo.menos3.saldo.toFixed(2)
     }, {
       x: labels[1],
-      y: this.saldo.menos2.saldo+this.saldo.menos3.saldo
+      y: (this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
     }, {
       x: labels[2],
-      y: this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+      y: (this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
     }, {
       x: labels[3],
-      y: this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
-    }];
-    let dataPointsFuturo =[{
+      y: (this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
+    },
+    {},
+    {}];
+    let dataPointsFuturo =[{},{},{},
+      {
       x: labels[3],
-      y: this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+      y: (this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
     },{
       x: labels[4],
-      y: this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+      y: (this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
     }, {
       x: labels[5],
-      y: this.saldo.mais1.saldo+this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo
+      y: (this.saldo.mais1.saldo+this.saldo.menos0.saldo+this.saldo.hoje.saldo+this.saldo.menos1.saldo+this.saldo.menos2.saldo+this.saldo.menos3.saldo).toFixed(2)
     }];
     this.carregandoConta = false;
     this.chart = new Chart(this.chartRef.nativeElement, {
@@ -158,13 +161,17 @@ export class ContasListComponent implements OnInit {
           {
             data: dataPointsPassado, // your data array
             borderColor: '#00AEFF',
-            fill: true
+            fill: true,
+            lineTension: 0,
+            label: "Realizado"
           },
           {
             data: dataPointsFuturo,
             borderColor: '#F44336',
             fill: true,
-            borderDash: [10,5]
+            borderDash: [10,5],
+            lineTension: 0,
+            label: "Futuro"
           }
         ]
       },
@@ -175,17 +182,10 @@ export class ContasListComponent implements OnInit {
           display: false
         }, 
         tooltips: {
-          mode: 'point',
+          mode: 'nearest',
           intersect: false
         },
         scales: {
-          xAxes: [{
-            distribution: 'series',
-            ticks: {
-              source: 'data',
-              autoSkip: true
-            }
-          }],
           yAxes: [{
             scaleLabel: {
               display: true,
