@@ -2,7 +2,13 @@
   <span>Orçamento Mensal</span>
 </div>
 <div class="mat-toolbar-third-row">
-    <button mat-button><mat-icon>chevron_left</mat-icon></button>
-    <button mat-button>maio-19<mat-icon>arrow_drop_down</mat-icon></button>
-    <button mat-button><mat-icon>chevron_right</mat-icon></button>
+    <button mat-button (click)="subtraiMes()"><mat-icon>chevron_left</mat-icon></button>
+    <button mat-button (click)="dp.open()">{{orcamento_data | date:'MMMM-yy'}}<mat-icon>arrow_drop_down</mat-icon></button>
+    <input [matDatepicker]="dp" [(ngModel)]="orcamento_data" hidden>
+    <mat-datepicker #dp
+      startView="year"
+      (yearSelected)="chosenYearHandler($event)"
+      (monthSelected)="chosenMonthHandler($event, dp)">
+    </mat-datepicker>
+    <button mat-button (click)="adicionaMes()"><mat-icon>chevron_right</mat-icon></button>
 </div>
