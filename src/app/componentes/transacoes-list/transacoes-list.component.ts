@@ -6,12 +6,13 @@ import { UserService } from '../../servicos/user/user.service';
 import { TransacoesDataSource, Filtro } from './TransacoesDataSource';
 import { Moment } from 'moment';
 import * as moment from 'moment';
-import { FormGroup, FormControl, FormBuilder, FormArray, Validators, FormGroupDirective, NgForm } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, FormArray, Validators, FormGroupDirective, NgForm, Form } from '@angular/forms';
 import { ContaList } from '../../data-model/conta-list';
 import { CategoriasCascata, Subcategorias } from '../../data-model/categoria-cascata';
 
 import {ErrorStateMatcher} from '@angular/material/core';
 import {parse as parseOFX} from 'ofx-js';
+import { formatNumber } from '@angular/common';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -342,7 +343,8 @@ export class TransacoesListComponent implements OnInit {
   styleUrls: ['./transacoes-edit-dialog.css']
 })
 export class TransacoesEditComponent {
-  txtADistribuir = 0;
+  numberADistribuir = 0 as number;
+  txtADistribuir = '' as string;
   transacaoCartao = false;
   transacaoFaturaDataMMMYY;
   formTransacoes = new FormGroup({
@@ -360,6 +362,7 @@ export class TransacoesEditComponent {
   itensCategoria: Subtransacoes[] = [];
   itensTransferencia: Subtransacoes[] = [];
   matcher = new MyErrorStateMatcher();
+  categoriasFiltradas: CategoriasCascata[];
   
   constructor(
     public dialogRef: MatDialogRef<DialogData>,
@@ -380,6 +383,14 @@ export class TransacoesEditComponent {
         });
       }
       this.createForm();
+      this.categoriasFiltradas = this.data.categorias;
+
+      const arrowItensCategorias = this.formTransacoesItensCategorias.controls.arrowItensCategorias as FormArray;
+      arrowItensCategorias.controls.forEach(element => {
+        element.get('subcategoria_id').valueChanges.subscribe(valor => {
+          this.categoriasFiltradas = this.filterCategorias(valor);
+        });
+      });
     }
 
 
@@ -435,13 +446,20 @@ export class TransacoesEditComponent {
 
   addItensCategorias() {
     const arrowItensCategorias = this.formTransacoesItensCategorias.get('arrowItensCategorias') as FormArray;
+    
     arrowItensCategorias.push(this.formBuilder.group({
       subtransacao_id: '',
       subcategoria_id: '',
       subtransacao_memo: '',
-      subtransacao_valor_saida: 0,
-      subtransacao_valor_entrada: 0
+      subtransacao_valor_saida: (this.numberADistribuir < 0 ? Math.abs(this.numberADistribuir) : 0),
+      subtransacao_valor_entrada: (this.numberADistribuir > 0 ? Math.abs(this.numberADistribuir) : 0)
     }));
+    arrowItensCategorias.controls.forEach(element => {
+      element.get('subcategoria_id').valueChanges.subscribe(valor => {
+        this.categoriasFiltradas = this.filterCategorias(valor);
+      })
+    });
+    this.calculaADistribuir();
   }
 
   addItensTransferencias() {
@@ -450,9 +468,10 @@ export class TransacoesEditComponent {
       subtransacao_id: '',
       transf_para_conta_id: '',
       subtransacao_memo: '',
-      subtransacao_valor_saida: 0,
-      subtransacao_valor_entrada: 0
+      subtransacao_valor_saida: (this.numberADistribuir < 0 ? Math.abs(this.numberADistribuir) : 0),
+      subtransacao_valor_entrada: (this.numberADistribuir > 0 ? Math.abs(this.numberADistribuir) : 0)
     }));
+    this.calculaADistribuir();
   }
 
   get itensCategorias() {
@@ -468,7 +487,7 @@ export class TransacoesEditComponent {
   }
 
   editarTransacao(tooltip: MatTooltip): void {
-    if (this.txtADistribuir*1!==0) {
+    if (this.numberADistribuir*1!==0) {
       tooltip.show();
     } else if (this.data.transacao) {
       // atualização
@@ -608,6 +627,32 @@ export class TransacoesEditComponent {
     }
   };
 
+  filterCategorias(search: string) {
+    let categorias = [] as CategoriasCascata[];
+    this.data.categorias.forEach(categoria => {
+      categoria.subcategorias.forEach(subcategoria => {
+        if (subcategoria.subcategoria_nome.toLowerCase().includes(search.toLowerCase())) {
+          if (categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome).length) {
+            categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome)[0].subcategorias.push(subcategoria);
+          } else {
+            let novaCategoria = {
+              categoria_description: categoria.categoria_description,
+              categoria_filhos: categoria.categoria_filhos,
+              categoria_id: categoria.categoria_id,
+              categoria_nome: categoria.categoria_nome,
+              categoria_ordem: categoria.categoria_ordem,
+              subcategorias: [],
+              diario_uid: categoria.diario_uid            
+            } as CategoriasCascata;
+            novaCategoria.subcategorias.push(subcategoria);
+            categorias.push(novaCategoria);
+          }
+        }
+      });
+    });
+    return categorias;
+  }
+
   formataCategoria(categoria_id: number, subcategoria_id: number): string {
     if (this.data.categorias.filter(x=> x.categoria_id == categoria_id)[0]) {
       if (this.data.categorias.filter(x=> x.categoria_id == categoria_id)[0].subcategorias.filter(y=> y.subcategoria_id == subcategoria_id)[0]) {
@@ -631,7 +676,8 @@ export class TransacoesEditComponent {
     this.itensTransferencias.controls.forEach(element => {
       valorItens += element.get('subtransacao_valor_entrada').value*1-element.get('subtransacao_valor_saida').value*1;
     });
-    this.txtADistribuir = Math.abs(valorTransacao - valorItens);
+    this.numberADistribuir = (valorTransacao - valorItens);
+    this.txtADistribuir = formatNumber(Math.abs(this.numberADistribuir),'pt','1.2-2');
   }
 }
 

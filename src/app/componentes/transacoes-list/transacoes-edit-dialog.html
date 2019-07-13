@@ -1,7 +1,7 @@
 <div class="mat-dialog">
     <div class="mat-dialog-header">
         <div mat-dialog-title>{{data.transacao ? 'Editar transação' : 'Nova Transação'}}</div>
-        <form [formGroup]="formTransacoes">
+        <form [formGroup]="formTransacoes" ng-submit="editarTransacao(tooltip)">
             <mat-form-field class="form-field" style="width: 20%;">
                 <mat-label>Conta Origem</mat-label>
                 <mat-select placeholder="Escolha uma conta" required formControlName="conta_id" (selectionChange)="alternaTipoConta()">
@@ -52,11 +52,11 @@
         </form>
     </div>
     <div mat-dialog-content>
-        <form [formGroup]="formTransacoesItensCategorias">
-            <div class="subheader">Categorias <button mat-button (click)="addItensCategorias()"><mat-icon>library_add</mat-icon></button></div>
+        <form [formGroup]="formTransacoesItensCategorias" ng-submit="editarTransacao(tooltip)">
+            <div class="subheader">Categorias <a mat-button (click)="addItensCategorias()"><mat-icon>library_add</mat-icon></a></div>
             <mat-divider></mat-divider>
             <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption >
-                <mat-optgroup *ngFor="let categoria of data.categorias" [label]="categoria.categoria_nome">
+                <mat-optgroup *ngFor="let categoria of categoriasFiltradas" [label]="categoria.categoria_nome">
                     <mat-option *ngFor="let subcategoria of categoria.subcategorias" [value]="subcategoria.subcategoria_id">
                     {{subcategoria.subcategoria_nome}}
                     </mat-option>
@@ -93,8 +93,8 @@
                 </tbody>
             </table>
         </form>
-        <form [formGroup]="formTransacoesItensTransferencias">
-            <div class="subheader">Transferências <button mat-button (click)="addItensTransferencias()"><mat-icon>library_add</mat-icon></button></div>
+        <form [formGroup]="formTransacoesItensTransferencias" ng-submit="editarTransacao(tooltip)">
+            <div class="subheader">Transferências <a mat-button (click)="addItensTransferencias()"><mat-icon>library_add</mat-icon></a></div>
             <mat-divider></mat-divider>
             <table>
                 <tbody formArrayName="arrowItensTransferencias">
@@ -131,10 +131,10 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button color="primary" (click)="editarTransacao(tooltip)">Salvar</button>
+        <button mat-raised-button color="primary" (click)="editarTransacao(tooltip)" type="submit">Salvar</button>
         <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
         <mat-form-field class="transacoes-itens total" #tooltip="matTooltip" matTooltip="Você deve distribuir os valores até zerar" matTooltipClass="tooltip-red" matTooltipPosition="above"> 
-            <input matInput placeholder="A distribuir:" disabled value="0"  type="number" step="0.01" [(ngModel)]="txtADistribuir" class="valor">
+            <input matInput placeholder="A distribuir:" disabled value="0" [ngModel]="txtADistribuir" class="valor">
             <span matPrefix>R$&nbsp;</span>
         </mat-form-field>
     </div>
