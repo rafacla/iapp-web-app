@@ -34,7 +34,10 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-checkbox formControlName="subcategoriaCarry" style="width: 100%;">Carregar valores negativos para o próximo mês</mat-checkbox>
+    <mat-checkbox formControlName="subcategoriaCarry" style="width: 100%;" 
+    matTooltip="Se você ultrapassar o valor orçado para esta categoria, os valores negativos persistirão para o próximo mês nesta categoria.">
+      Carregar valores negativos para o próximo mês
+    </mat-checkbox>
     <br />
     <button mat-raised-button color="primary" (click)="editaSubcategoria()"  [disabled]="!formSubcategorias.valid">Salvar</button>
     <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>

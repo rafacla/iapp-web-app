@@ -3,7 +3,7 @@
 </div>
 <div class="mat-toolbar-third-row">
     <button mat-button (click)="subtraiMes()"><mat-icon>chevron_left</mat-icon></button>
-    <button mat-button (click)="dp.open()">{{orcamento_data | date:'MMMM-yy'}}<mat-icon>arrow_drop_down</mat-icon></button>
+    <button mat-button (click)="dp.open()">{{orcamento_data.value | date:'MMMM-yy'}}<mat-icon>arrow_drop_down</mat-icon></button>
     <input [matDatepicker]="dp" [(ngModel)]="orcamento_data" hidden>
     <mat-datepicker #dp
       startView="year"
@@ -24,7 +24,7 @@
         </ng-container>
         <ng-container matColumnDef="subcategoria_nome">
           <th mat-header-cell *matHeaderCellDef> Categoria </th>
-          <td mat-cell *matCellDef="let element"> {{element.subcategoria_nome}} <mat-icon class="r90" *ngIf="element.subcategoria_carry == '1'">merge_type</mat-icon></td>
+          <td mat-cell *matCellDef="let element"> {{element.subcategoria_nome}} <mat-icon class="r90" *ngIf="element.subcategoria_carry == '1'" matTooltip="Se você ultrapassar o valor orçado para esta categoria, os valores negativos persistirão para o próximo mês nesta categoria.">merge_type</mat-icon></td>
         </ng-container>
         <ng-container matColumnDef="orcamento_valor">
           <th mat-header-cell *matHeaderCellDef> Orçamento </th>
