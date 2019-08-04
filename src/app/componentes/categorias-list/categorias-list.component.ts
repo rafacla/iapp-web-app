@@ -17,7 +17,7 @@ export interface CategoriasTabular {
   subcategoria_id: number;
   subcategoria_nome: string;
   subcategoria_description: string;
-  subcategoria_carry: number;
+  subcategoria_carry: string;
   subcategoria_ordem: number;
   subcategoria_ultima: boolean;
 }
@@ -285,7 +285,8 @@ export class SubcategoriasEditComponent implements OnInit {
     subcategoriaNome: new FormControl(''),
     subcategoriaDescricao: new FormControl(''),
     subcategoriaNovaOrdem: new FormControl(''),
-    categoriaId: new FormControl('')
+    categoriaId: new FormControl(''),
+    subcategoriaCarry: new FormControl('')
   });
   subcategoriaOrdemAtual: number;
   listaSubcategorias: CategoriasTabular[] = [];
@@ -336,7 +337,8 @@ export class SubcategoriasEditComponent implements OnInit {
             subcategoriaNome: element.subcategoria_nome,
             subcategoriaDescricao: element.subcategoria_description,
             subcategoriaNovaOrdem: +element.subcategoria_ordem,
-            categoriaId: +this.data.categoria_id
+            categoriaId: +this.data.categoria_id,
+            subcategoriaCarry: (element.subcategoria_carry == '1')
           });
           this.subcategoriaOrdemAtual = element.subcategoria_ordem;
         }
@@ -350,7 +352,8 @@ export class SubcategoriasEditComponent implements OnInit {
       subcategoriaNome: ['', [Validators.required, Validators.minLength(2)] ],
       subcategoriaDescricao: ['', Validators.required],
       subcategoriaNovaOrdem: ['', Validators.required],
-      categoriaId: ['', Validators.required]
+      categoriaId: ['', Validators.required],
+      subcategoriaCarry: ['']
     });
     this.formSubcategorias.enable();
     
@@ -367,14 +370,15 @@ export class SubcategoriasEditComponent implements OnInit {
         subcategoria.subcategoria_nome = this.formSubcategorias.get('subcategoriaNome').value;
         subcategoria.subcategoria_description = this.formSubcategorias.get('subcategoriaDescricao').value;
         subcategoria.categoria_id = this.formSubcategorias.get('categoriaId').value;
+        subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoryaCarry').value;
     } else {
       // atualização:
       subcategoria.subcategoria_id = +this.data.subcategoria_id;
       subcategoria.subcategoria_nome =  this.formSubcategorias.get('subcategoriaNome').value;
       subcategoria.subcategoria_description =  this.formSubcategorias.get('subcategoriaDescricao').value;
+      subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoriaCarry').value;
     }
 
-    console.log(this.formSubcategorias.get('subcategoriaOrdemAtual').value);
 
     if (this.formSubcategorias.valid) {
       this.formSubcategorias.disable();

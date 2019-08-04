@@ -1,0 +1,27 @@
+.conteudo {
+    height: calc(100% - 80px);
+    display: flex;
+}
+.table-orcamentos {
+    height: 100%;
+    overflow-y: scroll;
+    flex: 1;
+    padding-right: 20px;
+}
+
+.resumo-orcamentos {
+    height: 100%;
+    flex: 0;
+}
+
+.table-orcamentos > table {
+    width: 100%;
+}
+
+.r90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}

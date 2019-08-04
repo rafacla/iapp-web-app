@@ -102,15 +102,19 @@
     
       <tr mat-header-row *matHeaderRowDef="categoriasColumns;sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: categoriasColumns;"
-          (click)="selection.toggle(row)" class="categoria"> </tr>
-          <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isLastSubcategoria"
-          (click)="selection.toggle(row)" class="subcategoria-ultima"
-          [hidden]="!categoria_id[row.categoria_id]"> </tr>
-          <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isSubcategoria"
-          (click)="selection.toggle(row)" class="subcategoria"
-          [hidden]="!categoria_id[row.categoria_id]"> </tr>
-          <tr mat-row *matRowDef="let row; columns: categoriasColumns; when: hasChild"
-          (click)="selection.toggle(row)" class="categoria-mae"> </tr>
+        (click)="selection.toggle(row)" class="categoria"> 
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isLastSubcategoria"
+        (click)="selection.toggle(row)" class="subcategoria-ultima"
+        [hidden]="!categoria_id[row.categoria_id]"> 
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isSubcategoria"
+        (click)="selection.toggle(row)" class="subcategoria"
+        [hidden]="!categoria_id[row.categoria_id]">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: categoriasColumns; when: hasChild"
+        (click)="selection.toggle(row)" class="categoria-mae">
+      </tr>
     </table>
   </div>
 </div>

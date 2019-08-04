@@ -13,6 +13,7 @@ import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
 import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
+import { OrcamentoGet } from 'src/app/data-model/orcamento-list';
 
 @Injectable({ providedIn: 'root' })
 
@@ -253,5 +254,16 @@ export class HttpClientService {
 		return this.http.post<any>(this.apiUrl+'/subtransacao/delete',subtransacao,httpOptions);
 	}
 
-
+	/** GET Orcamentos */
+	orcamentosGet(diarioUID: string, mes: string, ano: string):Observable<OrcamentoGet> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8', 
+				'diariouid': diarioUID,
+				'mes': mes,
+				'ano': ano
+			})
+		};
+		return this.http.get<OrcamentoGet>(this.apiUrl + '/orcamento', httpOptions);
+	}
 }
