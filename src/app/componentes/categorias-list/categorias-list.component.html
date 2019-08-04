@@ -101,19 +101,19 @@
       </ng-container>
     
       <tr mat-header-row *matHeaderRowDef="categoriasColumns;sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: categoriasColumns;"
+      <tr mat-row *matRowDef="let row; columns: categoriasColumns;" [hidden]="row.diario_id == null"
         (click)="selection.toggle(row)" class="categoria"> 
       </tr>
       <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isLastSubcategoria"
         (click)="selection.toggle(row)" class="subcategoria-ultima"
-        [hidden]="!categoria_id[row.categoria_id]"> 
+        [hidden]="!categoria_id[row.categoria_id] || row.diario_id == null"> 
       </tr>
       <tr mat-row *matRowDef="let row; columns: subcategoriasColumns; when: isSubcategoria"
         (click)="selection.toggle(row)" class="subcategoria"
-        [hidden]="!categoria_id[row.categoria_id]">
+        [hidden]="!categoria_id[row.categoria_id] || row.diario_id == null">
       </tr>
       <tr mat-row *matRowDef="let row; columns: categoriasColumns; when: hasChild"
-        (click)="selection.toggle(row)" class="categoria-mae">
+        (click)="selection.toggle(row)" class="categoria-mae" [hidden]="row.diario_id == null">
       </tr>
     </table>
   </div>

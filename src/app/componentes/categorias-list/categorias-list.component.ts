@@ -7,30 +7,17 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 
-export interface CategoriasTabular {
-  categoria_id: number;
-  categoria_ordem: number;
-  categoria_nome: string;
-  categoria_description: string;
-  categoria_filhos: number;
-  subcategoria_is: boolean;
-  subcategoria_id: number;
-  subcategoria_nome: string;
-  subcategoria_description: string;
-  subcategoria_carry: string;
-  subcategoria_ordem: number;
-  subcategoria_ultima: boolean;
-}
+
 
 export interface DialogData {
   categoria_id: string;
-  categorias: CategoriasTabular[];
+  categorias: CategoriasTabularList[];
 }
 
 export interface SubDialogData {
   subcategoria_id: string;
   categoria_id: string;
-  subcategorias: CategoriasTabular[];
+  subcategorias: CategoriasTabularList[];
 }
 
 
@@ -42,22 +29,22 @@ export interface SubDialogData {
 export class CategoriasListComponent implements OnInit {
   categoriasColumns: string[] = ['select', 'group', 'categoria_nome', 'categoria_description', 'categoria_acao'];
   subcategoriasColumns: string[] = ['select', 'group', 'subcategoria_nome', 'subcategoria_description', 'subcategoria_acao'];
-  dataSource = new MatTableDataSource<CategoriasTabular>([]);
-  selection = new SelectionModel<CategoriasTabular>(true, []);
+  dataSource = new MatTableDataSource<CategoriasTabularList>([]);
+  selection = new SelectionModel<CategoriasTabularList>(true, []);
   categoria_id: boolean[] = [];
   @ViewChild(MatTable) table: MatTable<any>;
 
-  isSubcategoria = (index: number, row: CategoriasTabular) => {
+  isSubcategoria = (index: number, row: CategoriasTabularList) => {
     return row.subcategoria_is;
   }
-  hasChild = (index: number, row: CategoriasTabular) => {
+  hasChild = (index: number, row: CategoriasTabularList) => {
     if (row.categoria_filhos > 0) {
       return true;
     } else {
       return false;
     }
   }
-  isLastSubcategoria = (index: number, row: CategoriasTabular) => {
+  isLastSubcategoria = (index: number, row: CategoriasTabularList) => {
     return row.subcategoria_ultima && row.subcategoria_is;
   }
   /** Whether the number of selected elements matches the total number of rows. */
@@ -118,12 +105,16 @@ export class CategoriasListComponent implements OnInit {
     this.userService.getUserDetail().subscribe(user => {
       this.http.categoriasTabularGet(user.userLastDiarioUID).subscribe(
         sucesso => {
+          let listaCategorias = [] as CategoriasTabularList[];
           sucesso.forEach(element => {
-            if (!element.subcategoria_is) {
-              this.categoria_id[element.categoria_id] = true;
+            if (element.diario_id != null) {
+              if (!element.subcategoria_is) {
+                this.categoria_id[element.categoria_id] = true;
+              }
+              listaCategorias.push(element);
             }
           });
-          this.dataSource.data = sucesso;
+          this.dataSource.data = listaCategorias;
         },
         erro => {
           console.log(erro);
@@ -138,7 +129,7 @@ export class CategoriasListComponent implements OnInit {
     });
   }
   
-  deletaItem(item: CategoriasTabular) {
+  deletaItem(item: CategoriasTabularList) {
     if (item.subcategoria_is) {
       const index = this.dataSource.data.indexOf(item);
       if (index !== -1) {
@@ -175,8 +166,8 @@ export class CategoriasEditComponent implements OnInit {
     categoriaNovaOrdem: new FormControl('')
   });
   categoriaOrdemAtual: number;
-  listaSubcategorias: CategoriasTabular[] = [];
-  listaCategorias: CategoriasTabular[] = [];
+  listaSubcategorias: CategoriasTabularList[] = [];
+  listaCategorias: CategoriasTabularList[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<CategoriasEditComponent>,
@@ -237,7 +228,7 @@ export class CategoriasEditComponent implements OnInit {
         });
     } else {
       // atualização:
-      categoria.categoria_id = +this.data.categoria_id;
+      categoria.categoria_id = this.data.categoria_id;
       categoria.categoria_nome =  this.formCategorias.get('categoriaNome').value;
       categoria.categoria_description =  this.formCategorias.get('categoriaDescricao').value;
     }
@@ -251,7 +242,7 @@ export class CategoriasEditComponent implements OnInit {
           if (categoria.categoria_id === undefined) {
             moverPara.categoria_id = sucesso.categoria_id;
           } else {
-            moverPara.categoria_id = categoria.categoria_id;
+            moverPara.categoria_id = +categoria.categoria_id;
           }
           moverPara.move_to = this.formCategorias.get('categoriaNovaOrdem').value;
           if (this.categoriaOrdemAtual < moverPara.move_to) {
@@ -289,9 +280,9 @@ export class SubcategoriasEditComponent implements OnInit {
     subcategoriaCarry: new FormControl('')
   });
   subcategoriaOrdemAtual: number;
-  listaSubcategorias: CategoriasTabular[] = [];
-  listaCategorias: CategoriasTabular[] = [];
-  listaSubcategoriasFiltradas: CategoriasTabular[] = [];
+  listaSubcategorias: CategoriasTabularList[] = [];
+  listaCategorias: CategoriasTabularList[] = [];
+  listaSubcategoriasFiltradas: CategoriasTabularList[] = [];
   
   constructor(
     public dialogRef: MatDialogRef<CategoriasEditComponent>,
@@ -305,8 +296,8 @@ export class SubcategoriasEditComponent implements OnInit {
     this.listaSubcategoriasFiltradas = this.listarsubCategorias(categoria_id);
   }
 
-  listarsubCategorias(categoria_id: number): CategoriasTabular[] {
-    const listaFiltrada: CategoriasTabular[] = [];
+  listarsubCategorias(categoria_id: number): CategoriasTabularList[] {
+    const listaFiltrada: CategoriasTabularList[] = [];
     this.data.subcategorias.forEach(element => {
       if (element.subcategoria_is) {
         if (+element.categoria_id === categoria_id) {
@@ -338,7 +329,7 @@ export class SubcategoriasEditComponent implements OnInit {
             subcategoriaDescricao: element.subcategoria_description,
             subcategoriaNovaOrdem: +element.subcategoria_ordem,
             categoriaId: +this.data.categoria_id,
-            subcategoriaCarry: (element.subcategoria_carry == '1')
+            subcategoriaCarry: (element.subcategoria_carry == 1)
           });
           this.subcategoriaOrdemAtual = element.subcategoria_ordem;
         }
@@ -373,7 +364,7 @@ export class SubcategoriasEditComponent implements OnInit {
         subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoryaCarry').value;
     } else {
       // atualização:
-      subcategoria.subcategoria_id = +this.data.subcategoria_id;
+      subcategoria.subcategoria_id = this.data.subcategoria_id;
       subcategoria.subcategoria_nome =  this.formSubcategorias.get('subcategoriaNome').value;
       subcategoria.subcategoria_description =  this.formSubcategorias.get('subcategoriaDescricao').value;
       subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoriaCarry').value;
@@ -389,7 +380,7 @@ export class SubcategoriasEditComponent implements OnInit {
           if (subcategoria.subcategoria_id === undefined) {
             moverPara.subcategoria_id = sucesso.subcategoria_id;
           } else {
-            moverPara.subcategoria_id = subcategoria.subcategoria_id;
+            moverPara.subcategoria_id = +subcategoria.subcategoria_id;
           }
           moverPara.move_to = this.formSubcategorias.get('subcategoriaNovaOrdem').value;
           if (subcategoria.categoria_id !== undefined) {

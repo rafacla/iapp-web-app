@@ -9,7 +9,7 @@
     margin: 5px;
   }
 </style>
-<h1 mat-dialog-title>{{data.categoria_id == 'new' ? 'Criar nova categoria' : 'Editar categoria'}}</h1>
+<h1 mat-dialog-title>{{data.categoria_id === 'new' ? 'Criar nova categoria' : 'Editar categoria'}}</h1>
 <form [formGroup]="formCategorias">
   <mat-form-field class="form-field" style="width: 100%;">
     <mat-label>Nome da Categoria</mat-label>
