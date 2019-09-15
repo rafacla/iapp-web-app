@@ -217,10 +217,10 @@ export class TransacoesListComponent implements OnInit {
       });
       this.http.categoriasTabularGet(user.userLastDiarioUID).subscribe(categorias => {
         categorias.forEach(categoria => {
-          if (!this.listaCategorias.filter(x => x.categoria_id == categoria.categoria_id)[0]) {
+          if (!this.listaCategorias.filter(x => +x.categoria_id == +categoria.categoria_id)[0]) {
             //ainda não existe, vamos criar:
             let novaCategoria = {} as CategoriasCascata;
-            novaCategoria.categoria_id = categoria.categoria_id;
+            novaCategoria.categoria_id = +categoria.categoria_id;
             novaCategoria.categoria_nome = categoria.categoria_nome;
             novaCategoria.categoria_ordem = categoria.categoria_ordem;
             novaCategoria.categoria_filhos = categoria.categoria_filhos;
@@ -230,15 +230,15 @@ export class TransacoesListComponent implements OnInit {
             this.listaCategorias.push(novaCategoria);
           }
           if (categoria.subcategoria_is) {
-            if (!this.listaCategorias.filter(x => x.categoria_id == categoria.categoria_id)[0].subcategorias.filter(y => y.subcategoria_id == categoria.subcategoria_id)[0]) {
+            if (!this.listaCategorias.filter(x => x.categoria_id == +categoria.categoria_id)[0].subcategorias.filter(y => +y.subcategoria_id == +categoria.subcategoria_id)[0]) {
               //a subcategoria ainda não existe, vamos add:
               let novaSubcategoria = {} as Subcategorias;
-              novaSubcategoria.subcategoria_id            = categoria.subcategoria_id;
+              novaSubcategoria.subcategoria_id            = +categoria.subcategoria_id;
               novaSubcategoria.subcategoria_nome          = categoria.subcategoria_nome;
               novaSubcategoria.subcategoria_ordem         = categoria.subcategoria_ordem;
               novaSubcategoria.subcategoria_description   = categoria.subcategoria_description;
               novaSubcategoria.subcategoria_carry         = categoria.subcategoria_carry;
-              this.listaCategorias.filter(x => x.categoria_id == categoria.categoria_id)[0].subcategorias.push(novaSubcategoria);
+              this.listaCategorias.filter(x => +x.categoria_id == +categoria.categoria_id)[0].subcategorias.push(novaSubcategoria);
             }
           }
         });

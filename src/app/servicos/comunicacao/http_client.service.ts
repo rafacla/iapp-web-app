@@ -13,7 +13,7 @@ import { CategoriasTabularList } from '../../data-model/categoria-tabular-list';
 import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
-import { OrcamentoGet } from 'src/app/data-model/orcamento-list';
+import { OrcamentoGet, OrcamentoPost } from 'src/app/data-model/orcamento-list';
 
 @Injectable({ providedIn: 'root' })
 
@@ -174,14 +174,14 @@ export class HttpClientService {
 	/** POST Deleta uma Categoria */
 	categoriaDelete(categoria_id: string): Observable<any> {
 		const categoriaDeletar = new CategoriasTabularList();
-		categoriaDeletar.categoria_id = +categoria_id;
+		categoriaDeletar.categoria_id = categoria_id;
 		return this.http.post<any>(this.apiUrl + '/categoria/delete', categoriaDeletar);
 	}
 
 	/** POST Deleta uma Subcategoria */
 	subcategoriaDelete(subcategoria_id: string): Observable<any> {
 		const subcategoriaDeletar = new CategoriasTabularList();
-		subcategoriaDeletar.subcategoria_id = +subcategoria_id;
+		subcategoriaDeletar.subcategoria_id = subcategoria_id;
 		return this.http.post<any>(this.apiUrl + '/subcategoria/delete', subcategoriaDeletar);
 	}
 
@@ -265,5 +265,14 @@ export class HttpClientService {
 			})
 		};
 		return this.http.get<OrcamentoGet>(this.apiUrl + '/orcamento', httpOptions);
+	}
+
+	orcamentosPost(orcamento: OrcamentoPost): Observable<any> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8'
+			})
+		};
+		return this.http.post<any>(this.apiUrl+'/orcamento',orcamento,httpOptions);
 	}
 }

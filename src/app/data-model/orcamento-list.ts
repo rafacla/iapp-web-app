@@ -1,5 +1,11 @@
 export class OrcamentoGet {
-    lista_orcamentos: OrcamentoList[]
+    lista_orcamentos: OrcamentoList[];
+    receita_acum: number;
+    receita_mes: number;
+    orcado_acum: number;
+    orcado_mes: number;
+    sobregasto: number;
+    sobreorcado: number;
 }
 
 export class OrcamentoList {
@@ -15,4 +21,12 @@ export class OrcamentoList {
     subcategoria_ordem: number;
     orcamento_valor: number;
     transacoes_valor: number;
+    disponivel_valor: number;
+}
+
+export class OrcamentoPost {
+    orcamento_date: string;
+    orcamento_valor: number;
+    diario_uid: string;
+    subcategoria_id: number;
 }
