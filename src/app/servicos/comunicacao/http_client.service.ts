@@ -18,8 +18,8 @@ import { OrcamentoGet, OrcamentoPost } from 'src/app/data-model/orcamento-list';
 @Injectable({ providedIn: 'root' })
 
 export class HttpClientService {
-	// private apiUrl = 'https://api.rafacla.com';
-	private apiUrl = 'http://localhost';
+	private apiUrl = 'https://api.rafacla.com';
+	//private apiUrl = 'http://localhost';
 	
     constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
