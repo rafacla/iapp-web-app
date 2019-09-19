@@ -14,5 +14,9 @@ app.get('*', function(req, res) {
 app.get('/', function (req, res) {
    res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'index.html'))
 })
+
+app.use(function(req, res) {
+   res.redirect('/');
+});
  
 app.listen(port)
