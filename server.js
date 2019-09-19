@@ -11,7 +11,8 @@ app.get('/*', function (req, res) {
    if (req.secure) {
       res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'index.html'))
    } else {
-      res.redirect('https://' + req.headers.host + req.url);
+      res.json('https://' + req.headers.host + req.url);
+      //res.redirect('https://' + req.headers.host + req.url);
    }
    
 })
