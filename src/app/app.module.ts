@@ -20,7 +20,7 @@ import { MatToolbarModule, MatAutocompleteModule, MatCard, MatCardActions, MatCa
   MatCardHeader, MatCardImage, MatCardTitle, MatCardLgImage, MatCardMdImage, MatCardModule, MatCardSmImage,
   MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule,
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
-  MatFormFieldControl, MatFormFieldBase, MatFormFieldDefaultOptions, MatProgressSpinnerModule,MatProgressBarModule, matFormFieldAnimations,
+  MatFormFieldControl, MatFormFieldDefaultOptions, MatProgressSpinnerModule,MatProgressBarModule, matFormFieldAnimations,
   MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
   MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter, MatStepperModule } from '@angular/material';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -42,6 +42,7 @@ import { UserEditComponent } from './componentes/user-edit/user-edit.component';
 import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoComponent } from './componentes/orcamento/orcamento.component';
+import { from } from 'rxjs';
 
 
 

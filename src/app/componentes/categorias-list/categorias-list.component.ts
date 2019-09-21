@@ -32,7 +32,7 @@ export class CategoriasListComponent implements OnInit {
   dataSource = new MatTableDataSource<CategoriasTabularList>([]);
   selection = new SelectionModel<CategoriasTabularList>(true, []);
   categoria_id: boolean[] = [];
-  @ViewChild(MatTable) table: MatTable<any>;
+  @ViewChild(MatTable,{static: true}) table: MatTable<any>;
 
   isSubcategoria = (index: number, row: CategoriasTabularList) => {
     return row.subcategoria_is;

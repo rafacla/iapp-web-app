@@ -122,8 +122,8 @@ export class TransacoesListComponent implements OnInit {
   ckContas: boolean[] = [];
 
   //Mat-Table
-  @ViewChild(MatTable) table: MatTable<any>;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatTable,{static: true}) table: MatTable<any>;
+  @ViewChild(MatSort,{static: true}) sort: MatSort;
   
   //Variáveis de Saldo
   saldoCompensado = 0;
