@@ -12,13 +12,8 @@ app.use(
 
 app.use(function forceLiveDomain(req, res, next) {
    // Don't allow user to hit http now that we have https
-   console.log(req.secure);
-   console.log(req.protocol);
-   console.log(req);
    if (!req.secure) {
-      console.log(req.protocol);
-      console.log(req.headers.host);
-     return res.redirect(301, 'https://'+req.headers.host);
+     return res.redirect(301, 'https://'+req.headers.host+req.path);
    }
    return next();
  });
