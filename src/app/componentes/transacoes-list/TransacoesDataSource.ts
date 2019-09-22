@@ -299,7 +299,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
           }
         } else {
           //vamos comparar se a string é extamente igual:
-          return (item11.match(item22));
+          return (item11 === item22);
         }
       }
       
