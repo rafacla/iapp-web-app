@@ -5,6 +5,9 @@ import { in_oauth_auth } from '../../data-model/in_oauth_auth';
 import { Oauth2Data } from './oauth2-data'
 import * as Rx from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { UserDetail } from 'src/app/data-model/user-detail';
+import { HttpClientService } from '../comunicacao/http_client.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +26,7 @@ export class Oauth2Service {
   private _accessToken: Rx.BehaviorSubject<string> = new Rx.BehaviorSubject(null);
   public readonly accessToken$: Rx.Observable<string> = this._accessToken.asObservable();
   
-  
+  apiUrl = "https://api.rafacla.com/";  
 
   
   constructor(private http: HttpClient) {
@@ -40,7 +43,7 @@ export class Oauth2Service {
   
   
   /** Método para autenticar um usuário e salvar seus detalhes */
-  signin(username: string, password: string, rememberUser: boolean, access_token: string, refresh_token: string) {
+  signin(rememberUser: boolean, access_token: string, refresh_token: string) {
     this.accessToken = access_token; 
     this.refreshToken = refresh_token; 
     this.rememberUser = rememberUser; 
@@ -50,8 +53,7 @@ export class Oauth2Service {
       rememberUser: this.rememberUser
     };
     this.resposta = resposta;
-    localStorage.setItem('currentToken',JSON.stringify(this.resposta))
-
+    localStorage.setItem('currentToken',JSON.stringify(this.resposta));
     this._loggedIn.next(true);
   }
 
@@ -80,7 +82,6 @@ export class Oauth2Service {
       this._accessToken.next(this.accessToken);
       return this.accessToken$;
     } else if (this.refreshToken != null && this.rememberUser) {
-      var apiUrl = "https://api.rafacla.com/auth";
       var json = JSON.stringify({refresh_token: this.refreshToken, grant_type: 'refresh_token', client_id: 'web'});
 
       var httpOptions = {
@@ -89,7 +90,7 @@ export class Oauth2Service {
         })
       };
 
-      return this.http.post<in_oauth_auth>(apiUrl, json, httpOptions).pipe(
+      return this.http.post<in_oauth_auth>(this.apiUrl + 'auth', json, httpOptions).pipe(
         tap(resposta => {
           
           this.setAccessToken(resposta.access_token,resposta.refresh_token);

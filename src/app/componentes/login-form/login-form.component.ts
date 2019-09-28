@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Oauth2Service } from '../../servicos/oauth2/oauth2.service'
-import { HttpClientService } from '../../servicos/comunicacao/http_client.service'
+import { Oauth2Service } from '../../servicos/oauth2/oauth2.service';
+import { UserService } from '../../servicos/user/user.service';
+import { HttpClientService } from '../../servicos/comunicacao/http_client.service';
 import {FormControl, FormControlName, Validators, FormGroup} from '@angular/forms';
 import { UserDetail } from '../../data-model/user-detail';
 
@@ -33,7 +34,7 @@ export class LoginFormComponent implements OnInit {
   loginForm = true;
 
 
-  constructor(private oauth2: Oauth2Service, private httpClient: HttpClientService) { }
+  constructor(private oauth2: Oauth2Service, private httpClient: HttpClientService, private userService: UserService) { }
 
   ngOnInit() {
        
@@ -53,8 +54,7 @@ export class LoginFormComponent implements OnInit {
 
     this.httpClient.authPost(this.txtUsername, this.txtPassword).subscribe(
       resposta => {
-        this.oauth2.signin(this.txtUsername, this.txtPassword, this.lembrar, resposta.access_token, resposta.refresh_token);
-        this.loading = false;
+        this.oauth2.signin(this.lembrar, resposta.access_token, resposta.refresh_token);
       },
       resposta_erro => { 
         this.btLoginDisabled = false;
@@ -75,7 +75,7 @@ export class LoginFormComponent implements OnInit {
   getLostPassword() {
     this.httpClient.authPost(this.txtUsername, this.txtPassword).subscribe(
       resposta => {
-        this.oauth2.signin(this.txtUsername, this.txtPassword, this.lembrar, resposta.access_token, resposta.refresh_token);
+        this.oauth2.signin(this.lembrar, resposta.access_token, resposta.refresh_token);
         this.loading = false;
       },
       resposta_erro => { 
