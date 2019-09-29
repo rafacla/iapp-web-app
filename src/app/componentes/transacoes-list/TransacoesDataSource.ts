@@ -22,7 +22,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
     public transacoes$ = this.transacoesSubject.asObservable();
     listaTransacoes: Map<string, TransacoesCascata> = new Map();
     listaFiltros: Filtro[] = [];
-
+    private ordenacao = 'asc';
     constructor(private httpCliente: HttpClientService) {}
 
     connect(collectionViewer: CollectionViewer): Observable<TransacoesCascata[]> {
@@ -40,7 +40,9 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
      * @param filter Filtro a ser aplicado no servidor. Por padrão todas as transações do diário serão recuperadas.
      * @param sortDirection ToDo: este argumento não possui função no momento.
      */
-    loadTransacoes(diarioUID: string, filter = '', sortDirection = 'asc') {
+    loadTransacoes(diarioUID: string, filter = '', sortDirection = '') {
+      if (sortDirection != '')  
+        this.ordenacao = sortDirection;
         this.loadingSubject.next(true);
         
         this.httpCliente.subtransacoesTabularGet(diarioUID, filter)
@@ -122,6 +124,19 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
             });
             let arrayTransacoes = Array.from(this.listaTransacoes.values());
             //arrayTransacoes = arrayTransacoes.sort(function(a, b){return moment.utc(a.transacao_data,'YYYY-MM-DD').diff(moment.utc(b.transacao_data,'YYYY-MM-DD'))});
+            arrayTransacoes = arrayTransacoes.sort((a,b) => {
+              if (this.comparaValor(a,b,"<")) {
+                if (this.ordenacao == 'asc')
+                  return 1;
+                else
+                  return -1;
+              } else {
+                if (this.ordenacao == 'asc')
+                  return -1;
+                else
+                  return 1;
+              }
+            });
             this.transacoesSubject.next(arrayTransacoes);
           },
           erro => {
@@ -189,7 +204,8 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
           this.httpCliente.subtransacaoPost(novaJSONSub).subscribe(undefined, error => (console.log(error)));
         }
       });
-      this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
+      this.aplicaFiltros();
+      //this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
     }
 
     novaTransacao(transacao: TransacoesCascata) {
@@ -307,6 +323,29 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
 
 
     /**
+     * Aplica ordenação client-side no datasource recebido do servidor
+     */
+    aplicaOrdenacao(sortDirection = '') {
+      if (sortDirection != '')
+        this.ordenacao = sortDirection;
+      let arrayTransacoes = Array.from(this.listaTransacoes.values());
+      arrayTransacoes = arrayTransacoes.sort((a,b) => {
+        if (this.comparaValor(a,b,"<")) {
+          if (this.ordenacao == 'asc')
+            return 1;
+          else
+            return -1;
+        } else {
+          if (this.ordenacao == 'asc')
+            return -1;
+          else
+            return 1;
+        }
+      });
+      this.transacoesSubject.next(arrayTransacoes);
+    }
+
+    /**
      * Aplica filtros client-side no datasource recebido do servidor
      */
     aplicaFiltros() {
@@ -317,10 +356,34 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
             return this.comparaValor(item[filtro.filtroColuna],filtro.filtroValor,filtro.filtroOperador);
           });
         });
-        //arrayTransacoes = arrayTransacoes.sort(function(a, b){return moment.utc(a.transacao_data,'YYYY-MM-DD').diff(moment.utc(b.transacao_data,'YYYY-MM-DD'))});
+        arrayTransacoes = arrayTransacoes.sort((a,b) => {
+          if (this.comparaValor(a,b,"<")) {
+            if (this.ordenacao == 'asc')
+              return 1;
+            else
+              return -1;
+          } else {
+            if (this.ordenacao == 'asc')
+              return -1;
+            else
+              return 1;
+          }
+        });
         this.transacoesSubject.next(arrayTransacoes);
       } else {
-        //arrayTransacoes = arrayTransacoes.sort(function(a, b){return moment.utc(a.transacao_data,'YYYY-MM-DD').diff(moment.utc(b.transacao_data,'YYYY-MM-DD'))});
+        arrayTransacoes = arrayTransacoes.sort((a,b) => {
+          if (this.comparaValor(a,b,"<")) {
+            if (this.ordenacao == 'asc')
+              return 1;
+            else
+              return -1;
+          } else {
+            if (this.ordenacao == 'asc')
+              return -1;
+            else
+              return 1;
+          }
+        });
         this.transacoesSubject.next(arrayTransacoes);
       }
     }

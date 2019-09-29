@@ -177,20 +177,25 @@ export class TransacoesListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        let FiltrosAnterior = this.transacoesDataSource.listaFiltros;
         if (result.transacaoAlterada.transacao_id) {
           this.transacoesDataSource.alteraTransacao(result.transacaoAlterada, result.transacaoAntiga);
         } else {
           this.transacoesDataSource.novaTransacao(result.transacaoAlterada);
         }
-        
+        this.transacoesDataSource.listaFiltros = FiltrosAnterior;
+        this.transacoesDataSource.aplicaFiltros();
       }
     });
   }
 
   ngOnInit() {
+    this.sort.sortChange.subscribe(sort => {
+      this.transacoesDataSource.aplicaOrdenacao(sort.direction);
+    })
     this.userService.getUserDetail().subscribe(user => {
       this.transacoesDataSource = new TransacoesDataSource(this.http);
-      this.transacoesDataSource.loadTransacoes(user.userLastDiarioUID);
+      this.transacoesDataSource.loadTransacoes(user.userLastDiarioUID,'','');
       this.transacoesDataSource.transacoes$.subscribe(transacoes => {
         this.saldoCompensado = 0;
         this.saldoACompensar = 0;
