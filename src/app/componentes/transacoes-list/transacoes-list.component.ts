@@ -500,7 +500,7 @@ export class TransacoesEditComponent {
         const transacaoEditar = {} as TransacoesCascata;
         transacaoEditar.conta_id = this.formTransacoes.get('conta_id').value;
         transacaoEditar.conta_nome = this.data.contas.filter(x => x.conta_id == transacaoEditar.conta_id)[0].conta_nome;
-        transacaoEditar.transacao_data = this.formTransacoes.get('transacao_data').value;
+        transacaoEditar.transacao_data = this.formTransacoes.get('transacao_data').value.format('Y-MM-DD');
         transacaoEditar.transacao_sacado = this.formTransacoes.get('transacao_sacado').value;
         transacaoEditar.transacao_numero = this.formTransacoes.get('transacao_numero').value;
         transacaoEditar.transacao_descricao = this.formTransacoes.get('transacao_descricao').value;
@@ -543,7 +543,7 @@ export class TransacoesEditComponent {
         const novaTransacao = {} as TransacoesCascata;
         novaTransacao.conta_id = this.formTransacoes.get('conta_id').value;
         novaTransacao.conta_nome = this.data.contas.filter(x => x.conta_id == novaTransacao.conta_id)[0].conta_nome;
-        novaTransacao.transacao_data = this.formTransacoes.get('transacao_data').value;
+        novaTransacao.transacao_data = this.formTransacoes.get('transacao_data').value.format('Y-MM-DD');
         novaTransacao.transacao_sacado = this.formTransacoes.get('transacao_sacado').value;
         novaTransacao.transacao_numero = this.formTransacoes.get('transacao_numero').value;
         novaTransacao.transacao_descricao = this.formTransacoes.get('transacao_descricao').value;

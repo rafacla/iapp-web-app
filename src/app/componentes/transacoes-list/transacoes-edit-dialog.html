@@ -134,7 +134,7 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button color="primary" (submit)="editarTransacao(tooltip)">Salvar</button>
+        <button mat-raised-button color="primary" (click)="editarTransacao(tooltip)">Salvar</button>
         <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
         <mat-form-field class="transacoes-itens total" #tooltip="matTooltip" matTooltip="Você deve distribuir os valores até zerar" matTooltipClass="tooltip-red" matTooltipPosition="above"> 
             <input matInput placeholder="A distribuir:" disabled value="0" [ngModel]="txtADistribuir" class="valor">

@@ -330,7 +330,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
         this.ordenacao = sortDirection;
       let arrayTransacoes = Array.from(this.listaTransacoes.values());
       arrayTransacoes = arrayTransacoes.sort((a,b) => {
-        if (this.comparaValor(a,b,"<")) {
+        if (this.comparaValor(a.transacao_data,b.transacao_data,"<")) {
           if (this.ordenacao == 'asc')
             return 1;
           else
@@ -357,7 +357,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
           });
         });
         arrayTransacoes = arrayTransacoes.sort((a,b) => {
-          if (this.comparaValor(a,b,"<")) {
+          if (this.comparaValor(a.transacao_data,b.transacao_data,"<")) {
             if (this.ordenacao == 'asc')
               return 1;
             else
@@ -372,7 +372,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
         this.transacoesSubject.next(arrayTransacoes);
       } else {
         arrayTransacoes = arrayTransacoes.sort((a,b) => {
-          if (this.comparaValor(a,b,"<")) {
+          if (this.comparaValor(a.transacao_data,b.transacao_data,"<")) {
             if (this.ordenacao == 'asc')
               return 1;
             else
