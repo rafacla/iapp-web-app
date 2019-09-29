@@ -26,7 +26,7 @@ export class ContasListComponent implements OnInit {
   contasCorrente: ContaList[] = [];
   contasCartao: ContaList[] = [];
   contaDetalhe: ContaList;
-  @ViewChild('lineChart',{static: true}) private chartRef;
+  @ViewChild('lineChart', {static: false}) private chartRef;
   chart: any;
   saldo = {
     menos3: {
