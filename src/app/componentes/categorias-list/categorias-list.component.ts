@@ -361,7 +361,7 @@ export class SubcategoriasEditComponent implements OnInit {
         subcategoria.subcategoria_nome = this.formSubcategorias.get('subcategoriaNome').value;
         subcategoria.subcategoria_description = this.formSubcategorias.get('subcategoriaDescricao').value;
         subcategoria.categoria_id = this.formSubcategorias.get('categoriaId').value;
-        subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoryaCarry').value;
+        subcategoria.subcategoria_carry = this.formSubcategorias.get('subcategoriaCarry').value;
     } else {
       // atualização:
       subcategoria.subcategoria_id = this.data.subcategoria_id;
