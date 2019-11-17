@@ -180,7 +180,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
         if (transacao.subtransacoes.indexOf(element) == -1) {
           let deletaSubtransacao = {} as SubtransacoesTabular;
           deletaSubtransacao.transacoes_item_id = element.transacoes_item_id;
-          this.httpCliente.subtransacaoDelete(deletaSubtransacao);
+          this.httpCliente.subtransacaoDelete(deletaSubtransacao).subscribe(undefined, error => (console.log(error)));
         }
       });
       transacao.subtransacoes.forEach(element => {

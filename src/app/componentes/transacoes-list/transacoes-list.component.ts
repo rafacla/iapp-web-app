@@ -467,6 +467,11 @@ export class TransacoesEditComponent {
     this.calculaADistribuir();
   }
 
+  deletaItem(index) {
+    const arrowItensCategorias = this.formTransacoesItensCategorias.get('arrowItensCategorias') as FormArray;
+    arrowItensCategorias.removeAt(index);
+  }
+
   addItensTransferencias() {
     const arrowItensTransferencias = this.formTransacoesItensTransferencias.get('arrowItensTransferencias') as FormArray;
     arrowItensTransferencias.push(this.formBuilder.group({
