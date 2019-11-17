@@ -467,7 +467,7 @@ export class TransacoesEditComponent {
     this.calculaADistribuir();
   }
 
-  deletaItem(index) {
+  deletaItemCategoria(index) {
     const arrowItensCategorias = this.formTransacoesItensCategorias.get('arrowItensCategorias') as FormArray;
     arrowItensCategorias.removeAt(index);
   }
@@ -482,6 +482,11 @@ export class TransacoesEditComponent {
       subtransacao_valor_entrada: (this.numberADistribuir > 0 ? Math.abs(this.numberADistribuir) : 0)
     }));
     this.calculaADistribuir();
+  }
+
+  deletaItemTransferencia(index) {
+    const arrowItensTransferencias = this.formTransacoesItensTransferencias.get('arrowItensTransferencias') as FormArray;
+    arrowItensTransferencias.removeAt(index);
   }
 
   get itensCategorias() {
