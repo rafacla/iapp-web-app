@@ -20,8 +20,9 @@
                                     <mat-list-item *ngFor="let fatura of item.faturas;let inn=index">
                                         <mat-radio-button mat-line [value]="fatura" >
                                             <p>
-                                                <span>{{fatura.fatura_data == null ? "Sem fatura" : fatura.fatura_data | date: 'MMMM yy'}}</span>
-                                                <span>{{fatura.fatura_valor}}</span>
+                                                <span>{{fatura.fatura_data == null ? "Sem fatura" : fatura.fatura_data | date: 'MMM-yy'}}</span>
+                                                <span class="valor-fatura">{{fatura.fatura_valor}}</span> 
+                                                <span class="situacao-fatura {{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? 'PAGO' : 'ABERTA'}}">{{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? "PAGO" : (fatura.fatura_valor_pago > 0 ? "PARCIAL" : "ABERTA")}}</span>
                                             </p>
                                         </mat-radio-button>
                                     </mat-list-item>

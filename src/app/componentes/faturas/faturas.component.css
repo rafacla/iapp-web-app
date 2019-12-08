@@ -28,5 +28,20 @@
     font-size: 48px;
 }
 .fatura-titulo > span {
+    font-size: 1.4em;
     margin-left: 24px;
+}
+.valor-fatura {
+    margin-left: 10px;
+}
+.situacao-fatura {
+    margin-left: 4px;
+    font-size: 0.7em;
+    font-weight: bolder;
+}
+.situacao-fatura.PAGO {
+    color: #006600;
+}
+.situacao-fatura.ABERTA {
+    color: #CCAA00;
 }

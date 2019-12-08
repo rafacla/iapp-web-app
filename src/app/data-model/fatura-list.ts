@@ -1,8 +1,8 @@
 export class FaturaList {
     fatura_index: number;
     fatura_data: string;
-    fatura_valor: string;
-    fatura_valor_pago: boolean;
+    fatura_valor: number;
+    fatura_valor_pago: number;
     conta_id: number;
     conta_nome: string;
 }
