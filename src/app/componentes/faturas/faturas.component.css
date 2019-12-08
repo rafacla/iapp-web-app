@@ -1,0 +1,32 @@
+.content {
+    padding: 10px;
+    display: flex;
+    height: calc(100vh - 120px);
+}
+
+.cartao-select {
+    width: 300px;
+}
+
+.cartao-fatura {
+    width: calc(100% - 20px - 300px);
+    padding-left: 10px;
+    height: 100%;
+    flex: 1;
+}
+
+.mat-card {
+    height: calc(100% - 50px);
+}
+
+.fatura-titulo {
+    display: inline-flex;
+    vertical-align: middle;
+    line-height: 48px;
+}
+.fatura-titulo > .mat-icon {
+    font-size: 48px;
+}
+.fatura-titulo > span {
+    margin-left: 24px;
+}

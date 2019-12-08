@@ -1,1 +1,44 @@
-<p>faturas works!</p>
+<div class="mat-toolbar-second-row">
+    <span>Faturas de Cartões de Crédito</span>
+</div>
+<div class="mat-toolbar-third-row">
+    <button mat-button><mat-icon>add</mat-icon> Novo Cartão</button>
+</div>
+<div class="content">
+    <div class="cartao-select">
+        <mat-accordion>
+            <mat-radio-group [(ngModel)]="faturaSelecionada">
+                <ng-container *ngFor="let item of cartoesList;let in=index">
+                    <mat-expansion-panel [expanded]="(in != 0) ? 'false' : 'true' ">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <h4>{{item.conta_nome}}</h4>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div>
+                            <mat-list *ngIf="item.faturas">
+                                    <mat-list-item *ngFor="let fatura of item.faturas;let inn=index">
+                                        <mat-radio-button mat-line [value]="fatura" >
+                                            <p>
+                                                <span>{{fatura.fatura_data == null ? "Sem fatura" : fatura.fatura_data | date: 'MMMM yy'}}</span>
+                                                <span>{{fatura.fatura_valor}}</span>
+                                            </p>
+                                        </mat-radio-button>
+                                    </mat-list-item>
+                            </mat-list>
+                        </div>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-radio-group>
+        </mat-accordion>
+    </div>
+
+    <div class="cartao-fatura">
+        <mat-card>
+            <p class="fatura-titulo">
+                <mat-icon>receipt_outlined</mat-icon>
+                <span>{{faturaSelecionada ? faturaSelecionada.conta_nome : ''}}</span>
+            </p>
+        </mat-card>
+    </div>
+</div>

@@ -14,6 +14,7 @@ import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoGet, OrcamentoPost } from 'src/app/data-model/orcamento-list';
+import { CartaoList, FaturaList } from 'src/app/data-model/fatura-list';
 
 @Injectable({ providedIn: 'root' })
 
@@ -52,6 +53,28 @@ export class HttpClientService {
 	/** GET User details by id. Will 500 if id not found */
 	userGet(): Observable<UserDetail> {
 		return this.http.get<UserDetail>(this.apiUrl + '/users/logged');
+	}
+
+	/** GET Retorna uma Lista de Cartões dado um DiarioUID */
+	cartoesGet(diarioUID: string): Observable<CartaoList[]> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8',
+				diariouid: diarioUID
+			})
+		};
+		return this.http.get<CartaoList[]>(this.apiUrl + '/cartoes', httpOptions);
+	}
+
+	/** GET Retorna uma Lista de Faturas dado um CartaoID */
+	faturasGet(cartaoID: string): Observable<FaturaList[]> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8',
+				cartaoid: cartaoID
+			})
+		};
+		return this.http.get<FaturaList[]>(this.apiUrl + '/cartoes/fatura', httpOptions);
 	}
 
 	/** POST Cria um novo usuário. */

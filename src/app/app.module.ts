@@ -16,13 +16,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './servicos/routing/app-routing.module';
 
 // MaterialComponents
-import { MatToolbarModule, MatAutocompleteModule, MatCard, MatCardActions, MatCardAvatar, MatCardContent, MatCardFooter,
+import { MatToolbarModule, MatAutocompleteModule, MatExpansionModule, MatCard, MatCardActions, MatCardAvatar, MatCardContent, MatCardFooter,
   MatCardHeader, MatCardImage, MatCardTitle, MatCardLgImage, MatCardMdImage, MatCardModule, MatCardSmImage,
   MatCardSubtitle, MatCardTitleGroup, MatCardXlImage, MatCheckboxModule, MatButtonModule, MatSidenavModule,
   MatIconModule, MatListModule, MatFormField, MatLabel, MatFormFieldModule, MatFormFieldAppearance,
   MatFormFieldControl, MatFormFieldDefaultOptions, MatProgressSpinnerModule,MatProgressBarModule, matFormFieldAnimations,
   MatInputModule, MatMenu, MatMenuModule,  MatDialogModule,  MatSlideToggleModule, MatDatepickerModule,
-  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter, MatStepperModule } from '@angular/material';
+  MatNativeDateModule, MatTableModule, MatDividerModule, MatOptionModule, MatSelectModule, MatSortModule, MatTooltipModule, DateAdapter, MatStepperModule, MatRadioModule } from '@angular/material';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 // Serviços:
@@ -55,7 +55,9 @@ import { FaturasComponent } from './componentes/faturas/faturas.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
+    MatRadioModule,
     MatAutocompleteModule,
+    MatExpansionModule,
     MatCheckboxModule,
     MatToolbarModule,
     MatButtonModule,
