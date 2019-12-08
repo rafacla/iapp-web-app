@@ -43,6 +43,7 @@ import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoComponent } from './componentes/orcamento/orcamento.component';
 import { from } from 'rxjs';
+import { FaturasComponent } from './componentes/faturas/faturas.component';
 
 
 
@@ -109,7 +110,8 @@ import { from } from 'rxjs';
     TransacoesListComponent,
     TransacoesEditComponent,
     TransacoesOFXComponent,
-    OrcamentoComponent
+    OrcamentoComponent,
+    FaturasComponent
   ],
   providers: [
     {
