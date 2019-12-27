@@ -11,7 +11,6 @@ app.get('*', (req, res, next) => {
        res.redirect("https://" + req.headers.host + req.url); 
       // faz o redirect para HTTPS
    } else {
-      console.log(req.headers);
        next();
       // segue com a sequência das rotas
    }
