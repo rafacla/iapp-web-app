@@ -23,40 +23,23 @@ app.get('*', (req, res, next) => {
 
 app.get('/', (req, res, next) => {
    if (req.headers['x-forwarded-proto'] != 'https') {
-       
-// checa se o header é HTTP ou HTTPS
-
-       res.redirect("https://" + req.headers.host + req.url);
-       
-// faz o redirect para HTTPS
-
+      // checa se o header é HTTP ou HTTPS
+      res.redirect("https://" + req.headers.host + req.url);
+       // faz o redirect para HTTPS
    } else {
        next();
-       
-// segue com a sequência das rotas
-
-   }
-});
-
-app.get('/*', (req, res, next) => {
-   if (req.headers['x-forwarded-proto'] != 'https') {
-       
-// checa se o header é HTTP ou HTTPS
-
-       res.redirect("https://" + req.headers.host + req.url);
-       
-// faz o redirect para HTTPS
-
-   } else {
-       next();
-       
-// segue com a sequência das rotas
-
+       // segue com a sequência das rotas
    }
 });
 
 app.get('/*', function (req, res) {
-   res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'index.html'));   
+   if (req.headers['x-forwarded-proto'] != 'https') {
+      // checa se o header é HTTP ou HTTPS
+      res.redirect("https://" + req.headers.host + req.url);
+       // faz o redirect para HTTPS
+   } else {
+      res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'index.html'));   
+   }
 })
  
 app.listen(port)
