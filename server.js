@@ -11,8 +11,7 @@ app.get('*', (req, res, next) => {
        res.redirect("https://" + req.headers.host + req.url); 
       // faz o redirect para HTTPS
    } else {
-       next();
-      // segue com a sequência das rotas
+      res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'index.html')); 
    }
 });
  
