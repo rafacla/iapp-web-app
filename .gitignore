@@ -14,6 +14,9 @@
 *.launch
 .settings/
 *.sublime-workspace
+local_server.js
+server.crt
+server.key
 
 # IDE - VSCode
 .vscode/*
@@ -35,4 +38,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+dist
 dist
