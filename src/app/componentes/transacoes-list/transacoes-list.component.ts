@@ -34,6 +34,8 @@ export interface DialogData {
   transacao: TransacoesCascata;
   contas: any;
   categorias: CategoriasCascata[];
+  ultima_conta_id: number;
+  ultima_data: string;
 }
 
 export interface DialogDataOFX {
@@ -123,6 +125,10 @@ export class TransacoesListComponent implements OnInit {
   ckContasAll = true;
   ckContas: boolean[] = [];
 
+  //Criando variáveis para armazenar a última conta e última data que foram usadas em novas transações:
+  ultima_conta_id = 0;
+  ultima_data = moment.utc();
+
   //Mat-Table
   @ViewChild(MatTable,{static: true}) table: MatTable<any>;
   @ViewChild(MatSort,{static: true}) sort: MatSort;
@@ -175,7 +181,7 @@ export class TransacoesListComponent implements OnInit {
     }
     const dialogRef = this.dialog.open(TransacoesEditComponent, {
       width: '1024px',
-      data: {transacao: transacao, contas: this.listaTodasContas, categorias: this.listaCategorias}
+      data: {transacao: transacao, contas: this.listaTodasContas, categorias: this.listaCategorias, ultima_conta_id: this.ultima_conta_id, ultima_data: this.ultima_data}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -188,6 +194,8 @@ export class TransacoesListComponent implements OnInit {
         }
         this.transacoesDataSource.listaFiltros = FiltrosAnterior;
         this.transacoesDataSource.aplicaFiltros();
+        this.ultima_conta_id = result.ultima_conta_id;
+        this.ultima_data = result.ultima_data;
       }
     });
   }
@@ -261,6 +269,7 @@ export class TransacoesListComponent implements OnInit {
   filtraPorConta(conta_id) {
     event.preventDefault();
     if (conta_id === 'all') {
+      this.ultima_conta_id = null;
       this.nomeContaAtual = "Todas as Contas";
       this.arrayContas.forEach(item => {
         this.ckContas[item[0]] = true;
@@ -269,6 +278,7 @@ export class TransacoesListComponent implements OnInit {
       this.transacoesDataSource.removeFiltroPorColuna('conta_nome');
       this.transacoesDataSource.aplicaFiltros();
     } else {
+      this.ultima_conta_id = conta_id;
       this.ckContasAll = false;
       this.arrayContas.forEach(item => {
         if (item[0]===conta_id)
@@ -404,8 +414,8 @@ export class TransacoesEditComponent {
 
   private createForm() {
     this.formTransacoes = this.formBuilder.group({
-      conta_id: [this.data.transacao ? this.data.transacao.conta_id : '', [Validators.required] ],
-      transacao_data: [{value: this.data.transacao ? this.data.transacao.transacao_data : '', disabled: true}, [Validators.required]],
+      conta_id: [this.data.transacao.conta_id ? this.data.transacao.conta_id : this.data.ultima_conta_id, [Validators.required] ],
+      transacao_data: [{value: this.data.transacao.conta_id ? this.data.transacao.transacao_data : this.data.ultima_data, disabled: true}, [Validators.required]],
       transacao_sacado: [this.data.transacao ? this.data.transacao.transacao_sacado : '', [Validators.required]],
       transacao_numero: [this.data.transacao ? this.data.transacao.transacao_numero : ''],
       transacao_descricao: [this.data.transacao ? this.data.transacao.transacao_descricao : ''],
@@ -550,7 +560,9 @@ export class TransacoesEditComponent {
         transacaoEditar.subtransacoes = Subtransacoes;
         let resposta = {
           transacaoAlterada: transacaoEditar,
-          transacaoAntiga: this.data.transacao};
+          transacaoAntiga: this.data.transacao,
+          ultima_conta_id: transacaoEditar.conta_id,
+          ultima_data: transacaoEditar.transacao_data};
         this.dialogRef.close(resposta);
       } else {
         // from inválido... informa ao user?
