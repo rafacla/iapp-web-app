@@ -786,6 +786,8 @@ export class TransacoesOFXComponent {
         if (total > 0) {
           stepper.selected.completed = true;
           stepper.next();
+
+          let conta = this.data.contas.find(element => element.conta_id == this.contaSelect.value);
           transacoesAImportar.forEach(element => {
             let transacao: TransacoesTabular = {
               transacao_data: moment(element.data, 'DD/MM/YYYY').format('YYYY-MM-DD'),
@@ -794,6 +796,31 @@ export class TransacoesOFXComponent {
               transacao_numero: element.numero,
               conta_id: this.contaSelect.value
             };
+            if (conta && conta.conta_cartao == '1') {
+              let data = moment(element.data, 'DD/MM/YYYY').clone();
+              let diaFechamento = moment(conta.conta_cartao_data_fechamento);
+              let diaVencimento = moment(conta.conta_cartao_data_vencimento)
+                if (+data.format('D') > +diaFechamento.format('D')) {
+                  // entrará na próxima fatura
+                  // precisamos ver se isso significa um ou dois meses a frente:
+                  if (+diaFechamento.format('D')>+diaVencimento.format('D')) {
+                    data.add(2,'months').calendar();
+                    data.startOf('month');
+                  } else {
+                    data.add(1,'months').calendar();
+                    data.startOf('month');
+                  }
+                } else {
+                  // entrará na fatura do mês atual
+                  if (+diaFechamento.format('D')>+diaVencimento.format('D')) {
+                    data.add(1,'months').calendar();
+                    data.startOf('month');
+                  } else {
+                    data.startOf('month');
+                  }
+                }
+                transacao.transacao_fatura_data = data.format('YYYY-MM-DD');
+            } 
             
             this.http.transacaoPost(transacao).subscribe(sucesso => {
               contagem = contagem + 1;
