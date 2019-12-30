@@ -66,6 +66,7 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
                 transacao_fatura_data: element.transacao_fatura_data,
                 conta_id: element.conta_id,
                 conta_nome: element.conta_nome,
+                conta_cartao: element.conta_cartao,
                 diario_uid: element.diario_uid,
                 subtransacoes: []
               };

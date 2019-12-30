@@ -61,6 +61,7 @@ export interface TransacoesTabular {
   transacoes_item_valor?: number;
   categoria_id?: number;
   categoria_nome?: string;
+  conta_cartao?: number;
   subcategoria_id?: number;
   subcategoria_nome?: string;
   transf_para_conta_id?: number;
@@ -93,6 +94,7 @@ export interface TransacoesCascata {
   transacao_fatura_data: string;
   conta_id: number;
   conta_nome: string;
+  conta_cartao: number;
   diario_uid: string;
   subtransacoes: Subtransacoes[];
   transacao_merged_master?: boolean; //Este item não vem do servidor (deveria?), calculamos localmente (a SQL já está demasiadamente complexa, ok?)
@@ -166,6 +168,7 @@ export class TransacoesListComponent implements OnInit {
         transacao_fatura_data: null,
         conta_id: null,
         conta_nome: null,
+        conta_cartao: null,
         diario_uid: null,
         subtransacoes: []
       };
@@ -376,8 +379,6 @@ export class TransacoesEditComponent {
     private userService: UserService,
     private formBuilder: FormBuilder) 
     {
-      
-      this.alternaTipoConta();
       if (this.data.transacao.subtransacoes) {
         this.data.transacao.subtransacoes.forEach(transacao => {
           if (transacao.transf_para_conta_id) {
@@ -396,6 +397,7 @@ export class TransacoesEditComponent {
           this.categoriasFiltradas = this.filterCategorias(valor);
         });
       });
+      this.alternaTipoConta();
     }
 
 
@@ -523,6 +525,7 @@ export class TransacoesEditComponent {
         transacaoEditar.transacao_valor = this.formTransacoes.get('transacao_valor_entrada').value - this.formTransacoes.get('transacao_valor_saida').value;
         transacaoEditar.transacao_id = this.data.transacao.transacao_id;
         transacaoEditar.transacao_conciliada = this.data.transacao.transacao_conciliada;
+        
         const Subtransacoes = [] as Subtransacoes[];
         this.formTransacoesItensCategorias.controls.arrowItensCategorias.value.forEach(element => {
           const subtransacao = {} as Subtransacoes;

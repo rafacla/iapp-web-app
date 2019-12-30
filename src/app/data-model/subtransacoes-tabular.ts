@@ -11,6 +11,7 @@ export class SubtransacoesTabular {
     transacao_fatura_data: string;
     conta_id: number;
     conta_nome: string;
+    conta_cartao: number;
     diario_uid: string;
     transacoes_item_id: number;
     transacoes_item_descricao: string;
