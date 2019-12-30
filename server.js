@@ -3,6 +3,13 @@ const path = require('path')
 const port = process.env.PORT || 3000
 const app = express()
  
+app.use(express.static(__dirname))
+app.use(
+   express.static(
+      path.join(__dirname, 'dist', 'iapp-web-app')
+   )
+)
+
 app.get('*', (req, res, next) => {
    if (req.headers['x-forwarded-proto'] != 'https') { 
       // checa se o header é HTTP ou HTTPS
@@ -12,12 +19,5 @@ app.get('*', (req, res, next) => {
       res.sendFile(path.join(__dirname, 'dist', 'iapp-web-app', 'main.html')); 
    }
 });
-
-app.use(express.static(__dirname))
-app.use(
-   express.static(
-      path.join(__dirname, 'dist', 'iapp-web-app')
-   )
-)
 
 app.listen(port)
