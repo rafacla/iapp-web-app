@@ -209,8 +209,6 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
     }
 
     novaTransacao(transacao: TransacoesCascata) {
-      this.listaTransacoes.set(transacao.conta_id+'>'+transacao.transacao_id, transacao);
-      this.transacoesSubject.next(Array.from(this.listaTransacoes.values()));
       const novaTransacao = {} as TransacoesTabular;
       novaTransacao.conta_id = transacao.conta_id;
       novaTransacao.transacao_data = transacao.transacao_data;
@@ -220,6 +218,8 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
       novaTransacao.transacao_sacado = transacao.transacao_sacado;
       novaTransacao.transacao_valor = transacao.transacao_valor;
       this.httpCliente.transacaoPost(novaTransacao).subscribe(sucesso => {
+        this.listaTransacoes.set(sucesso.id+'>'+transacao.transacao_id, transacao);
+        this.aplicaFiltros();
         transacao.subtransacoes.forEach(element => {
           let subtransacao = {
             transacao_id: sucesso.id,
