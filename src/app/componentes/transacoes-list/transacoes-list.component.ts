@@ -13,6 +13,7 @@ import { CategoriasCascata, Subcategorias } from '../../data-model/categoria-cas
 import {ErrorStateMatcher} from '@angular/material/core';
 import {parse as parseOFX} from 'ofx-js';
 import { formatNumber } from '@angular/common';
+import { Observable, Subject } from 'rxjs';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -380,7 +381,7 @@ export class TransacoesEditComponent {
   itensCategoria: Subtransacoes[] = [];
   itensTransferencia: Subtransacoes[] = [];
   matcher = new MyErrorStateMatcher();
-  categoriasFiltradas: CategoriasCascata[];
+  categoriasFiltradas = new Subject<CategoriasCascata[]>();
   
   constructor(
     public dialogRef: MatDialogRef<DialogData>,
@@ -399,12 +400,12 @@ export class TransacoesEditComponent {
         });
       }
       this.createForm();
-      this.categoriasFiltradas = this.data.categorias;
+      this.categoriasFiltradas.next(this.data.categorias);
 
       const arrowItensCategorias = this.formTransacoesItensCategorias.controls.arrowItensCategorias as FormArray;
       arrowItensCategorias.controls.forEach(element => {
         element.get('subcategoria_id').valueChanges.subscribe(valor => {
-          this.categoriasFiltradas = this.filterCategorias(valor);
+          this.categoriasFiltradas.next(this.filterCategorias(valor));
         });
       });
       this.alternaTipoConta();
@@ -473,7 +474,7 @@ export class TransacoesEditComponent {
     }));
     arrowItensCategorias.controls.forEach(element => {
       element.get('subcategoria_id').valueChanges.subscribe(valor => {
-        this.categoriasFiltradas = this.filterCategorias(valor);
+        this.categoriasFiltradas.next(this.filterCategorias(valor));
       })
     });
     this.calculaADistribuir();
@@ -673,27 +674,33 @@ export class TransacoesEditComponent {
 
   filterCategorias(search: string) {
     let categorias = [] as CategoriasCascata[];
-    this.data.categorias.forEach(categoria => {
-      categoria.subcategorias.forEach(subcategoria => {
-        if (subcategoria.subcategoria_nome.toLowerCase().includes(search.toLowerCase())) {
-          if (categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome).length) {
-            categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome)[0].subcategorias.push(subcategoria);
-          } else {
-            let novaCategoria = {
-              categoria_description: categoria.categoria_description,
-              categoria_filhos: categoria.categoria_filhos,
-              categoria_id: categoria.categoria_id,
-              categoria_nome: categoria.categoria_nome,
-              categoria_ordem: categoria.categoria_ordem,
-              subcategorias: [],
-              diario_uid: categoria.diario_uid            
-            } as CategoriasCascata;
-            novaCategoria.subcategorias.push(subcategoria);
-            categorias.push(novaCategoria);
+    if (search) {
+      search = search.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      
+      this.data.categorias.forEach(categoria => {
+        categoria.subcategorias.forEach(subcategoria => {
+          if (subcategoria.subcategoria_nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(search.toLowerCase())) {
+            if (categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome).length) {
+              categorias.filter(categoriaF => categoriaF.categoria_nome === categoria.categoria_nome)[0].subcategorias.push(subcategoria);
+            } else {
+              let novaCategoria = {
+                categoria_description: categoria.categoria_description,
+                categoria_filhos: categoria.categoria_filhos,
+                categoria_id: categoria.categoria_id,
+                categoria_nome: categoria.categoria_nome,
+                categoria_ordem: categoria.categoria_ordem,
+                subcategorias: [],
+                diario_uid: categoria.diario_uid            
+              } as CategoriasCascata;
+              novaCategoria.subcategorias.push(subcategoria);
+              categorias.push(novaCategoria);
+            }
           }
-        }
+        });
       });
-    });
+    } else {
+      categorias = this.data.categorias;
+    }
     return categorias;
   }
 

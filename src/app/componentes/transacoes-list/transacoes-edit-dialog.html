@@ -57,9 +57,9 @@
             <div class="subheader">Categorias <a mat-button (click)="addItensCategorias()"><mat-icon>library_add</mat-icon></a></div>
             <mat-divider></mat-divider>
             <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption >
-                <mat-optgroup *ngFor="let categoria of categoriasFiltradas" [label]="categoria.categoria_nome">
+                <mat-optgroup *ngFor="let categoria of categoriasFiltradas | async" [label]="categoria.categoria_nome">
                     <mat-option *ngFor="let subcategoria of categoria.subcategorias" [value]="subcategoria.subcategoria_id">
-                    {{subcategoria.subcategoria_nome}}
+                        {{subcategoria.subcategoria_nome}}
                     </mat-option>
                 </mat-optgroup>
             </mat-autocomplete>
