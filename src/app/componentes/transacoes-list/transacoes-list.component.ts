@@ -597,7 +597,13 @@ export class TransacoesEditComponent {
       this.transacaoCartao = (conta.conta_cartao == '1');
       if (this.transacaoCartao) {
         this.formTransacoes.get('transacao_fatura_data').setValidators(Validators.required);
-        this.calculaDataFatura();
+        if (!moment(this.data.transacao.transacao_fatura_data).isValid)
+          this.calculaDataFatura();
+        else {
+          let data = moment.utc(this.data.transacao.transacao_fatura_data,"YYYY-MM-DD");
+          this.formTransacoes.get('transacao_fatura_data').setValue(data.format('YYYY-MM-DD'));
+          this.transacaoFaturaDataMMMYY = data.format('MMM-YY');
+        }
       } else {
         this.formTransacoes.get('transacao_fatura_data').clearValidators();
       }

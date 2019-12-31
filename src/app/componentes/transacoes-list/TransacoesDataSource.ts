@@ -178,7 +178,8 @@ export class TransacoesDataSource implements DataSource<TransacoesCascata> {
       this.httpCliente.transacaoPost(atualizaJSON).subscribe(undefined, error => (console.log(error)));
       transacaoAntiga.subtransacoes.forEach(element => {
         //vamos deletar aquelas que nao existem mais:
-        if (transacao.subtransacoes.indexOf(element) == -1) {
+        let subtransacao = transacao.subtransacoes.find(eelement => eelement.transacoes_item_id == element.transacoes_item_id);
+        if (!subtransacao) {
           let deletaSubtransacao = {transacoes_item_id: [element.transacoes_item_id]};
           this.httpCliente.subtransacaoDelete(deletaSubtransacao).subscribe(undefined, error => (console.log(error)));
         }
