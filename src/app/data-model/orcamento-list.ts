@@ -4,8 +4,13 @@ export class OrcamentoGet {
     receita_mes: number;
     orcado_acum: number;
     orcado_mes: number;
-    sobregasto: number;
-    sobreorcado: number;
+    sobregasto_mes_m_1: number;
+    sobregasto_acum_m_1: number;
+    sobregasto_acum: number;
+    sobreorcado_acum_m_1: number;
+    gastos_classificados_mes: number;
+    gastos_classificados_acum: number;
+    transacoes_sem_classificacao: number;
 }
 
 export class OrcamentoList {

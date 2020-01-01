@@ -20,8 +20,11 @@ export class OrcamentoComponent implements OnInit {
   receita_acum = 0;
   orcado_mes = 0;
   orcado_acum = 0;
-  sobreorcado_mes = 0;
-  sobregasto_mes = 0;
+  sobreorcado_acum_m_1 = 0;
+  sobregasto_mes_m_1 = 0;
+  sobregasto_acum_m_1 = 0;
+  sobregasto_acum = 0;
+  transacoes_sem_classificacao = 0;
   categoriasColumns: string[] = ['categoria_nome', 'orcamento_valor', 'transacoes_valor', 'disponivel_valor'];
   subcategoriasColumns: string[] = ['subcategoria_nome', 'orcamento_valor', 'transacoes_valor', 'disponivel_valor'];
   constructor(
@@ -43,8 +46,11 @@ export class OrcamentoComponent implements OnInit {
         this.receita_acum = orcamento.receita_acum;
         this.orcado_acum = orcamento.orcado_acum;
         this.orcado_mes = orcamento.orcado_mes;
-        this.sobreorcado_mes = orcamento.sobreorcado;
-        this.sobregasto_mes = orcamento.sobregasto;
+        this.sobregasto_mes_m_1 = orcamento.sobregasto_mes_m_1;
+        this.sobreorcado_acum_m_1 = orcamento.sobreorcado_acum_m_1;
+        this.sobregasto_acum_m_1 = orcamento.sobregasto_acum_m_1;
+        this.sobregasto_acum = orcamento.sobregasto_acum;
+        this.transacoes_sem_classificacao = orcamento.transacoes_sem_classificacao;
       });
     });
   }
@@ -55,6 +61,7 @@ export class OrcamentoComponent implements OnInit {
     this.orcamento_data.value.year(normalizedYear.year());
   }
   chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>) {
+    this.orcamento_data.value.year(normalizedMonth.year());
     this.orcamento_data.value.month(normalizedMonth.month());
     this.orcamento_data.next(moment(this.orcamento_data.value));
     datepicker.close();

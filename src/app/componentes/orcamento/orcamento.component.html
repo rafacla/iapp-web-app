@@ -14,8 +14,8 @@
 </div>
 <div class="conteudo">
   <div class="resumo-orcamentos">
-    <div class="arrow_box {{(receita_acum-orcado_acum) < 0 ? 'neg': 'pos'}}">
-      <p class="valor">R$ {{(receita_acum-orcado_acum-sobregasto_mes) | number}}</p>
+    <div class="arrow_box {{(receita_acum-orcado_acum-sobregasto_acum_m_1) < 0 ? 'neg': 'pos'}}">
+      <p class="valor">R$ {{(receita_acum-orcado_acum-sobregasto_acum_m_1) | number}}</p>
       <p class="legenda">(a ser distribuído)</p>
     </div>
     <div class="detalha-orcamento">
@@ -32,16 +32,22 @@
           <span>{{orcado_mes | number:'1.2'}}</span>
         </div>
         <div class="titulo">
-            <mat-icon>attach_money</mat-icon><span>Sobreorçado (mês anterior):</span>
+            <mat-icon>attach_money</mat-icon><span>Sobreorçado (até o mês anterior):</span>
         </div>
         <div class="valor">
-          <span>{{sobreorcado_mes | number:'1.2'}}</span>
+          <span>{{sobreorcado_acum_m_1 | number:'1.2'}}</span>
         </div>
         <div class="titulo">
-            <mat-icon>attach_money</mat-icon><span>Sobregasto (mês anterior):</span>
+            <mat-icon>attach_money</mat-icon><span>Sobregasto (no mês anterior):</span>
         </div>
         <div class="valor">
-          <span>{{sobregasto_mes | number:'1.2'}}</span>
+          <span>{{sobregasto_mes_m_1 | number:'1.2'}}</span>
+        </div>
+        <div class="titulo">
+          <mat-icon>attach_money</mat-icon><span>Transações sem classificação:</span>
+        </div>
+        <div class="valor">
+          <span>{{transacoes_sem_classificacao}}</span>
         </div>
     </div>
   </div>
