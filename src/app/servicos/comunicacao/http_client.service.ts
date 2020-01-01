@@ -15,12 +15,13 @@ import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move
 import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoGet, OrcamentoPost } from 'src/app/data-model/orcamento-list';
 import { CartaoList, FaturaList } from 'src/app/data-model/fatura-list';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 
 export class HttpClientService {
-	private apiUrl = 'https://api.rafacla.com';
-	//private apiUrl = 'http://localhost';
+	private apiUrl = environment.apiEndpoint;
+	
 	
     constructor(private http: HttpClient, private oauth2: Oauth2Service) { }
 
