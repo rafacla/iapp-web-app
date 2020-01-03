@@ -5,6 +5,16 @@ export class FaturaList {
     fatura_valor_pago: number;
     conta_id: number;
     conta_nome: string;
+    conta_fechamento: string;
+    conta_vencimento: string;
+}
+
+export class TransacoesCartaoList {
+    fatura_data: string;
+    transacao_data: string;
+    transacao_sacado: string;
+    transacao_descricao: string;
+    transacao_valor: number;
 }
 
 export class CartaoList {

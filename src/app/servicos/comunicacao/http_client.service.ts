@@ -14,7 +14,7 @@ import { SubtransacoesTabular } from '../../data-model/subtransacoes-tabular';
 import { CategoriaMove, SubcategoriaMove } from '../../data-model/categoria-move';
 import { TransacoesTabular } from '../../componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoGet, OrcamentoPost } from 'src/app/data-model/orcamento-list';
-import { CartaoList, FaturaList } from 'src/app/data-model/fatura-list';
+import { CartaoList, FaturaList, TransacoesCartaoList } from 'src/app/data-model/fatura-list';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -76,6 +76,17 @@ export class HttpClientService {
 			})
 		};
 		return this.http.get<FaturaList[]>(this.apiUrl + '/cartoes/fatura', httpOptions);
+	}
+
+	/** GET Retorna a lista de transações dado o cartao_id (conta_id) e uma data no formato YYYY-MM-01 */
+	transacoesCartaoGet(cartaoID: string, faturaData: string): Observable<TransacoesCartaoList[]> {
+		const httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type':  'application/json; charset=UTF-8',
+				cartaoid: cartaoID
+			})
+		};
+		return this.http.get<TransacoesCartaoList[]>(this.apiUrl + '/cartoes/fatura/' + faturaData, httpOptions);
 	}
 
 	/** POST Cria um novo usuário. */

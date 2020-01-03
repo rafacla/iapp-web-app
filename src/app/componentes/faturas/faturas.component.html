@@ -2,7 +2,7 @@
     <span>Faturas de Cartões de Crédito</span>
 </div>
 <div class="mat-toolbar-third-row">
-    <button mat-button><mat-icon>add</mat-icon> Novo Cartão</button>
+    
 </div>
 <div class="content">
     <div class="cartao-select">
@@ -18,11 +18,11 @@
                         <div>
                             <mat-list *ngIf="item.faturas">
                                     <mat-list-item *ngFor="let fatura of item.faturas;let inn=index">
-                                        <mat-radio-button mat-line [value]="fatura" >
+                                        <mat-radio-button mat-line [value]="fatura" (click)="selecionaFatura(fatura)">
                                             <p>
                                                 <span>{{fatura.fatura_data == null ? "Sem fatura" : fatura.fatura_data | date: 'MMM-yy'}}</span>
-                                                <span class="valor-fatura">{{fatura.fatura_valor}}</span> 
-                                                <span class="situacao-fatura {{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? 'PAGO' : 'ABERTA'}}">{{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? "PAGO" : (fatura.fatura_valor_pago > 0 ? "PARCIAL" : "ABERTA")}}</span>
+                                                <span class="valor-fatura">{{fatura.fatura_valor | number:'1.2'}}</span> 
+                                                <span class="situacao-fatura {{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? 'PAGO' : 'ABERTA'}}">{{(fatura.fatura_valor_pago >= fatura.fatura_valor) ? "PAGA" : (fatura.fatura_valor_pago > 0 ? "PARCIAL" : "ABERTA")}}</span>
                                             </p>
                                         </mat-radio-button>
                                     </mat-list-item>
@@ -36,10 +36,48 @@
 
     <div class="cartao-fatura">
         <mat-card>
-            <p class="fatura-titulo">
-                <mat-icon>receipt_outlined</mat-icon>
-                <span>{{faturaSelecionada ? faturaSelecionada.conta_nome : ''}}</span>
-            </p>
+            <div class="fatura-titulo">
+                <mat-icon>credit_card</mat-icon>
+                <div>{{faturaSelecionada ? faturaSelecionada.conta_nome : 'Nenhuma fatura selecionada'}}</div>
+            </div>
+            <div class="resumo-fatura">
+                <div>
+                    <div>VENCIMENTO</div>
+                    <div>{{(faturaSelecionada.conta_vencimento | date:'dd') + (faturaSelecionada.fatura_data | date:'/MM/yyyy')}}</div>
+                </div>
+                <div>
+                    <div>TOTAL DE DÉBITOS</div>
+                    <div>{{faturaSelecionada.fatura_valor | number:'1.2'}}</div>
+                </div>
+                <div>
+                    <div>TOTAL DE PAGAMENTOS</div>
+                    <div>{{(faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) | number:'1.2'}}</div>
+                </div>
+                <div>
+                    <div>SALDO DA FATURA</div>
+                    <div>{{((faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) - faturaSelecionada.fatura_valor) | number:'1.2'}}</div>
+                </div>
+            </div>
+            <table mat-table [dataSource]="transacoesList">
+                <ng-container matColumnDef="transacao_data">
+                    <th mat-header-cell *matHeaderCellDef> Data </th>
+                    <td mat-cell *matCellDef="let element"> {{element.transacao_data | date:'shortDate'}} </td>
+                </ng-container>
+                <ng-container matColumnDef="transacao_sacado">
+                    <th mat-header-cell *matHeaderCellDef> Descrição </th>
+                    <td mat-cell *matCellDef="let element"> {{element.transacao_sacado}} </td>
+                </ng-container>
+                <ng-container matColumnDef="transacao_descricao">
+                    <th mat-header-cell *matHeaderCellDef> Memo </th>
+                    <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
+                </ng-container>
+                <ng-container matColumnDef="transacao_valor">
+                    <th mat-header-cell *matHeaderCellDef> R$ </th>
+                    <td mat-cell *matCellDef="let element"> {{element.transacao_valor | number:'1.2'}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
         </mat-card>
     </div>
 </div>

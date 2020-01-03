@@ -5,7 +5,7 @@
 }
 
 .cartao-select {
-    width: 300px;
+    width: 280px;
 }
 
 .cartao-fatura {
@@ -20,16 +20,20 @@
 }
 
 .fatura-titulo {
-    display: inline-flex;
-    vertical-align: middle;
-    line-height: 48px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
 }
 .fatura-titulo > .mat-icon {
-    font-size: 48px;
+    font-size: 72px;
+    text-align: center;
+    width: 72px;
+    height: 72px;
 }
-.fatura-titulo > span {
+.fatura-titulo > div {
     font-size: 1.4em;
-    margin-left: 24px;
 }
 .valor-fatura {
     margin-left: 10px;
@@ -38,10 +42,49 @@
     margin-left: 4px;
     font-size: 0.7em;
     font-weight: bolder;
+    float: right;
 }
 .situacao-fatura.PAGO {
     color: #006600;
 }
 .situacao-fatura.ABERTA {
     color: #CCAA00;
+}
+
+.mat-table {
+    width: 100%;
+}
+
+.mat-column-transacao_data {
+    flex: 0 0 10ch!important;
+    width: 10ch!important;
+}
+.mat-column-transacao_valor {
+    flex: 0 0 15ch!important;
+    width: 15ch!important;
+}
+
+.mat-radio-label-content {
+    width: 100%!important;
+}
+
+.resumo-fatura {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+}
+
+.resumo-fatura > div {
+    display: inline-block;
+    border: 2px solid #ccc;
+    width: 21ch;
+    padding: 10px;
+    margin: 4px;
+}
+
+.resumo-fatura > div  > div:first-child {
+    color: #ccc;
+    font-size: 0.8em;
 }
