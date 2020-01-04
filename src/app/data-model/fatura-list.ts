@@ -15,6 +15,8 @@ export class TransacoesCartaoList {
     transacao_sacado: string;
     transacao_descricao: string;
     transacao_valor: number;
+    transacao_id: number;
+    conta_id: number;
 }
 
 export class CartaoList {

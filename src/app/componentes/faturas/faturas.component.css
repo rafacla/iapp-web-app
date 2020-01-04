@@ -56,9 +56,18 @@
 }
 
 .mat-column-transacao_data {
-    flex: 0 0 10ch!important;
-    width: 10ch!important;
+    flex: 0 0 15ch!important;
+    width: 15ch!important;
 }
+
+button .mat-icon {
+    color: #ccc;
+}
+
+button .mat-icon:hover {
+    color: rgb(0, 122, 204);
+}
+
 .mat-column-transacao_valor {
     flex: 0 0 15ch!important;
     width: 15ch!important;
@@ -66,6 +75,11 @@
 
 .mat-radio-label-content {
     width: 100%!important;
+}
+
+.mat-column-transacao_fatura_data {
+    flex: 0 0 1ch!important;
+    width: 1ch!important;
 }
 
 .resumo-fatura {
@@ -87,4 +101,20 @@
 .resumo-fatura > div  > div:first-child {
     color: #ccc;
     font-size: 0.8em;
+}
+
+.cartao-fatura-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.cartao-fatura-card > .resumo-fatura,
+.cartao-fatura-card > .fatura-titulo {
+    flex: 0 0 auto;
+}
+
+.cartao-fatura-card > .tabela-fatura {
+    flex: 0 1 auto;
+    overflow-y: auto;
 }

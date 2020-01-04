@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Fatura da Transação</h1>
+<div mat-dialog-content>
+    <p>A qual fatura esta transação pertence?</p>
+    <mat-form-field class="form-field" style="width:100%;">
+        <mat-label>Data da Fatura</mat-label>
+        <input matInput disabled [ngModel]="transacaoFaturaDataMMMYY" [ngModelOptions]="{standalone: true}">
+        <input matInput [hidden]="true" [matDatepicker]="dataFatura" placeholder="Data da Fatura" required [(ngModel)]="transacaoFaturaData">
+        <mat-datepicker-toggle matSuffix [for]="dataFatura"></mat-datepicker-toggle>
+        <mat-datepicker #dataFatura startView="year" (monthSelected)="chosenMonthHandler($event, dataFatura)"></mat-datepicker>
+        <mat-error *ngIf="transacaoFaturaDataError">Escolha uma data de fatura para a transação!</mat-error>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+    <button mat-button (click)="onOkClick()" cdkFocusInitial>Salvar</button>
+</div>

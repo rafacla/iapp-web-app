@@ -36,48 +36,62 @@
 
     <div class="cartao-fatura">
         <mat-card>
-            <div class="fatura-titulo">
-                <mat-icon>credit_card</mat-icon>
-                <div>{{faturaSelecionada ? faturaSelecionada.conta_nome : 'Nenhuma fatura selecionada'}}</div>
+            <div  class="cartao-fatura-card">
+                <div class="fatura-titulo">
+                    <mat-icon>credit_card</mat-icon>
+                    <div>{{faturaSelecionada ? faturaSelecionada.conta_nome : 'Nenhuma fatura selecionada'}}</div>
+                </div>
+                <div class="resumo-fatura">
+                    <div>
+                        <div>VENCIMENTO</div>
+                        <div>{{faturaSelecionada.fatura_data ? ((faturaSelecionada.conta_vencimento | date:'dd') + (faturaSelecionada.fatura_data | date:'/MM/yyyy')) : 'SEM FATURA'}}</div>
+                    </div>
+                    <div>
+                        <div>TOTAL DE DÉBITOS</div>
+                        <div>{{(faturaSelecionada.fatura_valor ? faturaSelecionada.fatura_valor : 0) | number:'1.2'}}</div>
+                    </div>
+                    <div>
+                        <div>TOTAL DE PAGAMENTOS</div>
+                        <div>{{(faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) | number:'1.2'}}</div>
+                    </div>
+                    <div>
+                        <div>SALDO DA FATURA</div>
+                        <div>{{((faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) - faturaSelecionada.fatura_valor) | number:'1.2'}}</div>
+                    </div>
+                </div>
+                <div class="tabela-fatura">
+                    <table mat-table [dataSource]="transacoesList">
+                        <ng-container matColumnDef="transacao_fatura_data">
+                            <th mat-header-cell *matHeaderCellDef>  </th>
+                            <td mat-cell *matCellDef="let element"> 
+                                <button mat-icon-button (click)="openDialog(element)">
+                                    <mat-icon>calendar_today</mat-icon>
+                                </button>
+                             </td>
+                        </ng-container>
+                        <ng-container matColumnDef="transacao_data">
+                            <th mat-header-cell *matHeaderCellDef> Data </th>
+                            <td mat-cell *matCellDef="let element"> 
+                                {{element.transacao_data | date:'shortDate'}}
+                             </td>
+                        </ng-container>
+                        <ng-container matColumnDef="transacao_sacado">
+                            <th mat-header-cell mat-header-cell *matHeaderCellDef> Descrição <th>
+                            <td mat-cell mat-cell *matCellDef="let element"> {{element.transacao_sacado}} <td>
+                        </ng-container>
+                        <ng-container matColumnDef="transacao_descricao">
+                            <th mat-header-cell mat-header-cell *matHeaderCellDef> Memo <th>
+                            <td mat-cell mat-cell *matCellDef="let element"> {{element.descricao}} <td>
+                        </ng-container>
+                        <ng-container matColumnDef="transacao_valor">
+                            <th mat-header-cell mat-header-cell *matHeaderCellDef> R$ <th>
+                            <td mat-cell mat-cell *matCellDef="let element"> {{element.transacao_valor | number:'1.2'}} <td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
             </div>
-            <div class="resumo-fatura">
-                <div>
-                    <div>VENCIMENTO</div>
-                    <div>{{(faturaSelecionada.conta_vencimento | date:'dd') + (faturaSelecionada.fatura_data | date:'/MM/yyyy')}}</div>
-                </div>
-                <div>
-                    <div>TOTAL DE DÉBITOS</div>
-                    <div>{{faturaSelecionada.fatura_valor | number:'1.2'}}</div>
-                </div>
-                <div>
-                    <div>TOTAL DE PAGAMENTOS</div>
-                    <div>{{(faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) | number:'1.2'}}</div>
-                </div>
-                <div>
-                    <div>SALDO DA FATURA</div>
-                    <div>{{((faturaSelecionada.fatura_valor_pago == null ? 0 : faturaSelecionada.fatura_valor_pago) - faturaSelecionada.fatura_valor) | number:'1.2'}}</div>
-                </div>
-            </div>
-            <table mat-table [dataSource]="transacoesList">
-                <ng-container matColumnDef="transacao_data">
-                    <th mat-header-cell *matHeaderCellDef> Data </th>
-                    <td mat-cell *matCellDef="let element"> {{element.transacao_data | date:'shortDate'}} </td>
-                </ng-container>
-                <ng-container matColumnDef="transacao_sacado">
-                    <th mat-header-cell *matHeaderCellDef> Descrição </th>
-                    <td mat-cell *matCellDef="let element"> {{element.transacao_sacado}} </td>
-                </ng-container>
-                <ng-container matColumnDef="transacao_descricao">
-                    <th mat-header-cell *matHeaderCellDef> Memo </th>
-                    <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
-                </ng-container>
-                <ng-container matColumnDef="transacao_valor">
-                    <th mat-header-cell *matHeaderCellDef> R$ </th>
-                    <td mat-cell *matCellDef="let element"> {{element.transacao_valor | number:'1.2'}} </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
         </mat-card>
     </div>
 </div>
