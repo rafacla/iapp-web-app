@@ -409,6 +409,9 @@ export class TransacoesEditComponent {
         });
       });
       this.alternaTipoConta();
+      if (!this.data.transacao.transacao_id) {
+        this.calculaDataFatura();
+      }
     }
 
 
@@ -425,6 +428,7 @@ export class TransacoesEditComponent {
       transacao_valor_saida: [this.data.transacao ? (this.data.transacao.transacao_valor <0 ? (-1)*this.data.transacao.transacao_valor : 0) : '']
     });
     this.formTransacoes.enable();
+    
     let arrowItensCategorias = this.formBuilder.array([].map(x => this.formBuilder.group(x)));
     this.itensCategoria.forEach(itemCategoria => {
       arrowItensCategorias.push(
@@ -460,6 +464,9 @@ export class TransacoesEditComponent {
       arrowItensTransferencias
     });
     this.calculaADistribuir();
+    if (!this.data.transacao.transacao_id) {
+      this.calculaDataFatura();
+    }
   }
 
   addItensCategorias() {
@@ -622,7 +629,7 @@ export class TransacoesEditComponent {
     if (conta && conta.conta_cartao == '1') {
       let data = moment(this.formTransacoes.get('transacao_data').value).clone();
       let diaFechamento = moment(conta.conta_cartao_data_fechamento);
-      let diaVencimento = moment(conta.conta_cartao_data_vencimento)
+      let diaVencimento = moment(conta.conta_cartao_data_vencimento);
         if (+data.format('D') > +diaFechamento.format('D')) {
           // entrará na próxima fatura
           // precisamos ver se isso significa um ou dois meses a frente:

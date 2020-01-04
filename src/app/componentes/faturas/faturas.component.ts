@@ -80,7 +80,7 @@ export class FaturasComponent implements OnInit {
     let transacoesCarregando: TransacoesCartaoList[] = [transacaoEmBranco] ;
     this.transacoesList = transacoesCarregando;
     this.http.transacoesCartaoGet(fatura.conta_id.toString(),fatura.fatura_data).subscribe(transacoes => {
-      this.transacoesList = transacoes;
+      this.transacoesList = transacoes.sort((n1,n2) => moment.utc(n1.transacao_data).diff(moment.utc(n2.transacao_data)));
     }, error => {
       this.transacoesList = [];      
     });
