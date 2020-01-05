@@ -61,7 +61,7 @@ export class FaturasComponent implements OnInit {
           let faturas = this.cartoesList.find(i => i.conta_id == result.transacaoAntiga.conta_id).faturas;
           let faturaAntiga = faturas.find(i => i.fatura_data == result.transacao_fatura_data);
           faturaAntiga.fatura_valor -= result.transacaoAntiga.transacao_valor;
-          this.atualizaListaCartoes(faturaAntiga.fatura_data);
+          this.atualizaListaCartoes(faturaAntiga.fatura_data, faturaAntiga.conta_id);
         });
       }
     });
@@ -77,6 +77,7 @@ export class FaturasComponent implements OnInit {
       transacao_valor: null,
       conta_id: null
     }
+    this.faturaSelecionada = fatura;
     let transacoesCarregando: TransacoesCartaoList[] = [transacaoEmBranco] ;
     this.transacoesList = transacoesCarregando;
     this.http.transacoesCartaoGet(fatura.conta_id.toString(),fatura.fatura_data).subscribe(transacoes => {
@@ -86,21 +87,25 @@ export class FaturasComponent implements OnInit {
     });
   }
 
-  private atualizaListaCartoes(faturaSelecionada?: string) {
+  private atualizaListaCartoes(faturaSelecionada?: string, conta_id?: number) {
     this.userService.getUserDetail().subscribe(userDetail => { 
       this.http.cartoesGet(userDetail.userLastDiarioUID).subscribe(cartoes => {
         this.cartoesList = cartoes;
         cartoes.forEach(element => {
           this.http.faturasGet(element.conta_id.toString()).subscribe(faturaList => {
             element.faturas = Array.from(faturaList).slice().reverse();
-            if (element.faturas[0].conta_id == cartoes[0].conta_id) {
-              let fatura = faturaList.find(i => i.fatura_data == faturaSelecionada);
-              if (fatura)
-                this.faturaSelecionada = fatura;
-              else
-                this.faturaSelecionada = element.faturas[0];
-                this.selecionaFatura(this.faturaSelecionada);
-            }
+            if (faturaSelecionada && conta_id) {
+              if (element.conta_id == conta_id) {
+                let fatura = element.faturas.find(i => i.fatura_data == faturaSelecionada);
+                if (fatura) {
+                  this.selecionaFatura(fatura);
+                }
+              }
+            } else {
+              if (element.faturas[0].conta_id == cartoes[0].conta_id) {
+                this.selecionaFatura(element.faturas[0]);
+              }
+            } 
           });
         });
       })

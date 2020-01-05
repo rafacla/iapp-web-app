@@ -9,7 +9,7 @@
         <mat-accordion>
             <mat-radio-group [(ngModel)]="faturaSelecionada">
                 <ng-container *ngFor="let item of cartoesList;let in=index">
-                    <mat-expansion-panel [expanded]="(in != 0) ? 'false' : 'true' ">
+                    <mat-expansion-panel [expanded]="item.conta_id == faturaSelecionada.conta_id">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 <h4>{{item.conta_nome}}</h4>
