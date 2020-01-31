@@ -1,0 +1,79 @@
+<div class="mat-dialog">
+    <form name="form" (ngSubmit)="f.form.valid && onOkClick(tooltip)"  #f="ngForm" novalidate>
+    <div class="mat-dialog-header">
+        <div mat-dialog-title>
+            {{data.transacaoAntiga ? 'Editar transação' : 'Nova Transação'}} em 
+            
+            <mat-form-field class="form-field fatura-data">
+                <input matInput disabled [ngModel]="data.transacao_fatura_data | date:'MMMM-y'" [ngModelOptions]="{standalone: true}">
+                <input matInput [hidden]="true" [matDatepicker]="dataFatura" placeholder="Data da Fatura" [(ngModel)]="data.transacao_fatura_data" [ngModelOptions]="{standalone: true}">
+                <mat-datepicker-toggle matSuffix [for]="dataFatura"></mat-datepicker-toggle>
+                <mat-datepicker #dataFatura startView="year" (monthSelected)="chosenMonthHandler($event, dataFatura)"></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <mat-form-field class="form-field transacao_data">
+            <mat-label>Data</mat-label>
+                <input matInput [matDatepicker]="dataTransacao" placeholder="Data da Transação" required [(ngModel)]="transacao.transacao_data" name="transacao_data">
+                <mat-datepicker-toggle matSuffix [for]="dataTransacao"></mat-datepicker-toggle>
+                <mat-datepicker #dataTransacao disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="form-field transacao_sacado">
+            <mat-label>Beneficiário/Sacado</mat-label>
+            <input matInput placeholder="Nome do Beneficiário/Sacado" required [(ngModel)]="transacao.transacao_sacado" name="transacao_sacado">
+            <mat-hint>Quem recebeu ou enviou o dinheiro?</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="form-field transacao_valor">
+            <mat-label>Valor</mat-label>
+            <input matInput placeholder="Valor" required type="number" step="0.01" class="valor" (change)="calculaADistribuir()" [(ngModel)]="transacao.transacao_valor" name="transacao_valor">
+            <span matPrefix>R$&nbsp;</span>
+        </mat-form-field>        
+        <mat-form-field class="form-field transacao_numero">
+            <mat-label>Número do Documento</mat-label>
+            <input matInput placeholder="Número do Documento" [(ngModel)]="transacao.transacao_numero" name="transacao_numero">
+            <mat-hint>Número de identificação no extrato, evita transações duplicadas.</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="form-field transacao_descricao">
+            <mat-label>Descrição</mat-label>
+            <input matInput placeholder="Breve descrição da transação" [(ngModel)]="transacao.transacao_descricao" name="transacao_descricao">
+            <mat-hint>Para ajudar a lembrar no futuro.</mat-hint>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-content>
+        <div class="subheader">Classificações <a mat-button (click)="addItensCategorias()" class="addItensCategorias"><mat-icon>library_add</mat-icon></a></div>
+        <mat-divider></mat-divider>
+        <mat-autocomplete #autoGroup="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption >
+            <mat-optgroup *ngFor="let categoria of categoriasFiltradas | async" [label]="categoria.categoria_nome">
+                <mat-option *ngFor="let subcategoria of categoria.subcategorias" [value]="subcategoria.subcategoria_id">
+                    {{subcategoria.subcategoria_nome}}
+                </mat-option>
+            </mat-optgroup>
+        </mat-autocomplete>
+        <table>
+            <tr *ngFor="let item of transacao.subtransacoes;let i = index">
+                <td>
+                    <mat-form-field class="transacoes-itens-categoria">
+                        <input type="text" matInput placeholder="Categoria" required [matAutocomplete]="autoGroup" [(ngModel)]="item.subcategoria_id" (keyup)="categoriasAutoCompleteOnChange($event)" name="{{i}}_subcategoria_id">
+                    </mat-form-field>
+                    <mat-form-field class="transacoes-itens-descricao">
+                        <input type="text" matInput placeholder="Descrição" [(ngModel)]="item.transacoes_item_descricao"  name="{{i}}_transacoes_item_descricao">
+                    </mat-form-field>
+                    <mat-form-field class="transacoes-itens-valor">
+                        <input type="number" step="0.01" matInput placeholder="Valor" [(ngModel)]="item.transacoes_item_valor" (keyup)="calculaADistribuir()" (change)="calculaADistribuir()"  name="{{i}}_transacoes_item_valor">
+                    </mat-form-field>
+                    <a  mat-icon-button color="disabled" aria-label="Delete subitem" (click)=delItemCategoria(item)>
+                        <mat-icon>cancel</mat-icon>
+                    </a>
+                </td>
+            </tr>
+        </table>        
+    </div>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="primary" [disabled]="clicked">Salvar</button>
+        <button mat-raised-button color="warn" (click)="onNoClick()">Cancelar</button>
+        <mat-form-field class="transacao_total_a_distribuir" #tooltip="matTooltip" matTooltip="Você deve distribuir os valores até zerar" matTooltipClass="tooltip-red" matTooltipPosition="above"> 
+            <input matInput placeholder="A distribuir:" disabled value="0" [ngModel]="txtADistribuir" class="valor" name="txtADistribuir">
+            <span matPrefix>R$&nbsp;</span>
+        </mat-form-field>
+    </div>
+    </form>
+</div>

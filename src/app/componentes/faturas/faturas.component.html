@@ -2,7 +2,8 @@
     <span>Faturas de Cartões de Crédito</span>
 </div>
 <div class="mat-toolbar-third-row">
-    
+    <button mat-button (click)="addTransacao()"><mat-icon>add</mat-icon> Nova Transação</button>
+    <button mat-button (click)="deletaSelecionados()" *ngIf="selection.selected.length > 0"><mat-icon>delete</mat-icon> Deletar Selecionados</button>
 </div>
 <div class="content">
     <div class="cartao-select">
@@ -61,10 +62,28 @@
                 </div>
                 <div class="tabela-fatura">
                     <table mat-table [dataSource]="transacoesList">
+                        <!-- Checkbox Column -->
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                            </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                            </mat-checkbox>
+                            </td>
+                        </ng-container>
                         <ng-container matColumnDef="transacao_fatura_data">
                             <th mat-header-cell *matHeaderCellDef>  </th>
                             <td mat-cell *matCellDef="let element"> 
-                                <button mat-icon-button (click)="openDialog(element)">
+                                <button mat-icon-button (click)="addTransacao(element)" class="edit">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="openDialog(element)" class="date">
                                     <mat-icon>calendar_today</mat-icon>
                                 </button>
                              </td>

@@ -114,3 +114,68 @@ body {
     border-top-color: #e4b9b9; }
   .alert-danger .alert-link {
     color: #843534; }
+
+.fatura-transacao-dialog .mat-form-field {
+  padding-right: 5px;
+}
+
+.fatura-transacao-dialog .transacao_data {
+  width: calc(15ch - 5px);
+}
+
+.fatura-transacao-dialog .transacao_sacado {
+  width: calc(70% - 5px - 15ch);
+}
+
+.fatura-transacao-dialog .transacao_valor {
+  width: calc(30% - 5px);
+}
+
+.fatura-transacao-dialog .transacao_numero {
+  width: calc(35% - 5px);
+}
+
+.fatura-transacao-dialog .transacao_descricao {
+  width: calc(65% - 5px);
+}
+
+.fatura-transacao-dialog .transacao_total_a_distribuir {
+  width: 10ch;
+  text-align: right;
+  margin-left: auto;
+}
+
+.fatura-transacao-dialog .transacao_valor input {
+  text-align: right;
+}
+
+.fatura-transacao-dialog .addItensCategorias {
+  margin-left: auto;
+}
+
+.fatura-transacao-dialog .mat-dialog-content {
+  margin-top: 15px;
+}
+
+.fatura-transacao-dialog .transacoes-itens-categoria {
+  width: calc(55% - 5px);
+}
+.fatura-transacao-dialog .transacoes-itens-valor input {
+  text-align: right;
+}
+.fatura-transacao-dialog .transacoes-itens-valor {
+  width: calc(15% - 5px);
+}
+.fatura-transacao-dialog .transacoes-itens-descricao {
+  width: calc(30% - 5px - 40px);
+}
+
+
+.fatura-transacao-dialog table {
+  width: 100%;
+}
+
+.fatura-transacao-dialog .fatura-data {
+  width: 14ch;
+  margin-left: auto;
+}

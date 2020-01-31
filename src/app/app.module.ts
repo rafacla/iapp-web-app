@@ -43,7 +43,7 @@ import { PhoneMaskDirective } from './diretivas/phone-mask.directive';
 import { TransacoesListComponent, TransacoesEditComponent, TransacoesOFXComponent } from './componentes/transacoes-list/transacoes-list.component';
 import { OrcamentoComponent } from './componentes/orcamento/orcamento.component';
 import { from } from 'rxjs';
-import { FaturasComponent, FaturaDataDialog } from './componentes/faturas/faturas.component';
+import { FaturasComponent, FaturaDataDialog, FaturaTransacaoDialog } from './componentes/faturas/faturas.component';
 
 
 
@@ -93,6 +93,7 @@ import { FaturasComponent, FaturaDataDialog } from './componentes/faturas/fatura
     DiarioSelecionaComponent,
     DiarioEditComponent,
     FaturaDataDialog,
+    FaturaTransacaoDialog,
     TransacoesListComponent,
     TransacoesEditComponent,
     TransacoesOFXComponent],
@@ -115,7 +116,8 @@ import { FaturasComponent, FaturaDataDialog } from './componentes/faturas/fatura
     TransacoesOFXComponent,
     OrcamentoComponent,
     FaturasComponent,
-    FaturaDataDialog
+    FaturaDataDialog,
+    FaturaTransacaoDialog
   ],
   providers: [
     {

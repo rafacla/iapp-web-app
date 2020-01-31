@@ -64,8 +64,12 @@ button .mat-icon {
     color: #ccc;
 }
 
-button .mat-icon:hover {
+button.date .mat-icon:hover {
     color: rgb(0, 122, 204);
+}
+
+button.edit .mat-icon:hover {
+    color: rgb(202, 77, 77);
 }
 
 .mat-column-transacao_valor {
@@ -78,8 +82,15 @@ button .mat-icon:hover {
 }
 
 .mat-column-transacao_fatura_data {
-    flex: 0 0 1ch!important;
-    width: 1ch!important;
+    flex: 0 0 11ch!important;
+    width: 11ch!important;
+    padding-left: 0!important;
+}
+
+.mat-column-select {
+    flex: 0 0 16px!important;
+    width: 16px!important;
+    padding-left: 0!important;
 }
 
 .resumo-fatura {
@@ -117,4 +128,8 @@ button .mat-icon:hover {
 .cartao-fatura-card > .tabela-fatura {
     flex: 0 1 auto;
     overflow-y: auto;
+}
+
+.mat-form-field {
+    padding-right: 4px;
 }
